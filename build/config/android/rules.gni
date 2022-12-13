@@ -2336,6 +2336,15 @@ if (enable_java_templates) {
         _extra_native_libs_deps +=
             [ "//base/android/linker:chromium_android_linker" ]
       }
+
+      _extra_native_libs +=
+      [ "${root_out_dir}/umeng/libcrashsdk.so" ]
+      _extra_native_libs_deps +=
+      [ "//third_party/cqttech:lib_umeng_libcrashsdk" ]
+      _extra_native_libs +=
+      [ "${root_out_dir}/umeng/libumeng-spy.so" ]
+      _extra_native_libs_deps +=
+      [ "//third_party/cqttech:lib_umeng_spy" ]
     }
 
     if (_generate_buildconfig_java) {
@@ -3281,6 +3290,8 @@ if (enable_java_templates) {
     _ignore_assets = defined(invoker.ignore_assets) && invoker.ignore_assets
     _ignore_native_libraries = defined(invoker.ignore_native_libraries) &&
                                invoker.ignore_native_libraries
+    _ignore_subjar = defined(invoker.ignore_subjar) && invoker.ignore_subjar
+    _ignore_resources = defined(invoker.ignore_resources) && invoker.ignore_resources
 
     # Scan the AAR file and determine the resources and jar files.
     # Some libraries might not have resources; others might have two jars.
@@ -3338,10 +3349,12 @@ if (enable_java_templates) {
         outputs += [ "${_output_path}/R.txt" ]
       }
 
-      if (_scanned_files.resources != []) {
-        outputs += get_path_info(
-                rebase_path(_scanned_files.resources, "", _output_path),
-                "abspath")
+      if (!_ignore_resources) {
+        if (_scanned_files.resources != []) {
+          outputs += get_path_info(
+          rebase_path(_scanned_files.resources, "", _output_path),
+          "abspath")
+        }
       }
       if (_scanned_files.has_classes_jar) {
         outputs += [ "${_output_path}/classes.jar" ]
@@ -3355,58 +3368,62 @@ if (enable_java_templates) {
     }
 
     # Create the android_resources target for resources.
-    if (_scanned_files.resources != [] || _scanned_files.has_r_text_file ||
-        !_scanned_files.is_manifest_empty) {
-      _res_target_name = "${target_name}__res"
-      android_resources(_res_target_name) {
-        forward_variables_from(invoker,
-                               [
-                                 "create_srcjar",
-                                 "deps",
-                                 "testonly",
-                               ])
-        if (!defined(deps)) {
-          deps = []
+    if (!_ignore_resources) {
+      if (_scanned_files.resources != [] || _scanned_files.has_r_text_file ||
+      !_scanned_files.is_manifest_empty) {
+        _res_target_name = "${target_name}__res"
+        android_resources(_res_target_name) {
+          forward_variables_from(invoker,
+          [
+            "create_srcjar",
+            "deps",
+            "testonly",
+          ])
+          if (!defined(deps)) {
+            deps = []
+          }
+          deps += [ ":$_unpack_target_name" ]
+          resource_dirs = []
+          generated_resource_dirs = []
+          if (_scanned_files.resources != []) {
+            generated_resource_dirs += [ "${_output_path}/res" ]
+          }
+          generated_resource_files =
+          rebase_path(_scanned_files.resources, "", _output_path)
+          android_manifest_dep = ":$_unpack_target_name"
+          android_manifest = "${_output_path}/AndroidManifest.xml"
+          if (_scanned_files.has_r_text_file) {
+            r_text_file = "${_output_path}/R.txt"
+          }
+          v14_skip = true
         }
-        deps += [ ":$_unpack_target_name" ]
-        resource_dirs = []
-        generated_resource_dirs = []
-        if (_scanned_files.resources != []) {
-          generated_resource_dirs += [ "${_output_path}/res" ]
-        }
-        generated_resource_files =
-            rebase_path(_scanned_files.resources, "", _output_path)
-        android_manifest_dep = ":$_unpack_target_name"
-        android_manifest = "${_output_path}/AndroidManifest.xml"
-        if (_scanned_files.has_r_text_file) {
-          r_text_file = "${_output_path}/R.txt"
-        }
-        v14_skip = true
       }
     }
 
     # Create android_java_prebuilt target for extra jars within jars/.
     _subjar_targets = []
-    foreach(_tuple, _scanned_files.subjar_tuples) {
-      _current_target = "${target_name}__subjar_${_tuple[0]}"
-      _subjar_targets += [ ":$_current_target" ]
-      java_prebuilt(_current_target) {
-        forward_variables_from(invoker,
-                               [
-                                 "jar_excluded_patterns",
-                                 "jar_included_patterns",
-                                 "requires_android",
-                               ])
-        deps = [
-          ":$_unpack_target_name",
-        ]
-        if (!defined(requires_android)) {
-          requires_android = true
+    if (!_ignore_subjar) {
+      foreach(_tuple, _scanned_files.subjar_tuples) {
+        _current_target = "${target_name}__subjar_${_tuple[0]}"
+        _subjar_targets += [ ":$_current_target" ]
+        java_prebuilt(_current_target) {
+          forward_variables_from(invoker,
+          [
+            "jar_excluded_patterns",
+            "jar_included_patterns",
+            "requires_android",
+          ])
+          deps = [
+            ":$_unpack_target_name",
+          ]
+          if (!defined(requires_android)) {
+            requires_android = true
+          }
+          supports_android = true
+          jar_path = "$_output_path/${_tuple[1]}"
+          _base_output_name = get_path_info(jar_path, "name")
+          output_name = "${invoker.target_name}-$_base_output_name"
         }
-        supports_android = true
-        jar_path = "$_output_path/${_tuple[1]}"
-        _base_output_name = get_path_info(jar_path, "name")
-        output_name = "${invoker.target_name}-$_base_output_name"
       }
     }
 
@@ -3470,6 +3487,7 @@ if (enable_java_templates) {
       }
     }
   }
+
 }
 
 # Compatibility wrapper to toggle android_deps usage for a dependency.

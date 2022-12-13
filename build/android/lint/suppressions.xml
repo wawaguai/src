@@ -178,7 +178,8 @@ Still reading?
     <ignore regexp="espresso/espresso_core_java.interface.jar"/>
   </issue>
   <issue id="InvalidVectorPath" severity="ignore"/>
-  <issue id="LabelFor" severity="Error">
+<!--  <issue id="ExtraTranslation" severity="ignore" />-->
+  <issue id="LabelFor" severity="ignore">
     <ignore regexp="android_webview/tools/system_webview_shell/apk/res/layout/activity_webview_browser.xml"/>
   </issue>
   <!-- TODO(crbug.com/804453): Remove this after fixing. -->
@@ -209,7 +210,7 @@ Still reading?
   <issue id="MissingVersion">
     <ignore path="AndroidManifest.xml"/>
   </issue>
-  <issue id="NewApi">
+  <issue id="NewApi" severity="ignore">
     <!-- Do not add new suppressions without rationale. -->
     <!-- 2 AutoCloseable has been available since API 15, just hidden. -->
     <ignore regexp="Class requires API level 19.*java.lang.AutoCloseable"/>
@@ -347,6 +348,9 @@ Still reading?
     <ignore regexp="chrome/android/java/res/drawable-hdpi/edge_menu_bg.9.png"/>
     <ignore regexp="chrome/android/java/res/drawable-hdpi/ic_omnibox_magnifier.png"/>
     <ignore regexp="chrome/android/java/res/drawable-hdpi/menu_bg.9.png"/>
+
+    <ignore regexp="chrome/android/java/res/layout/suggestions_site_tile_grid_modern.xml" />
+    <ignore regexp="chrome/android/java/res/layout/suggestions_site_tile_grid.xml" />
   </issue>
   <issue id="UseCompoundDrawables">
     <!-- Upscaling 24dp to 48dp doesn't work as expected with a TextView compound drawable. -->
