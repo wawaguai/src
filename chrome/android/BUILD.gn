@@ -22,7 +22,7 @@ import("channel.gni")
 import("java_sources.gni")
 import("static_initializers.gni")
 
-manifest_package = "com.kiwibrowser.browser.classic"
+manifest_package = "com.kitty.browser"
 
 chrome_public_jinja_variables = default_chrome_public_jinja_variables +
                                 [ "manifest_package=$manifest_package" ]
@@ -57,7 +57,7 @@ jinja_template("chrome_public_android_manifest") {
   output = chrome_public_android_manifest
   variables = chrome_public_jinja_variables
   variables += [
-    "min_sdk_version=16",
+    "min_sdk_version=19",
     "target_sdk_version=$android_sdk_version",
   ]
 }
@@ -89,7 +89,7 @@ jinja_template("chrome_sync_shell_android_manifest") {
   output = chrome_sync_shell_android_manifest
   variables = chrome_sync_shell_jinja_variables
   variables += [
-    "min_sdk_version=16",
+    "min_sdk_version=19",
     "target_sdk_version=$android_sdk_version",
   ]
 }
@@ -97,6 +97,7 @@ jinja_template("chrome_sync_shell_android_manifest") {
 android_resources("chrome_java_resources") {
   resource_dirs = [
     "java/res",
+    "../../cqttech/res",
     "//chrome/android/java/res_chromium",
   ]
   if (enable_vr) {
@@ -115,6 +116,8 @@ android_resources("chrome_java_resources") {
     "//third_party/android_tools:android_support_design_java",
     "//third_party/android_tools:android_support_v7_appcompat_java",
     "//third_party/android_tools:android_support_v7_recyclerview_java",
+    "//third_party/cqttech:constraint_layout_java",
+    "//third_party/cqttech:cqttech_widget_java",
   ]
   custom_package = "org.chromium.chrome"
 }
@@ -282,6 +285,20 @@ android_library("chrome_java") {
     "//third_party/jsr-305:jsr_305_javalib",
     "//third_party/leakcanary:leakcanary_java",
     "//third_party/protobuf:protobuf_lite_javalib",
+
+    # jyh add start ->
+    "//third_party/cqttech:rxjava_java",
+    "//third_party/cqttech:rxandroid_java",
+    "//third_party/cqttech:okhttp_java",
+    "//third_party/cqttech:retrofit_java",
+    "//third_party/cqttech:glide_java",
+#    "//third_party/cqttech:packer_helper_java",
+    "//third_party/cqttech:cqttech_widget_java",
+    "//third_party/cqttech:constraint_layout_java",
+    # "//third_party/cqttech:kotlin_java",
+    "//third_party/cqttech:umeng_java",
+    # <- add by jyh
+
     "//ui/android:ui_java",
     "//ui/base/mojo:mojo_bindings_java",
     "//ui/gfx/geometry/mojo:mojo_java",
@@ -754,6 +771,7 @@ java_group("chrome_public_non_pak_assets") {
   deps = [
     "//chrome/android/webapk/libs/runtime_library:runtime_library_assets",
     "//third_party/icu:icu_assets",
+    ":cqttech_channel_assets",
   ]
   if (use_v8_context_snapshot) {
     deps += [ "//tools/v8_context_snapshot:v8_context_snapshot_assets" ]
@@ -1099,7 +1117,11 @@ _add_unwind_tables_in_chrome_public_apk =
 chrome_public_apk_tmpl_shared("chrome_public_apk") {
   android_manifest = chrome_public_android_manifest
   android_manifest_dep = ":chrome_public_android_manifest"
-  apk_name = "ChromePublic"
+  _cqttech_channel = read_file("channel/cqttech_channel.txt", "string")
+  apk_name = "XKBrowser-$_cqttech_channel-$android_default_version_name"
+
+  final_apk_path = "$root_build_dir/apks/$android_default_version_name/${apk_name}.apk"
+  # final_apk_path = "$root_build_dir/apks/$android_default_version_name/$_cqttech_channel/$apk_name.apk"
   shared_libraries = [ ":libchrome" ]
   add_unwind_tables_in_apk = _add_unwind_tables_in_chrome_public_apk
   if (_add_unwind_tables_in_chrome_public_apk) {
@@ -1390,4 +1412,13 @@ if (defined(expected_static_initializer_count)) {
       rebase_path(inputs[0], root_build_dir),
     ]
   }
+}
+
+android_assets("cqttech_channel_assets") {
+  _cqttech_channel = read_file("channel/cqttech_channel.txt", "string")
+  write_file("$target_gen_dir/cqttech_channel.txt", _cqttech_channel)
+
+  sources = [
+    "$target_gen_dir/cqttech_channel.txt",
+  ]
 }
