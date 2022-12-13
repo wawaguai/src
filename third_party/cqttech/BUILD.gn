@@ -1,0 +1,605 @@
+# Copyright 2017 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//build/config/android/rules.gni")
+
+android_java_prebuilt("reactive_streams_java") {
+  jar_path = "rxjava2/reactive-streams-1.0.2.jar"
+}
+
+android_java_prebuilt("rxjava_java") {
+  jar_path = "rxjava2/rxjava-2.2.10.jar"
+
+  deps = [
+    ":reactive_streams_java",
+  ]
+}
+
+android_aar_prebuilt("rxandroid_java") {
+  aar_path = "rxandroid/rxandroid-2.1.1.aar"
+
+  ignore_native_libraries = true
+
+  # jar_included_patterns = [
+  # # The following list contains all the java classes in com.google.vr. that we
+  # # use. Gvr allows loading GvrLayout and GvrUiLayout from VrCore. So a lot of
+  # # classes are not needed.
+  # "*google/common/logging/nano/Vr\$VREvent.class",
+  # "*google/common/logging/nano/Vr\$VREvent\$SdkConfigurationParams*",
+  # "*google/vr/cardboard/AndroidNCompat*.class",
+  # "*google/vr/cardboard/ConfigUtils.class",
+  # ]
+
+  deps = [
+    ":rxjava_java",
+  # "//third_party/robolectric:robolectric_java",
+  ]
+}
+
+
+android_java_prebuilt("codehaus_mojo_java") {
+  jar_path = "okhttp/animal-sniffer-annotations-1.17.jar"
+
+  proguard_configs = [ "proguard.txt" ]
+}
+
+android_java_prebuilt("okio_java") {
+  jar_path = "okhttp/okio-1.17.2.jar"
+
+  deps = [
+    ":codehaus_mojo_java",
+  ]
+}
+
+android_java_prebuilt("org_conscrypt_java") {
+  jar_path = "okhttp/conscrypt-openjdk-uber-2.5.2.jar"
+
+  proguard_configs = [ "proguard.txt" ]
+}
+
+android_java_prebuilt("okhttp_3_14_2_java") {
+  jar_path = "okhttp/okhttp-3.14.2.jar"
+
+  deps = [
+    ":okio_java",
+    ":codehaus_mojo_java",
+    ":org_conscrypt_java"
+  ]
+
+  proguard_configs = [ "proguard.txt" ]
+}
+
+android_java_prebuilt("okhttp_logging_interceptor_java") {
+  jar_path = "okhttp/logging-interceptor-3.14.2.jar"
+
+  deps = [
+    ":okhttp_3_14_2_java",
+  ]
+}
+
+java_group("okhttp_java") {
+  deps = [
+    ":okhttp_3_14_2_java",
+    ":okhttp_logging_interceptor_java",
+  ]
+}
+
+
+android_java_prebuilt("retrofit_2_4_0_java") {
+  jar_path = "retrofit/retrofit-2.4.0.jar"
+
+  deps = [
+    ":okhttp_java",
+    ":codehaus_mojo_java",
+  ]
+}
+
+android_java_prebuilt("gson_android_java") {
+  jar_path = "gson/gson-2.8.2.jar"
+
+  proguard_configs = [ "proguard.txt" ]
+}
+
+android_java_prebuilt("gson_converter_java") {
+  jar_path = "retrofit/converter-gson-2.4.0.jar"
+
+  deps = [
+    ":retrofit_2_4_0_java",
+    ":gson_android_java",
+  ]
+}
+
+android_java_prebuilt("retrofit_adapters_java") {
+  jar_path = "retrofit/adapter-rxjava2-2.4.0.jar"
+
+  deps = [
+    ":retrofit_2_4_0_java",
+    ":rxjava_java",
+  ]
+}
+
+java_group("retrofit_java") {
+  deps = [
+    ":retrofit_2_4_0_java",
+    ":gson_converter_java",
+    ":retrofit_adapters_java",
+  ]
+}
+
+
+android_java_prebuilt("disklrucache_java") {
+  jar_path = "glide/disklrucache-4.9.0.jar"
+}
+
+android_java_prebuilt("glide_annotations_java") {
+  jar_path = "glide/annotations-4.9.0.jar"
+}
+
+android_java_prebuilt("glide_compiler_java") {
+  jar_path = "glide/compiler-4.9.0.jar"
+
+  deps = [
+    ":glide_annotations_java",
+  ]
+}
+
+android_aar_prebuilt("glide_4_9_0_java") {
+  aar_path = "glide/glide-4.9.0.aar"
+
+  deps = [
+    ":gifdecoder_java",
+    ":disklrucache_java",
+    ":glide_annotations_java",
+    "//third_party/android_tools:android_support_v7_appcompat_java"
+  ]
+}
+
+android_aar_prebuilt("gifdecoder_java") {
+  aar_path = "glide/gifdecoder-4.9.0.aar"
+
+  deps = [
+    "//third_party/android_tools:android_support_annotations_java",
+  ]
+}
+
+java_group("glide_java") {
+  deps = [
+    ":glide_4_9_0_java",
+  ]
+}
+
+
+android_java_prebuilt("packer_common_java") {
+  jar_path = "packer/common-2.0.1.jar"
+}
+
+android_aar_prebuilt("packer_helper_java") {
+  aar_path = "packer/helper-2.0.1.aar"
+
+  deps = [
+    ":packer_common_java",
+  ]
+}
+
+
+android_aar_prebuilt("cqttech_widget_java") {
+  aar_path = "support-widget/widget-support-release.aar"
+
+  deps = [
+    "//third_party/android_tools:android_support_v7_appcompat_java"
+  ]
+}
+
+
+android_aar_prebuilt("constraint_layout_java") {
+  aar_path = "constraint/constraint-layout-1.1.3.aar"
+
+  deps = [
+    ":constraint_layout_solver_java",
+    "//third_party/android_tools:android_support_v7_appcompat_java"
+  ]
+}
+
+android_java_prebuilt("constraint_layout_solver_java") {
+  jar_path = "constraint/constraint-layout-solver-1.1.3.jar"
+}
+
+
+android_java_prebuilt("umeng_common_java") {
+  jar_path = "umeng/common-9.4.0.jar"
+}
+
+
+android_java_prebuilt("pasdk_java") {
+  jar_path = "umeng/apm/libs/pasdk-2.1.154.umeng.jar"
+
+  deps = [
+    ":efs_base_java",
+  ]
+}
+
+android_java_prebuilt("efs_base_java") {
+  jar_path = "umeng/apm/libs/efs-base-1.3.3.umeng.jar"
+}
+
+android_java_prebuilt("crashsdk_intl_support_java") {
+  jar_path = "umeng/apm/libs/crashsdk-3.2.0.4-umeng-intl-support.jar"
+}
+
+android_aar_prebuilt("umeng_apm_java") {
+  aar_path = "umeng/apm/apm-1.2.0.aar"
+  ignore_native_libraries = true
+  ignore_subjar = true
+
+  deps = [
+    ":efs_base_java",
+    ":pasdk_java",
+    ":crashsdk_intl_support_java"
+  ]
+}
+
+android_aar_prebuilt("umeng_asms_java") {
+  aar_path = "umeng/asms/asms-1.2.3.aar"
+  ignore_native_libraries = true
+  ignore_resources = true
+}
+
+java_group("umeng_java") {
+  deps = [
+    ":umeng_common_java",
+    ":umeng_apm_java",
+    ":umeng_asms_java",
+  ]
+}
+
+copy("lib_umeng_libcrashsdk") {
+  if (current_cpu == "arm") {
+    sources = [
+      "umeng/apm/jni/armeabi-v7a/libcrashsdk.so",
+    ]
+  } else if (current_cpu == "arm64") {
+    sources = [
+      "umeng/apm/jni/arm64-v8a/libcrashsdk.so",
+    ]
+  } else if (current_cpu == "x86") {
+    sources = [
+      "umeng/apm/jni/x86/libcrashsdk.so",
+    ]
+  } else {
+    sources = [
+      "umeng/apm/jni/armeabi/libcrashsdk.so",
+    ]
+  }
+  outputs = [
+    "${root_out_dir}/umeng/libcrashsdk.so",
+  ]
+}
+
+copy("lib_umeng_spy") {
+  if (current_cpu == "arm") {
+    sources = [
+      "umeng/asms/jni/armeabi-v7a/libumeng-spy.so",
+    ]
+  } else if (current_cpu == "arm64") {
+    sources = [
+      "umeng/asms/jni/arm64-v8a/libumeng-spy.so",
+    ]
+  } else if (current_cpu == "x86") {
+    sources = [
+      "umeng/asms/jni/x86/libumeng-spy.so",
+    ]
+  } else {
+    sources = [
+      "umeng/asms/jni/armeabi/libumeng-spy.so",
+    ]
+  }
+  outputs = [
+    "${root_out_dir}/umeng/libumeng-spy.so",
+  ]
+}
+
+# kotlin
+android_java_prebuilt("org_jetbrains_annotations_java") {
+  jar_path = "kotlin/annotations-13.0.jar"
+}
+android_java_prebuilt("kotlin_stdlib_common_java") {
+  jar_path = "kotlin/kotlin-stdlib-common-1.7.0.jar"
+}
+android_java_prebuilt("kotlin_stdlib_java") {
+  jar_path = "kotlin/kotlin-stdlib-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_common_java",
+    ":org_jetbrains_annotations_java"
+  ]
+}
+android_java_prebuilt("kotlin_stdlib_jdk7_java") {
+  jar_path = "kotlin/kotlin-stdlib-jdk7-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java"
+  ]
+}
+android_java_prebuilt("kotlin_stdlib_jdk8_java") {
+  jar_path = "kotlin/kotlin-stdlib-jdk8-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_stdlib_jdk7_java"
+  ]
+}
+android_java_prebuilt("kotlin_stdlib_js_java") {
+  jar_path = "kotlin/kotlin-stdlib-js-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_common_java"
+  ]
+}
+android_java_prebuilt("kotlin_reflect_java") {
+  jar_path = "kotlin/kotlin-reflect-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java"
+  ]
+}
+# used for deps
+java_group("kotlin_java") {
+  deps = [
+    ":kotlin_stdlib_common_java",
+    ":kotlin_stdlib_java",
+    ":kotlin_stdlib_jdk7_java",
+    ":kotlin_stdlib_jdk8_java",
+    ":kotlin_reflect_java",
+    ":kotlin_stdlib_js_java",
+  ]
+}
+
+
+#used for input_jars_paths
+android_java_prebuilt("kotlin_main_kts_java") {
+  jar_path = "kotlin/kotlin-main-kts-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_reflect_java",
+    ":kotlin_scripting_compiler_embeddable_java"
+  ]
+}
+android_java_prebuilt("kotlin_scripting_compiler_embeddable_java") {
+  jar_path = "kotlin/kotlin-scripting-compiler-embeddable-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_scripting_compiler_impl_embeddable_java"
+  ]
+}
+android_java_prebuilt("kotlin_scripting_compiler_impl_embeddable_java") {
+  jar_path = "kotlin/kotlin-scripting-compiler-impl-embeddable-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_scripting_common_java",
+    ":kotlin_scripting_jvm_java"
+  ]
+}
+android_java_prebuilt("kotlin_scripting_common_java") {
+  jar_path = "kotlin/kotlin-scripting-common-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java"
+  ]
+}
+android_java_prebuilt("kotlin_scripting_jvm_java") {
+  jar_path = "kotlin/kotlin-scripting-jvm-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_script_runtime_java",
+    ":kotlin_scripting_common_java"
+  ]
+}
+android_java_prebuilt("kotlin_script_runtime_java") {
+  jar_path = "kotlin/kotlin-script-runtime-1.7.0.jar"
+}
+android_java_prebuilt("kotlin_script_util_java") {
+  jar_path = "kotlin/kotlin-script-util-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_script_runtime_java",
+    ":kotlin_scripting_jvm_java",
+    ":trove4j_java",
+    ":kotlin_daemon_client_java",
+  ]
+}
+android_java_prebuilt("trove4j_java") {
+  jar_path = "kotlin/trove4j-1.0.20200330.jar"
+}
+android_java_prebuilt("kotlin_daemon_client_java") {
+  jar_path = "kotlin/kotlin-daemon-client-1.7.0.jar"
+  deps = [
+    ":kotlin_reflect_java",
+    ":kotlinx_coroutines_core_jvm_java"
+  ]
+}
+android_java_prebuilt("kotlin_daemon_embeddable_java") {
+  jar_path = "kotlin/kotlin-daemon-embeddable-1.7.0.jar"
+}
+android_java_prebuilt("kotlinx_coroutines_core_jvm_java") {
+  jar_path = "kotlin/kotlinx-coroutines-core-jvm-1.5.0.jar"
+  deps = [
+    ":kotlin_stdlib_common_java",
+    ":kotlin_stdlib_jdk8_java"
+  ]
+}
+android_java_prebuilt("kotlin_scripting_jvm_host_java") {
+  jar_path = "kotlin/kotlin-scripting-jvm-host-1.7.0.jar"
+  deps = [
+    ":kotlin_script_runtime_java",
+    ":kotlin_stdlib_java",
+    ":kotlin_scripting_common_java",
+    ":kotlin_scripting_jvm_java",
+    ":kotlin_scripting_compiler_embeddable_java",
+    ":kotlin_compiler_embeddable_java"
+  ]
+}
+android_java_prebuilt("kotlin_compiler_embeddable_java") {
+  jar_path = "kotlin/kotlin-compiler-embeddable-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_script_runtime_java",
+    ":kotlin_reflect_java",
+    ":kotlin_daemon_embeddable_java",
+    ":trove4j_java",
+    ":jna_java"
+  ]
+}
+android_java_prebuilt("kotlin_compiler_java") {
+  jar_path = "kotlin/kotlin-compiler-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_script_runtime_java",
+    ":kotlin_reflect_java",
+    ":trove4j_java"
+  ]
+}
+android_java_prebuilt("kotlin_scripting_ide_services_java") {
+  jar_path = "kotlin/kotlin-scripting-ide-services-1.7.0.jar"
+  deps = [
+    ":kotlin_script_runtime_java",
+    ":kotlin_stdlib_java",
+    ":kotlin_scripting_common_java",
+    ":kotlin_scripting_jvm_java",
+    ":kotlin_compiler_embeddable_java",
+    ":kotlin_scripting_compiler_embeddable_java"
+  ]
+}
+android_java_prebuilt("jna_java") {
+  jar_path = "kotlin/jna-5.6.0.jar"
+}
+android_java_prebuilt("kotlin_gradle_plugin_java") {
+  jar_path = "kotlin/kotlin-gradle-plugin-1.7.0.jar"
+  deps = [
+    ":kotlin_gradle_plugin_api_java",
+    ":kotlin_gradle_plugin_model_java",
+    ":kotlin_tooling_core_java",
+    ":kotlin_gradle_plugin_idea_java",
+    ":kotlin_util_klib_java",
+    ":kotlin_klib_commonizer_api_java",
+    ":kotlin_tooling_metadata_java",
+    ":kotlin_project_model_java",
+    ":gson_android_java",
+#    "//third_party/guava:guava_java",
+    ":gradle_download_task_java",
+    ":semver4j_java",
+    ":kotlin_compiler_embeddable_java",
+    ":kotlin_annotation_processing_gradle_java",
+    ":kotlin_android_extensions_java",
+    ":kotlin_compiler_runner_java",
+    ":kotlin_scripting_compiler_embeddable_java",
+    ":kotlin_scripting_compiler_impl_embeddable_java",
+    ":kotlin_gradle_plugin_api_java"
+  ]
+}
+android_java_prebuilt("kotlin_allopen_java") {
+  jar_path = "kotlin/kotlin-allopen-1.7.0.jar"
+  deps = [
+    ":kotlin_gradle_plugin_api_java",
+    ":kotlin_gradle_plugin_model_java",
+    ":kotlin_gradle_plugin_api_java",
+  ]
+}
+android_java_prebuilt("semver4j_java") {
+  jar_path = "kotlin/semver4j-0.16.4.jar"
+  deps = [
+    ":antlr4_runtime_java"
+  ]
+}
+android_java_prebuilt("antlr4_runtime_java") {
+  jar_path = "kotlin/antlr4-runtime-4.5.2-1.jar"
+}
+android_java_prebuilt("gradle_download_task_java") {
+  jar_path = "kotlin/gradle-download-task-4.1.1.jar"
+}
+android_java_prebuilt("kotlin_build_common_java") {
+  jar_path = "kotlin/kotlin-build-common-1.7.0.jar"
+}
+android_java_prebuilt("kotlin_compiler_runner_java") {
+  jar_path = "kotlin/kotlin-compiler-runner-1.7.0.jar"
+  deps = [
+    ":kotlin_compiler_embeddable_java",
+    ":kotlin_build_common_java",
+    ":kotlin_daemon_client_java",
+    ":kotlinx_coroutines_core_jvm_java",
+    ":kotlin_compiler_embeddable_java"
+  ]
+}
+android_java_prebuilt("kotlin_android_extensions_java") {
+  jar_path = "kotlin/kotlin-android-extensions-1.7.0.jar"
+  deps = [
+    ":kotlin_compiler_embeddable_java",
+  ]
+}
+android_java_prebuilt("kotlin_annotation_processing_gradle_java") {
+  jar_path = "kotlin/kotlin-annotation-processing-gradle-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_compiler_embeddable_java"
+  ]
+}
+android_java_prebuilt("kotlin_tooling_metadata_java") {
+  jar_path = "kotlin/kotlin-tooling-metadata-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":gson_android_java",
+  ]
+}
+android_java_prebuilt("kotlin_klib_commonizer_api_java") {
+  jar_path = "kotlin/kotlin-klib-commonizer-api-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_native_utils_java"
+  ]
+}
+android_java_prebuilt("kotlin_util_klib_java") {
+  jar_path = "kotlin/kotlin-util-klib-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_util_io_java"
+  ]
+}
+android_java_prebuilt("kotlin_gradle_plugin_idea_java") {
+  jar_path = "kotlin/kotlin-gradle-plugin-idea-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java"
+  ]
+}
+android_java_prebuilt("kotlin_gradle_plugin_model_java") {
+  jar_path = "kotlin/kotlin-gradle-plugin-model-1.7.0.jar"
+  deps = [
+    ":kotlin_gradle_plugin_api_java"
+  ]
+}
+android_java_prebuilt("kotlin_gradle_plugin_api_java") {
+  jar_path = "kotlin/kotlin-gradle-plugin-api-1.7.0.jar"
+  deps = [
+    ":kotlin_native_utils_java",
+    ":kotlin_project_model_java",
+    ":kotlin_tooling_core_java"
+  ]
+}
+android_java_prebuilt("kotlin_native_utils_java") {
+  jar_path = "kotlin/kotlin-native-utils-1.7.0.jar"
+  deps = [
+    ":kotlin_util_io_java"
+  ]
+}
+android_java_prebuilt("kotlin_util_io_java") {
+  jar_path = "kotlin/kotlin-util-io-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java"
+  ]
+}
+android_java_prebuilt("kotlin_project_model_java") {
+  jar_path = "kotlin/kotlin-project-model-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java",
+    ":kotlin_tooling_core_java"
+  ]
+}
+android_java_prebuilt("kotlin_tooling_core_java") {
+  jar_path = "kotlin/kotlin-tooling-core-1.7.0.jar"
+  deps = [
+    ":kotlin_stdlib_java"
+  ]
+}

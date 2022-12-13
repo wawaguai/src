@@ -138,7 +138,7 @@ java_group("android_support_v17_preference_java") {
 
 # === Generated Code Start ===
 java_prebuilt("android_arch_lifecycle_common_java") {
-  jar_path = "repository/android_arch_lifecycle_common/common-1.0.0.jar"
+  jar_path = "repository/android_arch_lifecycle_common/common-1.1.1.jar"
   output_name = "android_arch_lifecycle_common"
   supports_android = true
   deps = [
@@ -147,7 +147,7 @@ java_prebuilt("android_arch_lifecycle_common_java") {
 }
 
 android_aar_prebuilt("android_arch_lifecycle_runtime_java") {
-  aar_path = "repository/android_arch_lifecycle_runtime/runtime-1.0.0.aar"
+  aar_path = "repository/android_arch_lifecycle_runtime/runtime-1.1.1.aar"
   info_path = "repository/android_arch_lifecycle_runtime/android_arch_lifecycle_runtime.info"
   deps = [
     ":android_arch_core_common_java",
@@ -294,7 +294,7 @@ android_aar_prebuilt("com_android_support_support_v4_java") {
 }
 
 java_prebuilt("android_arch_core_common_java") {
-  jar_path = "repository/android_arch_core_common/common-1.0.0.jar"
+  jar_path = "repository/android_arch_core_common/common-1.1.1.jar"
   output_name = "android_arch_core_common"
   supports_android = true
   visibility = [ ":*" ]

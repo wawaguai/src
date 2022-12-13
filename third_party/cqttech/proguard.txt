@@ -1,0 +1,31 @@
+-dontwarn org.conscrypt.**
+-keep class org.conscrypt.** { *; }
+-keep interface org.conscrypt.** { *; }
+
+-dontwarn okhttp3.internal.platform.*
+
+-keepattributes Signature
+-keepattributes *Annotation*
+
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+
+# Application classes that will be serialized/deserialized over Gson
+-keep class ph.reggis.FEDT.model.api.** { *; }
+
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+#”—√À
+-keepclassmembers class * {
+   public <init>(org.json.JSONObject);
+}
+-keep public class [com.cqttech.browser].R$*{
+public static final int *;
+}
+-keep class com.umeng.** {*;}
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}

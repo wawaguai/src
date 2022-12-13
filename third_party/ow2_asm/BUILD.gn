@@ -7,29 +7,29 @@ import("//build/config/android/rules.gni")
 java_prebuilt("asm_java") {
   # Not "testonly" because //build/android/bytecode:java_bytecode_rewriter
   # depends on it.
-  jar_path = "lib/asm.jar"
+  jar_path = "lib/asm-9.3.jar"
 }
 
 java_prebuilt("asm_tree_java") {
   # Not "testonly" because //build/android/bytecode:java_bytecode_rewriter
   # depends on it.
-  jar_path = "lib/asm-tree.jar"
+  jar_path = "lib/asm-tree-9.3.jar"
   deps = [
     ":asm_java",
   ]
 }
 
 java_prebuilt("asm_analysis_java") {
-  testonly = true
-  jar_path = "lib/asm-analysis.jar"
+  #testonly = true
+  jar_path = "lib/asm-analysis-9.3.jar"
   deps = [
     ":asm_tree_java",
   ]
 }
 
 java_prebuilt("asm_commons_java") {
-  testonly = true
-  jar_path = "lib/asm-commons.jar"
+  #testonly = true
+  jar_path = "lib/asm-commons-9.3.jar"
   deps = [
     ":asm_tree_java",
   ]
@@ -38,7 +38,7 @@ java_prebuilt("asm_commons_java") {
 java_prebuilt("asm_util_java") {
   # Not "testonly" because //build/android/bytecode:java_bytecode_rewriter
   # depends on it.
-  jar_path = "lib/asm-util.jar"
+  jar_path = "lib/asm-util-9.3.jar"
   deps = [
     ":asm_tree_java",
   ]
