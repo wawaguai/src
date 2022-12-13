@@ -6,16 +6,20 @@ package org.chromium.chrome.browser.omaha;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+import android.util.Log;
 
 import org.chromium.base.BuildInfo;
 import org.chromium.base.ThreadUtils;
 import org.chromium.base.VisibleForTesting;
+import org.wwg.common.DeviceFeature;
 
 /**
  * Stubbed class for getting version numbers from the rest of Chrome.  Override the functions for
  * unit tests.
  */
 public class VersionNumberGetter {
+    private static final String TAG = "VersionNumberGetter";
 
     private static final class LazyHolder {
         private static final VersionNumberGetter INSTANCE = new VersionNumberGetter();
@@ -23,7 +27,7 @@ public class VersionNumberGetter {
 
     @VisibleForTesting
     static VersionNumberGetter getInstance() {
-        assert !ThreadUtils.runningOnUiThread();
+        //assert !ThreadUtils.runningOnUiThread();
         return sInstanceForTests == null ? LazyHolder.INSTANCE : sInstanceForTests;
     }
 
@@ -105,6 +109,8 @@ public class VersionNumberGetter {
             return false;
         }
 
+        Log.i(TAG, " isNewerVersionAvailable check link");
+
         // If the market link is bad, don't show an update to avoid frustrating users trying to
         // hit the "Update" button.
         if ("".equals(MarketURLGetter.getMarketUrl(context))) {
@@ -124,5 +130,42 @@ public class VersionNumberGetter {
         }
 
         return currentVersionNumber.isSmallerThan(latestVersionNumber);
+    }
+
+    /**
+     * compare to version name
+     * @param one one version
+     * @param another another version
+     * @return 0 if equal, 1 if one newer, -1 if another newer
+     * @throws IllegalArgumentException empty version name or illegal version name
+     */
+    public static int compareVersion(String one, String another) throws IllegalArgumentException {
+        if (TextUtils.isEmpty(one) || TextUtils.isEmpty(another)) {
+            String sb = "version " +
+                    (TextUtils.isEmpty(one) ? one + " " : "") +
+                    (TextUtils.isEmpty(another) ? another + " " : "") +
+                    " is illegal";
+            if (DeviceFeature.isPackageForTest()) {
+                throw new IllegalArgumentException(sb);
+            }
+        }
+
+        VersionNumber oneNum = VersionNumber.fromString(one);
+        VersionNumber anotherNum = VersionNumber.fromString(another);
+
+        if (oneNum == null || anotherNum == null) {
+            String sb = "version " +
+                    (oneNum == null ? one + " " : "") +
+                    (anotherNum == null ? another + " " : "") +
+                    " is illegal";
+            if (DeviceFeature.isPackageForTest()) {
+                throw new IllegalArgumentException(sb);
+            } else {
+                return 0; // release version do nothing
+            }
+        }
+
+        return oneNum.isSmallerThan(anotherNum) ? -1 :
+                (anotherNum.isSmallerThan(oneNum) ? 1 : 0);
     }
 }

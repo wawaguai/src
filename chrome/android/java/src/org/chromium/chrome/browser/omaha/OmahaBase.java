@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.IntDef;
+import android.text.TextUtils;
 
 import org.chromium.base.ApiCompatibilityUtils;
 import org.chromium.base.Log;
@@ -60,10 +61,24 @@ public class OmahaBase {
     public static class VersionConfig {
         public final String latestVersion;
         public final String downloadUrl;
+        public final String updateLog;
+        public final String md5;
 
-        protected VersionConfig(String latestVersion, String downloadUrl) {
+        protected VersionConfig(String latestVersion, String downloadUrl, String message, String md) {
             this.latestVersion = latestVersion;
             this.downloadUrl = downloadUrl;
+            this.updateLog = message;
+            this.md5 = md;
+        }
+
+        @Override
+        public String toString() {
+            return "VersionConfig{" +
+                    "latestVersion='" + latestVersion + '\'' +
+                    ", downloadUrl='" + downloadUrl + '\'' +
+                    ", updateLog='" + updateLog + '\'' +
+                    ", md5='" + md5 + '\'' +
+                    '}';
         }
     }
 
@@ -72,6 +87,10 @@ public class OmahaBase {
     static final String PREF_PACKAGE = "com.google.android.apps.chrome.omaha";
     static final String PREF_INSTALL_SOURCE = "installSource";
     static final String PREF_LATEST_VERSION = "latestVersion";
+    static final String PREF_FORCE_UPDATE_VALID = "cqttechForceUpdateValid";
+    static final String PREF_FORCE_UPDATE_VER = "cqttechForceUpdateVer";
+    static final String PREF_FORCE_UPDATE_LOG = "cqttechForceUpdateLog";
+    static final String PREF_FORCE_UPDATE_MD5 = "cqttechForceUpdateMD5";
     static final String PREF_MARKET_URL = "marketURL";
     static final String PREF_PERSISTED_REQUEST_ID = "persistedRequestID";
     static final String PREF_SEND_INSTALL_EVENT = "sendInstallEvent";
@@ -81,6 +100,8 @@ public class OmahaBase {
     static final String PREF_TIMESTAMP_OF_REQUEST = "timestampOfRequest";
 
     static final int MIN_API_JOB_SCHEDULER = Build.VERSION_CODES.M;
+
+    public static final String FORCE_DOWNLOAD_PATH = "cqttech_force_update_apk";
 
     /** Whether or not the Omaha server should really be contacted. */
     private static boolean sIsDisabled;
@@ -125,6 +146,8 @@ public class OmahaBase {
     protected VersionConfig mVersionConfig;
     protected boolean mSendInstallEvent;
 
+    protected String mForceUpdate;
+
     /** See {@link #sIsDisabled}. */
     public static void setIsDisabledForTesting(boolean state) {
         sIsDisabled = state;
@@ -161,7 +184,11 @@ public class OmahaBase {
             int result = handlePostRequest();
             if (result == POST_RESULT_FAILED || result == POST_RESULT_SCHEDULED) {
                 nextTimestamp = Math.min(nextTimestamp, mTimestampForNextPostAttempt);
+
+                checkDownload();
             }
+        } else {
+            checkDownload();
         }
 
         // TODO(dfalcantara): Prevent Omaha code from repeatedly rescheduling itself immediately in
@@ -173,6 +200,20 @@ public class OmahaBase {
         }
 
         saveState(getContext());
+    }
+
+    private void checkDownload() {
+        if (!TextUtils.isEmpty(mForceUpdate)
+                && !TextUtils.isEmpty(mVersionConfig.latestVersion)
+                && TextUtils.equals(mForceUpdate, mVersionConfig.latestVersion)) {
+            String current = VersionNumberGetter.getInstance().getCurrentlyUsedVersion(getContext());
+            if (VersionNumberGetter.compareVersion(current, mForceUpdate) < 0) {
+                tryDownloadAPK(mVersionConfig);
+            }
+        }
+    }
+
+    protected void tryDownloadAPK(VersionConfig config) {
     }
 
     /**
@@ -215,8 +256,8 @@ public class OmahaBase {
                 installEventWasSent = true;
 
                 // Create and immediately send another request for a ping and update check.
-                registerNewRequest(currentTimestamp);
-                succeeded &= generateAndPostRequest(currentTimestamp, sessionID);
+                // registerNewRequest(currentTimestamp);
+                // succeeded &= generateAndPostRequest(currentTimestamp, sessionID);
             }
 
             result = succeeded ? POST_RESULT_SENT : POST_RESULT_FAILED;
@@ -271,6 +312,7 @@ public class OmahaBase {
             // Set the alarm to try again later.  Failures are incremented after setting the timer
             // to allow the first failure to incur the minimum base delay between POSTs.
             mTimestampForNextPostAttempt = scheduler.calculateNextTimestamp();
+            // mTimestampForNextPostAttempt = 0;
             scheduler.increaseFailedAttempts();
         }
 
@@ -378,25 +420,27 @@ public class OmahaBase {
         long currentTime = scheduler.getCurrentTime();
 
         SharedPreferences preferences = OmahaBase.getSharedPreferences(context);
-        mTimestampForNewRequest =
-                preferences.getLong(OmahaBase.PREF_TIMESTAMP_FOR_NEW_REQUEST, currentTime);
-        mTimestampForNextPostAttempt =
-                preferences.getLong(OmahaBase.PREF_TIMESTAMP_FOR_NEXT_POST_ATTEMPT, currentTime);
+        mTimestampForNewRequest = currentTime;
+        //        preferences.getLong(OmahaBase.PREF_TIMESTAMP_FOR_NEW_REQUEST, currentTime);
+        mTimestampForNextPostAttempt = currentTime;
+        //        preferences.getLong(OmahaBase.PREF_TIMESTAMP_FOR_NEXT_POST_ATTEMPT, currentTime);
         mTimestampOfInstall = preferences.getLong(OmahaBase.PREF_TIMESTAMP_OF_INSTALL, currentTime);
         mSendInstallEvent = preferences.getBoolean(OmahaBase.PREF_SEND_INSTALL_EVENT, true);
         mInstallSource = preferences.getString(OmahaBase.PREF_INSTALL_SOURCE, installSource);
         mVersionConfig = getVersionConfig(preferences);
+        mForceUpdate = getForceUpdateVersion(preferences);
 
         // If we're not sending an install event, don't bother restoring the request ID:
         // the server does not expect to have persisted request IDs for pings or update checks.
         String persistedRequestId = mSendInstallEvent
                 ? preferences.getString(OmahaBase.PREF_PERSISTED_REQUEST_ID, INVALID_REQUEST_ID)
                 : INVALID_REQUEST_ID;
-        long requestTimestamp =
-                preferences.getLong(OmahaBase.PREF_TIMESTAMP_OF_REQUEST, INVALID_TIMESTAMP);
-        mCurrentRequest = requestTimestamp == INVALID_TIMESTAMP
-                ? null
-                : createRequestData(requestTimestamp, persistedRequestId);
+        //long requestTimestamp =
+        //        preferences.getLong(OmahaBase.PREF_TIMESTAMP_OF_REQUEST, INVALID_TIMESTAMP);
+        //mCurrentRequest = requestTimestamp == INVALID_TIMESTAMP
+        //        ? null
+        //        : createRequestData(requestTimestamp, persistedRequestId);
+        mCurrentRequest = createRequestData(currentTime, persistedRequestId);
 
         // Confirm that the timestamp for the next request is less than the base delay.
         long delayToNewRequest = mTimestampForNewRequest - currentTime;
@@ -430,15 +474,16 @@ public class OmahaBase {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(OmahaBase.PREF_SEND_INSTALL_EVENT, mSendInstallEvent);
         editor.putLong(OmahaBase.PREF_TIMESTAMP_OF_INSTALL, mTimestampOfInstall);
-        editor.putLong(
-                OmahaBase.PREF_TIMESTAMP_FOR_NEXT_POST_ATTEMPT, mTimestampForNextPostAttempt);
-        editor.putLong(OmahaBase.PREF_TIMESTAMP_FOR_NEW_REQUEST, mTimestampForNewRequest);
+        //editor.putLong(
+        //        OmahaBase.PREF_TIMESTAMP_FOR_NEXT_POST_ATTEMPT, mTimestampForNextPostAttempt);
+        //editor.putLong(OmahaBase.PREF_TIMESTAMP_FOR_NEW_REQUEST, mTimestampForNewRequest);
         editor.putLong(OmahaBase.PREF_TIMESTAMP_OF_REQUEST,
                 hasRequest() ? mCurrentRequest.getCreationTimestamp() : INVALID_TIMESTAMP);
         editor.putString(OmahaBase.PREF_PERSISTED_REQUEST_ID,
                 hasRequest() ? mCurrentRequest.getRequestID() : INVALID_REQUEST_ID);
         editor.putString(OmahaBase.PREF_INSTALL_SOURCE, mInstallSource);
         setVersionConfig(editor, mVersionConfig);
+        setForceUpdateVersion(editor, mForceUpdate);
         editor.apply();
 
         mDelegate.onSaveStateDone(mTimestampForNewRequest, mTimestampForNextPostAttempt);
@@ -467,7 +512,7 @@ public class OmahaBase {
 
     /** Begin communicating with the Omaha Update Server. */
     public static void onForegroundSessionStart(Context context) {
-        if (!ChromeVersionInfo.isOfficialBuild() || isDisabled()) return;
+        //if (!ChromeVersionInfo.isOfficialBuild() || isDisabled()) return;
         OmahaService.startServiceImmediately(context);
     }
 
@@ -480,14 +525,16 @@ public class OmahaBase {
     /** Sends the request to the server and returns the response. */
     static String sendRequestToServer(HttpURLConnection urlConnection, String request)
             throws RequestFailureException {
-        try {
-            OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
-            OutputStreamWriter writer = new OutputStreamWriter(out);
-            writer.write(request, 0, request.length());
-            StreamUtil.closeQuietly(writer);
-            checkServerResponseCode(urlConnection);
-        } catch (IOException | SecurityException | ArrayIndexOutOfBoundsException e) {
-            throw new RequestFailureException("Failed to write request to server: ", e);
+        if (!TextUtils.isEmpty(request)) {
+            try {
+                OutputStream out = new BufferedOutputStream(urlConnection.getOutputStream());
+                OutputStreamWriter writer = new OutputStreamWriter(out);
+                writer.write(request, 0, request.length());
+                StreamUtil.closeQuietly(writer);
+                checkServerResponseCode(urlConnection);
+            } catch (IOException | SecurityException | ArrayIndexOutOfBoundsException e) {
+                throw new RequestFailureException("Failed to write request to server: ", e);
+            }
         }
 
         try {
@@ -522,19 +569,44 @@ public class OmahaBase {
     }
 
     /** Returns the Omaha SharedPreferences. */
-    static SharedPreferences getSharedPreferences(Context context) {
+    public static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(PREF_PACKAGE, Context.MODE_PRIVATE);
     }
 
     static void setVersionConfig(SharedPreferences.Editor editor, VersionConfig versionConfig) {
         editor.putString(OmahaBase.PREF_LATEST_VERSION,
                 versionConfig == null ? "" : versionConfig.latestVersion);
-        editor.putString(
-                OmahaBase.PREF_MARKET_URL, versionConfig == null ? "" : versionConfig.downloadUrl);
+        editor.putString(OmahaBase.PREF_MARKET_URL,
+                versionConfig == null ? "" : versionConfig.downloadUrl);
+        editor.putString(OmahaBase.PREF_FORCE_UPDATE_LOG,
+                versionConfig == null ? "" : versionConfig.updateLog);
+        editor.putString(OmahaBase.PREF_FORCE_UPDATE_MD5,
+                versionConfig == null ? "" : versionConfig.md5);
     }
 
-    static VersionConfig getVersionConfig(SharedPreferences sharedPref) {
+    public static VersionConfig getVersionConfig(SharedPreferences sharedPref) {
         return new VersionConfig(sharedPref.getString(OmahaBase.PREF_LATEST_VERSION, ""),
-                sharedPref.getString(OmahaBase.PREF_MARKET_URL, ""));
+                sharedPref.getString(OmahaBase.PREF_MARKET_URL, ""),
+                sharedPref.getString(OmahaBase.PREF_FORCE_UPDATE_LOG, ""),
+                sharedPref.getString(OmahaBase.PREF_FORCE_UPDATE_MD5, ""));
+    }
+
+    static void setForceUpdateVersion(SharedPreferences.Editor editor, String force) {
+        editor.putString(OmahaBase.PREF_FORCE_UPDATE_VER, force);
+    }
+
+    static String getForceUpdateVersion(SharedPreferences sharedPref) {
+        return sharedPref.getString(OmahaBase.PREF_FORCE_UPDATE_VER, "");
+    }
+
+    static void setForceUpdateValidVersion(Context context, String force) {
+        SharedPreferences preferences = OmahaBase.getSharedPreferences(context);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(OmahaBase.PREF_FORCE_UPDATE_VALID, force);
+        editor.apply();
+    }
+
+    public static String getForceUpdateValidVersion(SharedPreferences sharedPref) {
+        return sharedPref.getString(OmahaBase.PREF_FORCE_UPDATE_VALID, "");
     }
 }

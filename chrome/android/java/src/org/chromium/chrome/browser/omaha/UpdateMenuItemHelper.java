@@ -25,7 +25,6 @@ import android.view.animation.LinearInterpolator;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import org.chromium.base.CommandLine;
-import org.chromium.base.Log;
 import org.chromium.base.ThreadUtils;
 import org.chromium.base.metrics.RecordHistogram;
 import org.chromium.chrome.R;
@@ -33,6 +32,7 @@ import org.chromium.chrome.browser.ChromeActivity;
 import org.chromium.chrome.browser.ChromeSwitches;
 import org.chromium.chrome.browser.appmenu.AppMenu;
 import org.chromium.chrome.browser.preferences.PrefServiceBridge;
+import org.chromium.chrome.browser.tabmodel.TabModel;
 import org.chromium.components.variations.VariationsAssociatedData;
 import org.chromium.ui.interpolators.BakedBezierInterpolator;
 
@@ -192,9 +192,9 @@ public class UpdateMenuItemHelper {
             return true;
         }
 
-        if (!isGooglePlayStoreAvailable(activity)) {
-            return false;
-        }
+        //if (!isGooglePlayStoreAvailable(activity)) {
+        //    return false;
+        //}
 
         // The badge is hidden if the update menu item has been clicked until there is an
         // even newer version of Chrome available.
@@ -221,7 +221,7 @@ public class UpdateMenuItemHelper {
                     mLatestVersion);
         }
 
-        // Fire an intent to open the URL.
+        /* Fire an intent to open the URL.
         try {
             Intent launchIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(mUpdateUrl));
             activity.startActivity(launchIntent);
@@ -231,6 +231,13 @@ public class UpdateMenuItemHelper {
             Log.e(TAG, "Failed to launch Activity for: %s", mUpdateUrl);
             recordItemClickedHistogram(ITEM_CLICKED_INTENT_FAILED);
         }
+         */
+
+        // open url self
+        activity.getTabCreator(false).launchUrl(
+                mUpdateUrl,
+                TabModel.TabLaunchType.FROM_CHROME_UI
+        );
     }
 
     /**

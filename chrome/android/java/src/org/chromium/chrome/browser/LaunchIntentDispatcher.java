@@ -36,6 +36,7 @@ import org.chromium.chrome.browser.instantapps.InstantAppsHandler;
 import org.chromium.chrome.browser.metrics.MediaNotificationUma;
 import org.chromium.chrome.browser.multiwindow.MultiWindowUtils;
 import org.chromium.chrome.browser.notifications.NotificationPlatformBridge;
+import org.chromium.chrome.browser.omaha.CqttechForceUpdateActivity;
 import org.chromium.chrome.browser.partnercustomizations.PartnerBrowserCustomizations;
 import org.chromium.chrome.browser.searchwidget.SearchActivity;
 import org.chromium.chrome.browser.tab.Tab;
@@ -216,6 +217,10 @@ public class LaunchIntentDispatcher implements IntentHandler.IntentHandlerDelega
 
         // Check if we should launch the ChromeTabbedActivity.
         if (!mIsCustomTabIntent && !FeatureUtilities.isDocumentMode(mActivity)) {
+            if (dispatchToForceUpdateActivity(mActivity)) {
+                return Action.FINISH_ACTIVITY;
+            }
+
             return dispatchToTabbedActivity();
         }
 
@@ -444,6 +449,10 @@ public class LaunchIntentDispatcher implements IntentHandler.IntentHandlerDelega
         }
 
         return Action.FINISH_ACTIVITY;
+    }
+
+    private boolean dispatchToForceUpdateActivity(Activity activity) {
+        return CqttechForceUpdateActivity.start(activity);
     }
 
     /**

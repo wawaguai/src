@@ -86,7 +86,7 @@ public class ResponseParser {
         XMLParser parser = new XMLParser(xml);
         Node rootNode = parser.getRootNode();
         parseRootNode(rootNode);
-        return new VersionConfig(getNewVersion(), getURL());
+        return new VersionConfig(getNewVersion(), getURL(), "", "");
     }
 
     public int getDaystartSeconds() {
