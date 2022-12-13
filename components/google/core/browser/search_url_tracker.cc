@@ -62,6 +62,7 @@ SearchURLTracker::SearchURLTracker(
       already_loaded_(false),
       need_to_load_(false),
       weak_ptr_factory_(this) {
+  /*
   net::NetworkChangeNotifier::AddNetworkChangeObserver(this);
   client_->set_search_url_tracker(this);
 
@@ -85,6 +86,7 @@ SearchURLTracker::SearchURLTracker(
                        weak_ptr_factory_.GetWeakPtr()),
         base::TimeDelta::FromMilliseconds(kStartLoadDelayMS));
   }
+  */
 }
 
 SearchURLTracker::~SearchURLTracker() {
@@ -93,22 +95,29 @@ SearchURLTracker::~SearchURLTracker() {
 // static
 void SearchURLTracker::RegisterProfilePrefs(
     user_prefs::PrefRegistrySyncable* registry) {
+  ///*
   registry->RegisterIntegerPref(prefs::kLastKnownSearchVersion, -1);
   registry->RegisterIntegerPref(prefs::kEnableServerSuggestions, -1);
+  ///*/
 }
 
 void SearchURLTracker::RequestServerCheck() {
+  /*
   if (!simple_loader_)
     SetNeedToLoad();
+  */
 }
 
 std::unique_ptr<SearchURLTracker::Subscription>
 SearchURLTracker::RegisterCallback(const OnSearchURLUpdatedCallback& cb) {
+  ///*
   return callback_list_.Add(cb);
+  ///*/
 }
 
 void SearchURLTracker::OnURLLoaderComplete(
     std::unique_ptr<std::string> response_body) {
+  /*
   int version_code = -1;
   int enable_server_suggestions = -1;
 
@@ -203,35 +212,45 @@ void SearchURLTracker::OnURLLoaderComplete(
   } else {
     LOG(INFO) << "[Kiwi] Received search-engines [" << version_code << "] settings from server-side: " << body.length() << " chars but we already have it";
   }
+  */
 }
 
 void SearchURLTracker::OnNetworkChanged(
     net::NetworkChangeNotifier::ConnectionType type) {
+  /*
   // Ignore destructive signals.
   if (type == net::NetworkChangeNotifier::CONNECTION_NONE)
     return;
   already_loaded_ = false;
   StartLoadIfDesirable();
+  */
 }
 
 void SearchURLTracker::Shutdown() {
+  ///*
   client_.reset();
   simple_loader_.reset();
   weak_ptr_factory_.InvalidateWeakPtrs();
-  net::NetworkChangeNotifier::RemoveNetworkChangeObserver(this);
+  //net::NetworkChangeNotifier::RemoveNetworkChangeObserver(this);
+  ///*/
 }
 
 void SearchURLTracker::SetNeedToLoad() {
+  /*
   need_to_load_ = true;
   StartLoadIfDesirable();
+  */
 }
 
 void SearchURLTracker::FinishSleep() {
+  /*
   in_startup_sleep_ = false;
   StartLoadIfDesirable();
+  */
 }
 
 void SearchURLTracker::StartLoadIfDesirable() {
+  /*
   // Bail if a load isn't appropriate right now.  This function will be called
   // again each time one of the preconditions changes, so we'll load
   // immediately once all of them are met.
@@ -318,5 +337,6 @@ void SearchURLTracker::StartLoadIfDesirable() {
       client_->GetURLLoaderFactory(),
       base::BindOnce(&SearchURLTracker::OnURLLoaderComplete,
                      base::Unretained(this)),
-      64 * 1024 /* max_body_size */);
+      64 * 1024);
+  */
 }

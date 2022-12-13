@@ -107,6 +107,19 @@ class TemplateUrlServiceAndroid : public TemplateURLServiceObserver {
       JNIEnv* env,
       const base::android::JavaParamRef<jobject>& obj);
 
+  //gmbrowser
+  jboolean AddTemplateUrl(
+      JNIEnv* env,
+      const base::android::JavaParamRef<jobject>& obj,
+      const base::android::JavaParamRef<jstring>& jname,
+      const base::android::JavaParamRef<jstring>& jurl);
+
+  void UpdateAccount(
+      JNIEnv* env,
+      const base::android::JavaParamRef<jobject>& obj,
+      const base::android::JavaParamRef<jobjectArray>& j_keywords,
+      const base::android::JavaParamRef<jobjectArray>& j_accounts);
+
  private:
   ~TemplateUrlServiceAndroid() override;
 

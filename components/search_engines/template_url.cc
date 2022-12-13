@@ -396,6 +396,10 @@ std::string TemplateURLRef::ReplaceSearchTerms(
   if (!gurl.query().empty())
     query_params.push_back(gurl.query());
 
+  /// gmbrowser {
+  query_params.push_back(owner_->extra_params());
+  /// }
+
   if (query_params.empty())
     return url;
 

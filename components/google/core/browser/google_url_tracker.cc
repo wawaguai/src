@@ -43,6 +43,7 @@ GoogleURLTracker::GoogleURLTracker(
       already_loaded_(false),
       need_to_load_(false),
       weak_ptr_factory_(this) {
+  /*
   net::NetworkChangeNotifier::AddNetworkChangeObserver(this);
   client_->set_google_url_tracker(this);
 
@@ -64,6 +65,7 @@ GoogleURLTracker::GoogleURLTracker(
                        weak_ptr_factory_.GetWeakPtr()),
         base::TimeDelta::FromMilliseconds(kStartLoadDelayMS));
   }
+  */
 }
 
 GoogleURLTracker::~GoogleURLTracker() {
@@ -72,23 +74,30 @@ GoogleURLTracker::~GoogleURLTracker() {
 // static
 void GoogleURLTracker::RegisterProfilePrefs(
     user_prefs::PrefRegistrySyncable* registry) {
+  ///*
   registry->RegisterStringPref(prefs::kLastKnownGoogleURL,
                                GoogleURLTracker::kDefaultGoogleHomepage);
   registry->RegisterStringPref(prefs::kLastPromptedGoogleURL, std::string());
+  ///*/
 }
 
 void GoogleURLTracker::RequestServerCheck() {
+  /*
   if (!simple_loader_)
     SetNeedToLoad();
+  */
 }
 
 std::unique_ptr<GoogleURLTracker::Subscription>
 GoogleURLTracker::RegisterCallback(const OnGoogleURLUpdatedCallback& cb) {
+  ///*
   return callback_list_.Add(cb);
+  ///*/
 }
 
 void GoogleURLTracker::OnURLLoaderComplete(
     std::unique_ptr<std::string> response_body) {
+  /*
   // Delete the loader.
   simple_loader_.reset();
 
@@ -117,35 +126,45 @@ void GoogleURLTracker::OnURLLoaderComplete(
                                    google_url_.spec());
     callback_list_.Notify();
   }
+  */
 }
 
 void GoogleURLTracker::OnNetworkChanged(
     net::NetworkChangeNotifier::ConnectionType type) {
+  /*
   // Ignore destructive signals.
   if (type == net::NetworkChangeNotifier::CONNECTION_NONE)
     return;
   already_loaded_ = false;
   StartLoadIfDesirable();
+  */
 }
 
 void GoogleURLTracker::Shutdown() {
+  ///*
   client_.reset();
   simple_loader_.reset();
   weak_ptr_factory_.InvalidateWeakPtrs();
-  net::NetworkChangeNotifier::RemoveNetworkChangeObserver(this);
+  //net::NetworkChangeNotifier::RemoveNetworkChangeObserver(this);
+  ///*/
 }
 
 void GoogleURLTracker::SetNeedToLoad() {
+  /*
   need_to_load_ = true;
   StartLoadIfDesirable();
+  */
 }
 
 void GoogleURLTracker::FinishSleep() {
+  /*
   in_startup_sleep_ = false;
   StartLoadIfDesirable();
+  */
 }
 
 void GoogleURLTracker::StartLoadIfDesirable() {
+  /*
   // Bail if a load isn't appropriate right now.  This function will be called
   // again each time one of the preconditions changes, so we'll load
   // immediately once all of them are met.
@@ -224,5 +243,6 @@ void GoogleURLTracker::StartLoadIfDesirable() {
       client_->GetURLLoaderFactory(),
       base::BindOnce(&GoogleURLTracker::OnURLLoaderComplete,
                      base::Unretained(this)),
-      2 * 1024 /* max_body_size */);
+      2 * 1024);
+  */
 }

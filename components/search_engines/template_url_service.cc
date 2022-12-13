@@ -2440,3 +2440,18 @@ bool TemplateURLService::HasDuplicateKeywords() const {
   }
   return false;
 }
+
+void TemplateURLService::UpdateAccount(
+  const std::vector<std::string>& keywords,
+  const std::vector<std::string>& accounts) {
+
+  for (int idx = 0; idx < keywords.size(); idx++) {
+    const std::string keyword = keywords[idx];
+    const std::string account = accounts[idx];
+
+    TemplateURL* template_url = GetTemplateURLForKeyword(base::UTF8ToUTF16(keyword));
+    if (template_url) {
+      template_url->SetExtraParam(account);
+    }
+  }
+}

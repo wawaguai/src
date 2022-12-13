@@ -637,6 +637,12 @@ class TemplateURL {
     return extension_info_.get();
   }
 
+  /// gmbrowser{
+  void SetExtraParam(const std::string p) { extra_params_ = p; }
+
+  std::string extra_params() const { return extra_params_; }
+  /// }
+
   // Returns true if |url| supports replacement.
   bool SupportsReplacement(const SearchTermsData& search_terms_data) const;
 
@@ -768,6 +774,10 @@ class TemplateURL {
   mutable SearchEngineType engine_type_;
 
   // TODO(sky): Add date last parsed OSD file.
+
+  /// gmbrowser {
+  std::string extra_params_;
+  /// }
 
   DISALLOW_COPY_AND_ASSIGN(TemplateURL);
 };

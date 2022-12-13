@@ -444,8 +444,10 @@ void SearchProvider::OnURLFetchComplete(const net::URLFetcher* source) {
       SearchSuggestionParser::Results* results =
           is_keyword ? &keyword_results_ : (is_bangs ? &bangs_results_ : &default_results_);
       results_updated = ParseSuggestResults(*data, -1, is_keyword, results);
-      if (results_updated)
+      if (results_updated) {
         SortResults(is_keyword, results);
+        LOG(INFO) << "[Kiwi] SearchProvider::OnURLFetchComplete - parse success, size "<<(results->suggest_results).size();
+      }
     }
   }
 

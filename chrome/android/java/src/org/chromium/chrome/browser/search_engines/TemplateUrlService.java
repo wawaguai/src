@@ -57,10 +57,13 @@ public class TemplateUrlService {
     private final ObserverList<TemplateUrlServiceObserver> mObservers =
             new ObserverList<TemplateUrlServiceObserver>();
 
+    private final TemplateUrlAccountDelegate mTemplateUrlAccountDelegate;
+
     private TemplateUrlService() {
         // Note that this technically leaks the native object, however, TemlateUrlService
         // is a singleton that lives forever and there's no clean shutdown of Chrome on Android
         mNativeTemplateUrlServiceAndroid = nativeInit();
+        mTemplateUrlAccountDelegate = new TemplateUrlAccountDelegate();
     }
 
     public boolean isLoaded() {
@@ -125,6 +128,8 @@ public class TemplateUrlService {
     @CalledByNative
     private void templateUrlServiceLoaded() {
         ThreadUtils.assertOnUiThread();
+
+        mTemplateUrlAccountDelegate.onTemplateUrlServiceLoaded();
         for (LoadListener listener : mLoadListeners) {
             listener.onTemplateUrlServiceLoaded();
         }
@@ -132,6 +137,8 @@ public class TemplateUrlService {
 
     @CalledByNative
     private void onTemplateURLServiceChanged() {
+        mTemplateUrlAccountDelegate.onTemplateURLServiceChanged();
+
         for (TemplateUrlServiceObserver observer : mObservers) {
             observer.onTemplateURLServiceChanged();
         }
@@ -333,6 +340,14 @@ public class TemplateUrlService {
         return nativeUpdateLastVisitedForTesting(mNativeTemplateUrlServiceAndroid, keyword);
     }
 
+    public boolean addTemplateUrl(String name, String url) {
+        return nativeAddTemplateUrl(mNativeTemplateUrlServiceAndroid, name, url);
+    }
+
+    public void updateAccount(String[] keywords, String[] accounts) {
+        nativeUpdateAccount(mNativeTemplateUrlServiceAndroid, keywords, accounts);
+    }
+
     private native long nativeInit();
     private native void nativeLoad(long nativeTemplateUrlServiceAndroid);
     private native boolean nativeIsLoaded(long nativeTemplateUrlServiceAndroid);
@@ -366,4 +381,13 @@ public class TemplateUrlService {
     private native void nativeGetTemplateUrls(
             long nativeTemplateUrlServiceAndroid, List<TemplateUrl> templateUrls);
     private native TemplateUrl nativeGetDefaultSearchEngine(long nativeTemplateUrlServiceAndroid);
+
+    //gmbrowser
+    private native boolean nativeAddTemplateUrl(long nativeTemplateUrlServiceAndroid,
+            String name, String url);
+
+    //gmbrowser
+    private static native void nativeUpdateAccount(
+            long nativeTemplateUrlServiceAndroid,
+            String[] keywords, String[] accounts);
 }

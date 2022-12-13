@@ -715,6 +715,11 @@ class TemplateURLService : public WebDataServiceConsumer,
   // added/updated.
   bool HasDuplicateKeywords() const;
 
+  //gmbrowser update templateUrl accounts
+  void UpdateAccount(
+      const std::vector<std::string>& keywords,
+      const std::vector<std::string>& accounts);
+
   // ---------- Browser state related members ---------------------------------
   PrefService* prefs_ = nullptr;
 

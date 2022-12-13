@@ -30,12 +30,7 @@
 
 // static
 size_t AutocompleteResult::GetMaxMatches() {
-  constexpr size_t kDefaultMaxAutocompleteMatches = 6;
-
-  return base::GetFieldTrialParamByFeatureAsInt(
-      omnibox::kUIExperimentMaxAutocompleteMatches,
-      OmniboxFieldTrial::kUIMaxAutocompleteMatchesParam,
-      kDefaultMaxAutocompleteMatches);
+  return 100;
 }
 
 AutocompleteResult::AutocompleteResult() {

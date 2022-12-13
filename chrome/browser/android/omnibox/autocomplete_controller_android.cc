@@ -383,6 +383,7 @@ void AutocompleteControllerAndroid::OnResultChanged(
 
 void AutocompleteControllerAndroid::NotifySuggestionsReceived(
     const AutocompleteResult& autocomplete_result) {
+  LOG(ERROR) << "[Kiwi] AutocompleteControllerAndroid::NotifySuggestionsReceived - start notify size -> " << autocomplete_result.size();
   JNIEnv* env = AttachCurrentThread();
   ScopedJavaLocalRef<jobject> java_bridge =
       weak_java_autocomplete_controller_android_.get(env);

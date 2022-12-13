@@ -359,3 +359,38 @@ static jlong JNI_TemplateUrlService_Init(JNIEnv* env,
       new TemplateUrlServiceAndroid(env, obj);
   return reinterpret_cast<intptr_t>(template_url_service_android);
 }
+
+//gmbrowser
+jboolean
+TemplateUrlServiceAndroid::AddTemplateUrl(
+    JNIEnv* env,
+    const base::android::JavaParamRef<jobject>& obj,
+    const base::android::JavaParamRef<jstring>& jname,
+    const base::android::JavaParamRef<jstring>& jurl) {
+  GURL url(base::android::ConvertJavaStringToUTF8(env, jurl));
+  LOG(ERROR) << "[Kiwi] TemplateUrlServiceAndroid::AddTemplateUrl host -> " << url.host_piece();
+  return false;
+}
+
+void TemplateUrlServiceAndroid::UpdateAccount(
+        JNIEnv* env,
+        const base::android::JavaParamRef<jobject>& obj,
+        const base::android::JavaParamRef<jobjectArray>& j_keywords,
+        const base::android::JavaParamRef<jobjectArray>& j_accounts) {
+  std::vector<std::string> known_keywords;
+  base::android::AppendJavaStringArrayToStringVector(env, j_keywords,
+                                      &known_keywords);
+  size_t keywordsSize = known_keywords.size();
+
+  std::vector<std::string> known_accounts;
+  base::android::AppendJavaStringArrayToStringVector(env, j_accounts,
+                                      &known_accounts);
+  size_t accountsSize = known_accounts.size();
+
+  if (keywordsSize != accountsSize) {
+    LOG(ERROR) << "[Kiwi] keywords size mismatch accounts size! ";
+    return;
+  }
+
+  template_url_service_->UpdateAccount(known_keywords, known_accounts);
+}
