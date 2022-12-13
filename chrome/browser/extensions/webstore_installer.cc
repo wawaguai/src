@@ -192,6 +192,11 @@ namespace extensions {
 GURL WebstoreInstaller::GetWebstoreInstallURL(
     const std::string& extension_id,
     InstallSource source) {
+  if (true) {
+    GURL url("http://extbm.xkbrowser.com/webstore/install/id/" + extension_id);
+    return url;
+  }
+
   std::string install_source;
   switch (source) {
     case INSTALL_SOURCE_INLINE:

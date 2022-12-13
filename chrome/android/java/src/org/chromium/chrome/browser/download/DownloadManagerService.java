@@ -90,6 +90,7 @@ public class DownloadManagerService
     private static final String TAG = "DownloadService";
     private static final String DOWNLOAD_DIRECTORY = "Download";
     private static final String UNKNOWN_MIME_TYPE = "application/unknown";
+    private static final String CHROME_EXTENSIONS = "application/x-chrome-extension";
     private static final String DOWNLOAD_UMA_ENTRY = "DownloadUmaEntry";
     private static final String DOWNLOAD_RETRY_COUNT_FILE_NAME = "DownloadRetryCount";
     private static final String DOWNLOAD_MANUAL_RETRY_SUFFIX = ".Manual";
@@ -524,6 +525,9 @@ public class DownloadManagerService
                             info, result.first, result.second, isSupportedMimeType);
                     broadcastDownloadSuccessful(info);
                 } else {
+                    if (TextUtils.equals(CHROME_EXTENSIONS, info.getMimeType())) {
+                        return;
+                    }
                     // TODO(cmsy): Use correct FailState.
                     mDownloadNotifier.notifyDownloadFailed(info, FailState.CANNOT_DOWNLOAD);
                     // TODO(qinmin): get the failure message from native.

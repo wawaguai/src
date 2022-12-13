@@ -9,9 +9,10 @@
   },
   "app": {
     "launch": {
-      "web_url": "https://chrome.google.com/webstore"
+      "web_url": "http://extbm.xkbrowser.com"
     },
     "urls": [
+      "http://extbm.xkbrowser.com",
       "https://chrome.google.com/webstore"
     ]
   },

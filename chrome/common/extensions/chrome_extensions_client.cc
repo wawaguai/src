@@ -132,7 +132,9 @@ void ChromeExtensionsClient::InitializeWebStoreUrls(
     webstore_base_url_ =
         GURL(command_line->GetSwitchValueASCII(switches::kAppsGalleryURL));
   } else {
+    //LOG(ERROR) << "[jyh] InitializeWebStoreUrls origin " << extension_urls::kChromeWebstoreBaseURL;
     webstore_base_url_ = GURL(extension_urls::kChromeWebstoreBaseURL);
+    //LOG(ERROR) << "[jyh] InitializeWebStoreUrls " << webstore_base_url_;
   }
   if (command_line->HasSwitch(switches::kAppsGalleryUpdateURL)) {
     webstore_update_url_ = GURL(

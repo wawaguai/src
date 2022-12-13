@@ -30,14 +30,16 @@ bool IsSourceFromAnExtension(const base::string16& source) {
 
 namespace extension_urls {
 
-const char kChromeWebstoreBaseURL[] = "https://chrome.google.com/webstore";
-const char kChromeWebstoreUpdateURL[] =
-    "https://clients2.google.com/service/update2/crx";
+const char kChromeWebstoreBaseURL[] = "http://extbm.xkbrowser.com";
+const char kChromeWebstoreUpdateURL[] = "https://clients2.google.com/service/update2/crx";
+//    "http://extdcb.cqttech.com/webstore/install/";
 
 GURL GetWebstoreLaunchURL() {
   extensions::ExtensionsClient* client = extensions::ExtensionsClient::Get();
   if (client)
     return client->GetWebstoreBaseURL();
+
+  //LOG(ERROR) << "[jyh] Get Web store Launch URL " << GURL(kChromeWebstoreBaseURL);
   return GURL(kChromeWebstoreBaseURL);
 }
 
@@ -46,28 +48,30 @@ GURL GetWebstoreLaunchURL() {
 // TODO(devlin): Try to use GURL methods like Resolve instead of string
 // concatenation.
 std::string GetWebstoreExtensionsCategoryURL() {
-  return GetWebstoreLaunchURL().spec() + "/category/extensions";
+  return GetWebstoreLaunchURL().spec() + "category/extensions";
 }
 
 std::string GetWebstoreItemDetailURLPrefix() {
-  return GetWebstoreLaunchURL().spec() + "/detail/";
+  //LOG(ERROR) << "[jyh] Web store Item Detail URL " << GetWebstoreLaunchURL();
+  //LOG(ERROR) << "[jyh] Web store Item Detail URL Prefix " << GetWebstoreLaunchURL().spec();
+  return GetWebstoreLaunchURL().spec() + "detail/";
 }
 
 GURL GetWebstoreItemJsonDataURL(const std::string& extension_id) {
-  return GURL(GetWebstoreLaunchURL().spec() + "/inlineinstall/detail/" +
+  return GURL(GetWebstoreLaunchURL().spec() + "inlineinstall/detail/" +
               extension_id);
 }
 
 GURL GetWebstoreJsonSearchUrl(const std::string& query,
                               const std::string& host_language_code) {
-  GURL url(GetWebstoreLaunchURL().spec() + "/jsonsearch");
+  GURL url(GetWebstoreLaunchURL().spec() + "jsonsearch");
   url = net::AppendQueryParameter(url, "q", query);
   url = net::AppendQueryParameter(url, "hl", host_language_code);
   return url;
 }
 
 GURL GetWebstoreSearchPageUrl(const std::string& query) {
-  return GURL(GetWebstoreLaunchURL().spec() + "/search/" +
+  return GURL(GetWebstoreLaunchURL().spec() + "search/" +
               net::EscapeQueryParamValue(query, false));
 }
 

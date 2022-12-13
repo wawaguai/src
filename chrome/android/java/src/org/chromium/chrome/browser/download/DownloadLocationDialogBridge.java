@@ -19,6 +19,7 @@ import android.content.ActivityNotFoundException;
 import android.net.Uri;
 import org.chromium.base.Log;
 import org.chromium.ui.base.WindowAndroid;
+import org.wwg.common.CqttechConstants;
 
 import java.io.File;
 
@@ -58,8 +59,15 @@ public class DownloadLocationDialogBridge implements ModalDialogView.Controller 
         String activeDownloadManagerActivityName = ContextUtils.getAppSharedPreferences().getString("selected_external_download_manager_activity_name", "");
         String activeDownloadManagerPackageName = ContextUtils.getAppSharedPreferences().getString("selected_external_download_manager_package_name", "");
 
-        if (useAdmIfPossible && !TextUtils.isEmpty(activeDownloadManagerPackageName) && !TextUtils.isEmpty(activeDownloadManagerActivityName) && activeDownloadManagerPackageName.equals("com.kiwibrowser.browser") != true
-         && !TextUtils.isEmpty(urlToDownload) && (urlToDownload.toLowerCase(Locale.ROOT).startsWith("http:") || urlToDownload.toLowerCase(Locale.ROOT).startsWith("https:") || urlToDownload.toLowerCase(Locale.ROOT).startsWith("magnet:") || urlToDownload.toLowerCase(Locale.ROOT).startsWith("ftp:"))) {
+        if (useAdmIfPossible && !TextUtils.isEmpty(activeDownloadManagerPackageName)
+                && !TextUtils.isEmpty(activeDownloadManagerActivityName)
+                && !activeDownloadManagerPackageName.equals(CqttechConstants.KITTY_PACKAGE)
+                && !activeDownloadManagerPackageName.equals(CqttechConstants.KIWI_PACKAGE)
+                && !TextUtils.isEmpty(urlToDownload)
+                && (urlToDownload.toLowerCase(Locale.ROOT).startsWith("http:")
+                || urlToDownload.toLowerCase(Locale.ROOT).startsWith("https:")
+                || urlToDownload.toLowerCase(Locale.ROOT).startsWith("magnet:")
+                || urlToDownload.toLowerCase(Locale.ROOT).startsWith("ftp:"))) {
             if (urlToDownload.toLowerCase(Locale.ROOT).contains(".googleusercontent.com/crx"))
                 return false;
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(urlToDownload));

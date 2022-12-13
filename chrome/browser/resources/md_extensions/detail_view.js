@@ -170,7 +170,7 @@ cr.define('extensions', function() {
      * @private
      */
     shouldShowIncognitoOption_: function() {
-      return this.data.incognitoAccess.isEnabled && this.incognitoAvailable;
+      return false;
     },
 
     /** @private */

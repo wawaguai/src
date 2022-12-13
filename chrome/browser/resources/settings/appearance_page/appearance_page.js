@@ -281,7 +281,7 @@ Polymer({
         this.themeSublabel_ = info.name;
       });
 
-      this.themeUrl_ = 'https://chrome.google.com/webstore/detail/' + themeId;
+      this.themeUrl_ = 'http://extbm.xkbrowser.com/detail/' + themeId;
       return;
     }
 

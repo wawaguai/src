@@ -168,6 +168,8 @@ cr.define('extensions', function() {
           chrome.runtime.lastError;
           this.isDeleting_ = false;
         });
+      } else {
+        this.isDeleting_ = false;
       }
     }
 

@@ -14,7 +14,7 @@ var webStoreUtils = {};
  * @const
  * @type {string}
  */
-webStoreUtils.CHROME_WEB_STORE_URL = 'https://chrome.google.com/webstore';
+webStoreUtils.CHROME_WEB_STORE_URL = 'http://extbm.xkbrowser.com';
 
 /**
  * Base URL of apps list in the Chrome Web Store.
@@ -23,7 +23,7 @@ webStoreUtils.CHROME_WEB_STORE_URL = 'https://chrome.google.com/webstore';
  * @type {string}
  */
 webStoreUtils.WEB_STORE_HANDLER_BASE_URL =
-    'https://chrome.google.com/webstore/category/collection/file_handlers';
+    'http://extbm.xkbrowser.com/file_handlers';
 
 /**
  * Returns URL of the Chrome Web Store which show apps supporting the given
