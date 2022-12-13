@@ -8,7 +8,7 @@ import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.ACONST_NULL;
 import static org.objectweb.asm.Opcodes.ALOAD;
 import static org.objectweb.asm.Opcodes.ARETURN;
-import static org.objectweb.asm.Opcodes.ASM5;
+import static org.objectweb.asm.Opcodes.ASM8;
 import static org.objectweb.asm.Opcodes.BIPUSH;
 import static org.objectweb.asm.Opcodes.GETSTATIC;
 import static org.objectweb.asm.Opcodes.IFNE;
@@ -60,9 +60,6 @@ import java.util.List;
 class CustomResourcesClassAdapter extends ClassVisitor {
     private static final String IS_ENABLED_METHOD = "isEnabled";
     private static final String IS_ENABLED_DESCRIPTOR = TypeUtils.getMethodDescriptor(BOOLEAN);
-    // Cached since this is used so often.
-    private static final String GET_IDENTIFIER_DESCRIPTOR =
-            TypeUtils.getMethodDescriptor(INT, STRING, STRING, STRING);
 
     // Existing methods are more difficult to handle, and not currently needed.
     private static final List<String> PROHIBITED_METHODS = Arrays.asList(
@@ -82,7 +79,7 @@ class CustomResourcesClassAdapter extends ClassVisitor {
 
     CustomResourcesClassAdapter(ClassVisitor visitor, String className, String superClassName,
             ClassLoader classLoader) {
-        super(ASM5, visitor);
+        super(ASM8, visitor);
         this.mClassName = className;
         this.mSuperClassName = superClassName;
         this.mClassLoader = classLoader;
@@ -105,8 +102,9 @@ class CustomResourcesClassAdapter extends ClassVisitor {
                         + "#" + methodSignature);
             }
         }
-        return new RewriteGetIdentifierMethodVisitor(
-                super.visitMethod(access, name, desc, signature, exceptions));
+        return new CqttechMethodVisitorProxy(
+                super.visitMethod(access, name, desc, signature, exceptions),
+                access, name, desc, signature, exceptions);
     }
 
     @Override
@@ -160,31 +158,6 @@ class CustomResourcesClassAdapter extends ClassVisitor {
             return mClassLoader.loadClass(className.replace('/', '.'));
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Remaps Resources.getIdentifier() method calls to use BuildHooksAndroid.
-     *
-     * resourceObj.getIdentifier(String, String, String) becomes:
-     * BuildHooksAndroid.getIdentifier(resourceObj, String, String, String);
-     */
-    private static final class RewriteGetIdentifierMethodVisitor extends MethodVisitor {
-        RewriteGetIdentifierMethodVisitor(MethodVisitor mv) {
-            super(ASM5, mv);
-        }
-
-        @Override
-        public void visitMethodInsn(
-                int opcode, String owner, String name, String desc, boolean itf) {
-            String methodName = "getIdentifier";
-            if (opcode == INVOKEVIRTUAL && owner.equals(RESOURCES) && name.equals(methodName)
-                    && desc.equals(GET_IDENTIFIER_DESCRIPTOR)) {
-                super.visitMethodInsn(INVOKESTATIC, BUILD_HOOKS_ANDROID, methodName,
-                        TypeUtils.getMethodDescriptor(INT, RESOURCES, STRING, STRING, STRING), itf);
-            } else {
-                super.visitMethodInsn(opcode, owner, name, desc, itf);
-            }
         }
     }
 
