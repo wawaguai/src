@@ -58,10 +58,10 @@ public class ChromeFullscreenManager
     private boolean mControlsResizeView;
     private TabModelSelectorTabModelObserver mTabModelObserver;
 
-    private float mRendererTopControlOffset = Float.NaN;
-    private float mRendererBottomControlOffset = Float.NaN;
+    private float mRendererTopControlOffset = 0f;
+    private float mRendererBottomControlOffset = 0f;
     private float mRendererTopContentOffset;
-    private float mPreviousContentOffset = Float.NaN;
+    private float mPreviousContentOffset = 0f;
     private float mControlOffsetRatio;
     private float mPreviousControlOffset;
     private boolean mIsEnteringPersistentModeState;
