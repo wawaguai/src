@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">Otevírat odkazy v externích aplikacích (Mapy, YouTube, Vimeo) pokud je to možné</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">Grayscale night mode</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">Prefer grayscale version of night mode</string>
-    <string name="accessibility_preferences_night_scale">Night mode contrast (gray: 97, default: 99, black: 100)</string>
+    <string name="accessibility_preferences_night_scale">Night mode contrast</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">Bottom toolbar</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">Přesunout adresní řádek dolů</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">Hand button (bottom toolbar only)</string>
@@ -33,7 +33,7 @@
     <string name="accessibility_preferences_show_extensions_first_title">Show extensions first</string>
     <string name="accessibility_preferences_show_extensions_first_summary">Show extensions higher in the main menu</string>
     <string name="contextual_menu_open_in_external_application">Otevřít v externí aplikaci</string>
-    <string name="preferences_restart_is_needed">Změny se projeví po restartování aplikace Kiwi</string>
+    <string name="preferences_restart_is_needed">Změny se projeví po restartování aplikace XKBrowser</string>
     <string name="preferences_restart_now">Restartovat nyní</string>
     <string name="preferences_restart_later">Later</string>
     <string name="preferences_translator">Translator</string>

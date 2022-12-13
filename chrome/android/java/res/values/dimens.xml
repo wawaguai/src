@@ -316,9 +316,9 @@
     <dimen name="tile_grid_layout_padding_end">12dp</dimen>
     <dimen name="tile_grid_layout_no_logo_padding_top">20dp</dimen>
     <dimen name="tile_grid_layout_bleed">8dp</dimen>
-    <dimen name="tile_grid_layout_vertical_spacing">3dp</dimen>
-    <dimen name="tile_grid_layout_vertical_spacing_modern">6dp</dimen>
-    <dimen name="tile_grid_layout_min_horizontal_spacing">4dp</dimen>
+    <dimen name="tile_grid_layout_vertical_spacing">8dp</dimen>
+    <dimen name="tile_grid_layout_vertical_spacing_modern">16dp</dimen>
+    <dimen name="tile_grid_layout_min_horizontal_spacing">16dp</dimen>
     <dimen name="tile_grid_layout_max_horizontal_spacing">16dp</dimen>
     <dimen name="tile_view_bg_corner_radius">2dp</dimen>
     <dimen name="tile_view_width">80dp</dimen>

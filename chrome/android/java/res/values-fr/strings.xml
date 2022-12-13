@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">Ouvrir des liens avec des applications externes (Maps, YouTube, Vimeo) lorsque cela est possible</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">Mode nuit en niveaux de gris</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">Afficher le mode nuit en niveaux de gris si possible</string>
-    <string name="accessibility_preferences_night_scale">Contraste du mode nuit (gris : 97, par défaut : 99, noir : 100)</string>
+    <string name="accessibility_preferences_night_scale">Contraste du mode nuit</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">Barre d\'adresse en bas</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">Déplacer la barre d\'adresse en bas</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">Bouton en forme de main (barre d\'outils inférieure uniquement)</string>
@@ -33,7 +33,7 @@
     <string name="accessibility_preferences_show_extensions_first_title">Show extensions first</string>
     <string name="accessibility_preferences_show_extensions_first_summary">Show extensions higher in the main menu</string>
     <string name="contextual_menu_open_in_external_application">Ouvrir avec une application externe</string>
-    <string name="preferences_restart_is_needed">Vos modifications prendront effet après redémarrage de Kiwi</string>
+    <string name="preferences_restart_is_needed">Vos modifications prendront effet après redémarrage de XKBrowser</string>
     <string name="preferences_restart_now">REDÉMARRER MAINTENANT</string>
     <string name="preferences_restart_later">Plus tard</string>
     <string name="preferences_translator">Translator</string>

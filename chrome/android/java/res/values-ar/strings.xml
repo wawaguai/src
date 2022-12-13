@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">قُم بفتح الروابط عن طريق البرامج الخارجية مثل(الخرائط، اليوتيوب، فيميو) عندما يكون ذلك مُتاحاً</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">الوضع الليلي الرمادي</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">تفضيل نسخة التدريج الرمادي في الوضع الليلي</string>
-    <string name="accessibility_preferences_night_scale">تباين الوضع الليلي (الرمادي: 97، الإفتراضي: 99، الأسود: 100)</string>
+    <string name="accessibility_preferences_night_scale">تباين الوضع الليلي</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">شريط الأدوات السُفلي</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">قُم بتحريك شريط العنوان للأسفل</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">زر اليد (شريط الأدوات فقط)</string>

@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">Відкрити посилання з зовнішніх додатків (Maps, YouTube, Vimeo), коли це можливо</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">Градація сірого в нічному режимі</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">Віддавати перевагу градації сірого в нічному режимі</string>
-    <string name="accessibility_preferences_night_scale">Контраст нічного режиму (сірий: 97, за замовчуванням: 99, чорний: 100)</string>
+    <string name="accessibility_preferences_night_scale">Контраст нічного режиму</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">Панель інструментів знизу</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">Перемістити адресний рядок вниз</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">Рука кнопки (тільки нижня панель)</string>
@@ -33,7 +33,7 @@
     <string name="accessibility_preferences_show_extensions_first_title">Спочатку показувати розширення</string>
     <string name="accessibility_preferences_show_extensions_first_summary">Показувати розширення угорі в головному меню</string>
     <string name="contextual_menu_open_in_external_application">Відкрити в зовнішньому додатку</string>
-    <string name="preferences_restart_is_needed">Зміни набудуть чинності після перезавантаження Kiwi</string>
+    <string name="preferences_restart_is_needed">Зміни набудуть чинності після перезавантаження XKBrowser</string>
     <string name="preferences_restart_now">ПЕРЕЗАВАНТАЖИТИ ЗАРАЗ</string>
     <string name="preferences_restart_later">Пізніше</string>
     <string name="preferences_translator">Перекладач</string>

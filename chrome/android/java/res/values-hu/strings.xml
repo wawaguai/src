@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">Linkek megnyitása külső alkalmazásokkal (Maps, YouTube, Vimeo) amikor lehetséges</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">Szürkeárnyalatos éjszakai mód</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">Az éjszakai mód szürkeárnyalatos változatát részesíti előnyben</string>
-    <string name="accessibility_preferences_night_scale">Éjszakai mód kontraszt (szürke: 97, alap: 99, fekete: 100)</string>
+    <string name="accessibility_preferences_night_scale">Éjszakai mód kontraszt</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">Alsó eszköztár</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">A címsor mozgatása alulra</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">Kéz gomb (csak alsó eszköztáron)</string>
@@ -33,7 +33,7 @@
     <string name="accessibility_preferences_show_extensions_first_title">Bővítmények elsőként mutatása</string>
     <string name="accessibility_preferences_show_extensions_first_summary">A bővítmények megjelenítése a főmenüben magasabban</string>
     <string name="contextual_menu_open_in_external_application">Megnyitás külső alkalmazásban</string>
-    <string name="preferences_restart_is_needed">A változtatások a Kiwi újraindításakor lépnek életbe</string>
+    <string name="preferences_restart_is_needed">A változtatások a XKBrowser újraindításakor lépnek életbe</string>
     <string name="preferences_restart_now">ÚJRAINDÍTÁS MOST</string>
     <string name="preferences_restart_later">Később</string>
     <string name="preferences_translator">Fordító</string>

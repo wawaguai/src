@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">जब संभव हो बाहरी एप्लिकेशन (maps, YouTube, vimeo) के साथ ओपन लिंक</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">ग्रेस्केल नाइट मोड</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">रात मोड के ग्रेस्केल वर्जन को पसंद करते हैं</string>
-    <string name="accessibility_preferences_night_scale">रात्री मोड कंट्रास्ट (ग्रे: ९७, डिफ़ॉल्ट: ९९, काला: १००)</string>
+    <string name="accessibility_preferences_night_scale">रात्री मोड कंट्रास्ट</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">निचला टूलबार</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">एड्रेसबार को नीचे ले जाएं</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">हाथ बटन (केवल निचला टूलबार)</string>

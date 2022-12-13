@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">Άνοιγμα συνδέσμων με εξωτερικές εφαρμογές (Maps, YouTube, Vimeo) όταν είναι δυνατόν</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">Νυχτερινή λειτουργία κλίμακας του γκρι</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">Προτίμηση κλίμακας του γκρι αντί για νυχτερινή λειτουργία</string>
-    <string name="accessibility_preferences_night_scale">Αντίθεση νυχτερινής λειτουργίας (γκρι: 97, προεπιλογή: 99, μαύρη: 100)</string>
+    <string name="accessibility_preferences_night_scale">Αντίθεση νυχτερινής λειτουργίας</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">Κάτω γραμμή εργαλείων</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">Μετακίνηση της γραμμής διευθύνσεων στο κάτω μέρος</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">Κουμπί χεριού (μόνο στη κάτω γραμμή εργαλείων)</string>
@@ -33,7 +33,7 @@
     <string name="accessibility_preferences_show_extensions_first_title">Εμφάνιση επεκτάσεων στην αρχή</string>
     <string name="accessibility_preferences_show_extensions_first_summary">Show extensions higher in the main menu</string>
     <string name="contextual_menu_open_in_external_application">Άνοιγμα σε εξωτερική εφαρμογή</string>
-    <string name="preferences_restart_is_needed">Οι αλλαγές σας θα τεθούν σε ισχύ κατά την επανεκκίνηση του Kiwi</string>
+    <string name="preferences_restart_is_needed">Οι αλλαγές σας θα τεθούν σε ισχύ κατά την επανεκκίνηση του XKBrowser</string>
     <string name="preferences_restart_now">ΕΠΑΝΕΚΚΙΝΗΣΗ ΤΩΡΑ</string>
     <string name="preferences_restart_later">Αργότερα</string>
     <string name="preferences_translator">Μεταφραστής</string>

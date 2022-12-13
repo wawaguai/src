@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">Avaa linkit ulkopuolisilla sovelluksilla (Maps, Youtube, Vimeo) mikäli mahdollista</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">Harmaasävy yötila</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">Käytä mieluummin harmaasävyjä yötilassa</string>
-    <string name="accessibility_preferences_night_scale">Yötilan kontrasti (harmaa: 97, vakio: 99, musta: 100)</string>
+    <string name="accessibility_preferences_night_scale">Yötilan kontrasti</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">Alareunan työkalurivi</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">Siirrä osoiterivi alaosaan</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">Käsi-painike (alareunan työkalurivillä)</string>

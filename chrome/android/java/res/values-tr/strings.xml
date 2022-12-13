@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">Mümkün olduğunda harici uygulamalarla bağlantıları (Haritalar, YouTube, Vimeo) açın</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">Gri tonlama gece modu</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">Gece modunun gri tonlamalı sürümünü tercih edin</string>
-    <string name="accessibility_preferences_night_scale">Gece modu ayarı (gri: 97, varsayılan: 99, siyah: 100)</string>
+    <string name="accessibility_preferences_night_scale">Gece modu ayarı</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">Alt araç çubuğu</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">Adres çubuğunu en alta taşı</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">El düğmesi (yalnızca alt araç çubuğu)</string>
@@ -33,7 +33,7 @@
     <string name="accessibility_preferences_show_extensions_first_title">Eklentileri başta göster</string>
     <string name="accessibility_preferences_show_extensions_first_summary">Ana menüde uzantıları daha yüksekte göster</string>
     <string name="contextual_menu_open_in_external_application">Harici uygulamada aç</string>
-    <string name="preferences_restart_is_needed">Yaptığınız değişiklikler Kiwi\'nin yeniden başlatılmasından sonra etkili olacak</string>
+    <string name="preferences_restart_is_needed">Yaptığınız değişiklikler XKBrowser\'nin yeniden başlatılmasından sonra etkili olacak</string>
     <string name="preferences_restart_now">ŞİMDİ YENİDEN BAŞLAT</string>
     <string name="preferences_restart_later">Sonra</string>
     <string name="preferences_translator">Çevirmen</string>

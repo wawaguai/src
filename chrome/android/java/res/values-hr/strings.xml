@@ -21,7 +21,7 @@
     <string name="accessibility_preferences_open_in_external_application_summary">Otvarajte poveznice sa vanjskim aplikacijama (Karte, YouTube, Vimeo) kada je to moguće</string>
     <string name="accessibility_preferences_nightmode_grayscale_title">Sivi tonovi u noćnom načinu</string>
     <string name="accessibility_preferences_nightmode_grayscale_summary">Preferirajte sive tonove u noćnom načinu</string>
-    <string name="accessibility_preferences_night_scale">Kontrast u noćnom načinu (sivo: 97, zadano: 99, crno: 100)</string>
+    <string name="accessibility_preferences_night_scale">Kontrast u noćnom načinu</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_title">Alatna traka pri dnu zaslona</string>
     <string name="accessibility_preferences_enable_bottom_toolbar_summary">Premjestite adresnu traku na dno zaslona</string>
     <string name="accessibility_preferences_enable_overscroll_button_title">Gumb ruke (samo kod alatne trake na dnu)</string>
@@ -33,7 +33,7 @@
     <string name="accessibility_preferences_show_extensions_first_title">Prvo prikaži proširenja</string>
     <string name="accessibility_preferences_show_extensions_first_summary">Prikaži proširenja višlje u glavnom izborniku</string>
     <string name="contextual_menu_open_in_external_application">Otvori u eksternoj aplikaciji</string>
-    <string name="preferences_restart_is_needed">Vaše promjene če stupiti u snagu kada ponovno pokrenete Kiwi</string>
+    <string name="preferences_restart_is_needed">Vaše promjene če stupiti u snagu kada ponovno pokrenete XKBrowser</string>
     <string name="preferences_restart_now">ODMAH PONOVNO POKRENI</string>
     <string name="preferences_restart_later">Kasnije</string>
     <string name="preferences_translator">Prevoditelj</string>
