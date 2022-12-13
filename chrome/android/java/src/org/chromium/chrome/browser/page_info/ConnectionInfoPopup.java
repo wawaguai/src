@@ -26,7 +26,9 @@ import org.chromium.base.ApiCompatibilityUtils;
 import org.chromium.base.Log;
 import org.chromium.base.annotations.CalledByNative;
 import org.chromium.chrome.R;
+import org.chromium.chrome.browser.ChromeActivity;
 import org.chromium.chrome.browser.ResourceId;
+import org.chromium.chrome.browser.tabmodel.TabModel;
 import org.chromium.content_public.browser.WebContents;
 import org.chromium.content_public.browser.WebContentsObserver;
 
@@ -216,10 +218,18 @@ public class ConnectionInfoPopup implements OnClickListener {
         } else if (mMoreInfoLink == v) {
             mDialog.dismiss();
             try {
-                Intent i = Intent.parseUri(mLinkUrl, Intent.URI_INTENT_SCHEME);
-                i.putExtra(Browser.EXTRA_CREATE_NEW_TAB, true);
-                i.putExtra(Browser.EXTRA_APPLICATION_ID, mContext.getPackageName());
-                mContext.startActivity(i);
+                if (mContext instanceof ChromeActivity) {
+                    ChromeActivity activity = (ChromeActivity) mContext;
+
+                    activity.getTabCreator(
+                            activity.getActivityTab().isIncognito()
+                    ).launchUrl(mLinkUrl, TabModel.TabLaunchType.FROM_LINK);
+                } else {
+                    Intent i = Intent.parseUri(mLinkUrl, Intent.URI_INTENT_SCHEME);
+                    i.putExtra(Browser.EXTRA_CREATE_NEW_TAB, true);
+                    i.putExtra(Browser.EXTRA_APPLICATION_ID, mContext.getPackageName());
+                    mContext.startActivity(i);
+                }
             } catch (Exception ex) {
                 // Do nothing intentionally.
                 Log.w(TAG, "Bad URI %s", mLinkUrl, ex);

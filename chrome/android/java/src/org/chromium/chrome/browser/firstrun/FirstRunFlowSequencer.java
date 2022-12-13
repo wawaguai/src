@@ -222,9 +222,12 @@ public abstract class FirstRunFlowSequencer  {
     public static void markFlowAsCompleted(String signInAccountName, boolean showSignInSettings) {
         // When the user accepts ToS in the Setup Wizard (see ToSAckedReceiver), we do not
         // show the ToS page to the user because the user has already accepted one outside FRE.
-        if (!PrefServiceBridge.getInstance().isFirstRunEulaAccepted()) {
-            PrefServiceBridge.getInstance().setEulaAccepted();
-        }
+
+        // cqttech show first run without load native library requirements of app store
+        // (you can do nothing until the user consent the agreement)
+        // if (!PrefServiceBridge.getInstance().isFirstRunEulaAccepted()) {
+        //     PrefServiceBridge.getInstance().setEulaAccepted();
+        // }
 
         // Mark the FRE flow as complete and set the sign-in flow preferences if necessary.
         FirstRunSignInProcessor.finalizeFirstRunFlowState(signInAccountName, showSignInSettings);
@@ -268,7 +271,7 @@ public abstract class FirstRunFlowSequencer  {
      */
     public static Intent createGenericFirstRunIntent(Context context, boolean fromChromeIcon) {
         Intent intent = new Intent();
-        intent.setClassName(context, FirstRunActivity.class.getName());
+        intent.setClassName(context, CqttechFirstRunActivity.class.getName());
         intent.putExtra(FirstRunActivity.EXTRA_COMING_FROM_CHROME_ICON, fromChromeIcon);
         return intent;
     }

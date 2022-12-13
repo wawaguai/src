@@ -224,18 +224,18 @@ bool BeingDebugged() {
 // use a debugger.
 namespace {
 void DebugBreak() {
-  if (!BeingDebugged()) {
-    abort();
-  } else {
-#if defined(DEBUG_BREAK_ASM)
-    DEBUG_BREAK_ASM();
-#else
-    volatile int go = 0;
-    while (!go) {
-      base::PlatformThread::Sleep(base::TimeDelta::FromMilliseconds(100));
-    }
-#endif
-  }
+//  if (!BeingDebugged()) {
+//    abort();
+//  } else {
+//#if defined(DEBUG_BREAK_ASM)
+//    DEBUG_BREAK_ASM();
+//#else
+//    volatile int go = 0;
+//    while (!go) {
+//      base::PlatformThread::Sleep(base::TimeDelta::FromMilliseconds(100));
+//    }
+//#endif
+//  }
 }
 }  // namespace
 #define DEBUG_BREAK() DebugBreak()

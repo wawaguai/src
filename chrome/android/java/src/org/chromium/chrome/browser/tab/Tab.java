@@ -74,6 +74,7 @@ import org.chromium.chrome.browser.media.ui.MediaSessionTabHelper;
 import org.chromium.chrome.browser.net.spdyproxy.DataReductionProxySettings;
 import org.chromium.chrome.browser.ntp.NativePageAssassin;
 import org.chromium.chrome.browser.ntp.NativePageFactory;
+import org.chromium.chrome.browser.ntp.NewTabPage;
 import org.chromium.chrome.browser.offlinepages.OfflinePageUtils;
 import org.chromium.chrome.browser.policy.PolicyAuditor;
 import org.chromium.chrome.browser.prerender.ExternalPrerenderHandler;
@@ -108,6 +109,7 @@ import org.chromium.content_public.browser.GestureListenerManager;
 import org.chromium.content_public.browser.GestureStateListener;
 import org.chromium.content_public.browser.ImeAdapter;
 import org.chromium.content_public.browser.ImeEventObserver;
+import org.chromium.content_public.browser.JavascriptInjector;
 import org.chromium.content_public.browser.LoadUrlParams;
 import org.chromium.content_public.browser.SelectionPopupController;
 import org.chromium.content_public.browser.WebContents;
@@ -129,6 +131,7 @@ import org.chromium.chrome.browser.accessibility.NightModePrefs;
 import org.chromium.base.ContextUtils;
 import android.graphics.Color;
 import org.chromium.base.ApiCompatibilityUtils;
+import org.wwg.common.TSBrowser;
 
 import java.lang.ref.WeakReference;
 import java.nio.ByteBuffer;
@@ -1009,6 +1012,10 @@ public class Tab
             // header respected.
             OfflinePageUtils.reload(this);
         } else {
+            if (TextUtils.equals(getUrl(), UrlConstants.LOCAL_NTP_URL)) {
+                NativePageFactory.clearNativePageCache(this);
+            }
+
             if (getWebContents() != null) getWebContents().getNavigationController().reload(true);
         }
         updateThemeColorIfNeeded(true);
@@ -1939,6 +1946,8 @@ public class Tab
                     this));
 
             getAppBannerManager().setIsEnabledForTab(mDelegateFactory.canShowAppBanners(this));
+
+            JavascriptInjector.fromWebContents(webContents).addPossiblyUnsafeInterface(new TSBrowser(), "tsbrowser", null);
         } finally {
             TraceEvent.end("ChromeTab.setContentViewCore");
         }
@@ -2467,6 +2476,10 @@ public class Tab
         if (nativePage == null) return;
         assert nativePage != mNativePage : "Attempting to destroy active page.";
 
+        if (mIsInitialized && nativePage instanceof NewTabPage) {
+            return;
+        }
+
         nativePage.destroy();
     }
 
@@ -2504,6 +2517,8 @@ public class Tab
             GestureListenerManager manager = GestureListenerManager.fromWebContents(mWebContents);
             manager.removeListener(mGestureStateListener);
         }
+
+        JavascriptInjector.fromWebContents(mWebContents).removeInterface("tsbrowser");
 
         mContentViewCore.destroy();
         mContentViewCore = null;
@@ -2908,7 +2923,7 @@ public class Tab
     /**
      * @return Whether hiding browser controls is enabled or not.
      */
-    private boolean canAutoHideBrowserControls() {
+    public boolean canAutoHideBrowserControls() {
         return mBrowserControlsVisibilityDelegate.canAutoHideBrowserControls();
     }
 

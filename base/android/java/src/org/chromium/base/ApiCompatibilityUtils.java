@@ -470,6 +470,25 @@ public class ApiCompatibilityUtils {
         window.setStatusBarColor(statusBarColor);
     }
 
+    public static void setSystemUIColor(View rootView, boolean useDarkIcons) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return;
+
+        int systemUiVisibility = rootView.getSystemUiVisibility();
+        if (useDarkIcons) {
+            systemUiVisibility |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                systemUiVisibility |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            }
+        } else {
+            systemUiVisibility &= ~View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                systemUiVisibility &= ~View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            }
+        }
+        rootView.setSystemUiVisibility(systemUiVisibility);
+    }
+
     /**
      * @see android.content.res.Resources#getDrawable(int id).
      * TODO(ltian): use {@link AppCompatResources} to parse drawable to prevent fail on

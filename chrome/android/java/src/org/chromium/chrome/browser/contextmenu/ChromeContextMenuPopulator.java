@@ -96,13 +96,11 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
                     ChromeContextMenuItem.OPEN_IN_INCOGNITO_TAB,
                     ChromeContextMenuItem.OPEN_IN_CHROME,
                     ChromeContextMenuItem.SAVE_LINK_AS,
-                    ChromeContextMenuItem.OPEN_IMAGE_IN_NEW_TAB,
-                    ChromeContextMenuItem.SEARCH_BY_IMAGE));
+                    ChromeContextMenuItem.OPEN_IMAGE_IN_NEW_TAB));
 
     // Additional items for custom tabs mode.
     private static final Set<? extends ContextMenuItem> CUSTOM_TAB_MODE_WHITELIST =
             Collections.unmodifiableSet(CollectionUtil.newHashSet(ChromeContextMenuItem.OPEN_IMAGE,
-                    ChromeContextMenuItem.SEARCH_BY_IMAGE,
                     ChromeContextMenuItem.OPEN_IN_NEW_CHROME_TAB,
                     ChromeContextMenuItem.OPEN_IN_CHROME_INCOGNITO_TAB,
                     ChromeContextMenuItem.OPEN_IN_BROWSER_ID));
@@ -131,7 +129,7 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
             Collections.unmodifiableList(CollectionUtil.newArrayList(
                     ChromeContextMenuItem.LOAD_ORIGINAL_IMAGE, ChromeContextMenuItem.OPEN_IMAGE,
                     ChromeContextMenuItem.OPEN_IMAGE_IN_NEW_TAB, ChromeContextMenuItem.SAVE_IMAGE,
-                    ChromeContextMenuItem.SEARCH_BY_IMAGE, SHARE_IMAGE));
+                    SHARE_IMAGE));
 
     private static final List<? extends ContextMenuItem> MESSAGE_GROUP =
             Collections.unmodifiableList(CollectionUtil.newArrayList(ChromeContextMenuItem.CALL,
@@ -518,7 +516,7 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
             // new tab," and "Copy image URL" should be disabled on Lo-Fi images.
             disabledOptions.add(ChromeContextMenuItem.SAVE_IMAGE);
             disabledOptions.add(ChromeContextMenuItem.OPEN_IMAGE);
-            disabledOptions.add(ChromeContextMenuItem.SEARCH_BY_IMAGE);
+            // disabledOptions.add(ChromeContextMenuItem.SEARCH_BY_IMAGE);
             disabledOptions.add(SHARE_IMAGE);
             recordSaveImageContextMenuResult(true, isSrcDownloadableScheme);
         } else if (params.isImage() && !params.imageWasFetchedLoFi()) {
@@ -539,9 +537,9 @@ public class ChromeContextMenuPopulator implements ContextMenuPopulator {
                     && templateUrlServiceInstance.getDefaultSearchEngineTemplateUrl() != null
                     && !LocaleManager.getInstance().needToCheckForSearchEnginePromo();
 
-            if (!isSearchByImageAvailable) {
-                disabledOptions.add(ChromeContextMenuItem.SEARCH_BY_IMAGE);
-            }
+            //if (!isSearchByImageAvailable) {
+            //    disabledOptions.add(ChromeContextMenuItem.SEARCH_BY_IMAGE);
+            //}
         }
 
         if (mMode == CUSTOM_TAB_MODE) {

@@ -9,6 +9,7 @@ import org.chromium.base.Log;
 import android.content.ComponentName;
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -34,6 +35,8 @@ import org.chromium.chrome.browser.preferences.PreferenceUtils;
 
 import android.view.View;
 import org.chromium.base.ContextUtils;
+import org.wwg.common.CqttechConstants;
+
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.widget.ListView;
@@ -134,30 +137,48 @@ public class DownloadPreferences
             SharedPreferences.Editor sharedPreferencesEditor = ContextUtils.getAppSharedPreferences().edit();
             sharedPreferencesEditor.putBoolean("enable_external_download_manager", (boolean)newValue);
             sharedPreferencesEditor.apply();
-            if ((boolean)newValue == true) {
-                    List<Intent> targetedShareIntents = new ArrayList<Intent>();
-                    Intent shareIntent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://test.com/file.rar"));
-                    // Set title and text to share when the user selects an option.
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, "http://test.com/file.rar");
-                    List<ResolveInfo> resInfo = getActivity().getPackageManager().queryIntentActivities(shareIntent, 0);
-                    if (!resInfo.isEmpty()) {
-                        for (ResolveInfo info : resInfo) {
-                            if (!"com.kiwibrowser.browser".equalsIgnoreCase(info.activityInfo.packageName)) {
-                                Intent targetedShare = new Intent(android.content.Intent.ACTION_VIEW);
-                                targetedShare.setPackage(info.activityInfo.packageName.toLowerCase(Locale.ROOT));
-                                targetedShareIntents.add(targetedShare);
-                            }
+            if ((boolean) newValue) {
+                List<ComponentName> excludeComponents = new ArrayList<>();
+                List<Intent> targetedShareIntents = new ArrayList<Intent>();
+                Intent shareIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://test.com/file.rar"));
+                // Set title and text to share when the user selects an option.
+                shareIntent.putExtra(Intent.EXTRA_TEXT, "http://test.com/file.rar");
+                List<ResolveInfo> resInfo = getActivity().getPackageManager().queryIntentActivities(shareIntent, 0);
+                if (!resInfo.isEmpty()) {
+                    for (ResolveInfo info : resInfo) {
+                        if (!CqttechConstants.KIWI_PACKAGE.equalsIgnoreCase(info.activityInfo.packageName)
+                                && !CqttechConstants.KITTY_PACKAGE.equalsIgnoreCase(info.activityInfo.packageName)) {
+                            Intent targetedShare = new Intent(Intent.ACTION_VIEW);
+                            targetedShare.setPackage(info.activityInfo.packageName.toLowerCase(Locale.ROOT));
+                            targetedShareIntents.add(targetedShare);
+                        } else {
+                            excludeComponents.add(new ComponentName(
+                                    info.activityInfo.packageName,
+                                    info.activityInfo.name
+                            ));
                         }
-                        // Then show the ACTION_PICK_ACTIVITY to let the user select it
-                        Intent intentPick = new Intent();
-                        intentPick.setAction(Intent.ACTION_PICK_ACTIVITY);
-                        // Set the title of the dialog
-                        intentPick.putExtra(Intent.EXTRA_TITLE, "Download manager");
-                        intentPick.putExtra(Intent.EXTRA_INTENT, shareIntent);
-                        intentPick.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray());
-                        // Call StartActivityForResult so we can get the app name selected by the user
-                        this.startActivityForResult(intentPick, /* REQUEST_CODE_MY_PICK */ 4242);
                     }
+                    // Then show the ACTION_PICK_ACTIVITY to let the user select it
+                    Intent intentPick = new Intent();
+                    intentPick.setAction(Intent.ACTION_PICK_ACTIVITY);
+                    // Set the title of the dialog
+                    intentPick.putExtra(Intent.EXTRA_TITLE,
+                            getActivity().getString(R.string.cqttech_download_manager));
+                    intentPick.putExtra(Intent.EXTRA_INTENT, shareIntent);
+                    intentPick.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray());
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        intentPick.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, excludeComponents.toArray());
+                    }
+                    // Call StartActivityForResult so we can get the app name selected by the user
+                    this.startActivityForResult(intentPick, /* REQUEST_CODE_MY_PICK */ 4242);
+//                    Intent chooser = Intent.createChooser(shareIntent, "Download manager");
+//                    chooser.setAction(Intent.ACTION_PICK_ACTIVITY);
+//                    chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, targetedShareIntents.toArray());
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                        chooser.putExtra(Intent.EXTRA_EXCLUDE_COMPONENTS, excludeComponents.toArray());
+//                    }
+//                    startActivityForResult(chooser, /* REQUEST_CODE_MY_PICK */ 4242);
+                }
             }
         }
         return true;

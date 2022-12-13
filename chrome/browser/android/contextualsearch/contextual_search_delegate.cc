@@ -139,6 +139,11 @@ void ContextualSearchDelegate::StartSearchTermResolutionRequest(
 void ContextualSearchDelegate::ResolveSearchTermFromContext() {
   DCHECK(context_ != nullptr);
   GURL request_url(BuildRequestUrl(context_->GetHomeCountry()));
+  if (!request_url.is_valid()) {
+    LOG(ERROR) << "[jyh] invalid BuildRequestUrl -> JUST RETURN";
+    return;
+  }
+
   DCHECK(request_url.is_valid());
 
   // Reset will delete any previous fetcher, and we won't get any callback.

@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="cqttech_tile_icon_corner_radius">12dp</dimen>
+    <dimen name="cqttech_tile_text_size">16dp</dimen>
+    <dimen name="cqttech_tile_icon_size">40dp</dimen>
+    <dimen name="cqttech_tile_min_icon_size">20dp</dimen>
+    <dimen name="cqttech_first_run_dialog_margin">20dp</dimen>
+</resources>

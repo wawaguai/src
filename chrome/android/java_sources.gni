@@ -1591,6 +1591,80 @@ chrome_java_sources = [
   "java/src/org/chromium/chrome/browser/widget/textbubble/TextBubble.java",
 ]
 
+chrome_java_sources += [
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/cards/CqttechNewTabPageAdapter.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/CqttechSnippetsBridge.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/CqttechArticleType.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/CqttechSnippetArticle.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/CqttechSnippetArticleUtils.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/CqttechSnippetArticleViewHolder.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/entities/CqttechArticleCategories.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/entities/CqttechArticleClass.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/entities/CqttechArticleContent.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/entities/CqttechArticleResponse.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/web/ICqttechSnippetArticleService.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/web/ICqttechSnippetArticleSource.java",
+  "../../cqttech/java/org/chromium/chrome/browser/ntp/snippets/web/CqttechSnippetArticleSourceImpl.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/nav/entities/HomeNavType.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/nav/entities/GroupId.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/nav/entities/HomeNavWebEntity.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/nav/entities/HomeNavEntity.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/nav/HomeNavRepository.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/nav/IHomeNavWebService.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/nav/IHomeNavWebSource.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/nav/HomeNavWebSourceImpl.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/CqttechTileGridLayout.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/CqttechTileGroupDelegateImpl.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/CqttechTileRenderer.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/CqttechTileView.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/ISuggestionsBinder.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/CqttechSuggestionsBinder.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/CqttechLargeUrlDelegate.java",
+  "../../cqttech/java/org/chromium/chrome/browser/suggestions/CqttechLargeUrlHelper.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/identity/CqttechIdentificationGenerator.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/search_engines/TemplateUrlAccount.java",
+  "../../cqttech/java/org/chromium/chrome/browser/search_engines/TemplateUrlAccountDelegate.java",
+  "../../cqttech/java/org/chromium/chrome/browser/search_engines/web/ITemplateUrlAccountService.java",
+  "../../cqttech/java/org/chromium/chrome/browser/search_engines/web/ITemplateUrlAccountSource.java",
+  "../../cqttech/java/org/chromium/chrome/browser/search_engines/web/TemplateUrlAccountResponse.java",
+  "../../cqttech/java/org/chromium/chrome/browser/search_engines/web/TemplateUrlAccountSourceImpl.java",
+  "../../cqttech/java/org/chromium/chrome/browser/feedback/CqttechUrlFeedback.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/omaha/CqttechOmahaDelegate.java",
+  "../../cqttech/java/org/chromium/chrome/browser/omaha/CqttechForceUpdateActivity.java",
+
+  "../../cqttech/java/org/wwg/init/CqttechInitializer.java",
+  "../../cqttech/java/org/wwg/common/DeviceFeature.java",
+  "../../cqttech/java/org/wwg/common/DeviceInfo.java",
+  "../../cqttech/java/org/wwg/common/EncryptUtil.java",
+  "../../cqttech/java/org/wwg/common/ThemeConfig.java",
+  "../../cqttech/java/org/wwg/common/DisplayUtils.java",
+  "../../cqttech/java/org/wwg/common/CqttechConstants.java",
+  "../../cqttech/java/org/wwg/common/TSBrowser.java",
+  "../../cqttech/java/org/wwg/common/MIUIUtils.java",
+  "../../cqttech/java/org/wwg/umeng/UmengProxy.java",
+  "../../cqttech/java/org/wwg/network/base/BaseResponse.java",
+  "../../cqttech/java/org/wwg/network/base/OKHttpUtils.java",
+  "../../cqttech/java/org/wwg/network/base/CacheUtils.java",
+  "../../cqttech/java/org/wwg/network/base/ConfigServerConstant.java",
+  "../../cqttech/java/org/wwg/network/base/header/CommonHeader.java",
+  "../../cqttech/java/org/wwg/network/base/header/CachedHeaderInterceptor.java",
+  "../../cqttech/java/org/wwg/network/base/header/NoCacheHeaderInterceptor.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/base/BaseCqttechFullscreenActivity.java",
+  "../../cqttech/java/org/chromium/chrome/browser/firstrun/CqttechFirstRunActivity.java",
+
+  "../../cqttech/java/org/chromium/chrome/browser/externalnav/CqttechExternalNavigationHandler.java",
+  "../../cqttech/java/org/chromium/chrome/browser/externalnav/CqttechOpenExternalSnackController.java",
+]
+
 chrome_vr_java_sources = [
   "java/src/org/chromium/chrome/browser/vr_shell/AndroidUiGestureTarget.java",
   "java/src/org/chromium/chrome/browser/vr_shell/AndroidVSyncHelper.java",

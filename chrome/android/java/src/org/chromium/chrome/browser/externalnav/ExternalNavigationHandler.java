@@ -54,7 +54,7 @@ public class ExternalNavigationHandler {
     private static final String TAG = "UrlHandler";
 
     // Enables debug logging on a local build.
-    private static final boolean DEBUG = false;
+    static final boolean DEBUG = false;
 
     private static final String WTAI_URL_PREFIX = "wtai://wp/";
     private static final String WTAI_MC_URL_PREFIX = "wtai://wp/mc;";
@@ -82,6 +82,7 @@ public class ExternalNavigationHandler {
     private static final int AIA_INTENT_BOUNDARY = 3;
 
     private final ExternalNavigationDelegate mDelegate;
+    private final CqttechExternalNavigationHandler mCqttechHandler;
 
     /**
      * Result types for checking if we should override URL loading.
@@ -114,6 +115,8 @@ public class ExternalNavigationHandler {
      */
     public ExternalNavigationHandler(ExternalNavigationDelegate delegate) {
         mDelegate = delegate;
+
+        mCqttechHandler = new CqttechExternalNavigationHandler(delegate);
     }
 
     /**
@@ -244,6 +247,10 @@ public class ExternalNavigationHandler {
             return OverrideUrlLoadingResult.OVERRIDE_WITH_ASYNC_ACTION;
         }
 
+        if (mDelegate.interceptChromeExtension(params.getUrl())) {
+            return OverrideUrlLoadingResult.OVERRIDE_WITH_EXTERNAL_INTENT;
+        }
+
         // http://crbug.com/149218: We want to show the intent picker for ordinary links, providing
         // the link is not an incoming intent from another application, unless it's a redirect (see
         // below).
@@ -316,7 +323,8 @@ public class ExternalNavigationHandler {
                             + params.getUrl().substring(WTAI_MC_URL_PREFIX.length()))), false);
             if (DEBUG) Log.i(TAG, "OVERRIDE_WITH_EXTERNAL_INTENT wtai:// link handled");
             RecordUserAction.record("Android.PhoneIntent");
-            return OverrideUrlLoadingResult.OVERRIDE_WITH_EXTERNAL_INTENT;
+            //return OverrideUrlLoadingResult.OVERRIDE_WITH_EXTERNAL_INTENT;
+            return OverrideUrlLoadingResult.NO_OVERRIDE;
         }
 
         if (params.getUrl().startsWith(WTAI_URL_PREFIX)) {
@@ -380,6 +388,16 @@ public class ExternalNavigationHandler {
 
         boolean canResolveActivity = resolvingInfos.size() > 0;
         String packageName = ContextUtils.getApplicationContext().getPackageName();
+
+        final boolean canOpenInExternalApp = ContextUtils.getAppSharedPreferences()
+                .getBoolean("open_in_external_app", false);
+        if (mCqttechHandler.handleNavigationBeforeExternalIntent(
+                params, intent, hasBrowserFallbackUrl, browserFallbackUrl,
+                canOpenInExternalApp, isExternalProtocol, canResolveActivity)
+        ) {
+            return OverrideUrlLoadingResult.NO_OVERRIDE;
+        }
+
         // check whether the intent can be resolved. If not, we will see
         // whether we can download it from the Market.
         if (!canResolveActivity) {
@@ -429,7 +447,6 @@ public class ExternalNavigationHandler {
         }
 
         // If the user allowed opening external apps
-        final boolean canOpenInExternalApp = ContextUtils.getAppSharedPreferences().getBoolean("open_in_external_app", false);
         if (!isExternalProtocol && !canOpenInExternalApp && params.getUrl() != null && !params.getUrl().contains("play.google.com") && !params.getUrl().startsWith("market://")) {
             return OverrideUrlLoadingResult.NO_OVERRIDE;
         }
@@ -590,7 +607,8 @@ public class ExternalNavigationHandler {
 
             if (mDelegate.startActivityIfNeeded(intent, shouldProxyForInstantApps)) {
                 if (DEBUG) Log.i(TAG, "OVERRIDE_WITH_EXTERNAL_INTENT: startActivityIfNeeded");
-                return OverrideUrlLoadingResult.OVERRIDE_WITH_EXTERNAL_INTENT;
+                //return OverrideUrlLoadingResult.OVERRIDE_WITH_EXTERNAL_INTENT;
+                return OverrideUrlLoadingResult.NO_OVERRIDE;
             }
 
             return OverrideUrlLoadingResult.NO_OVERRIDE;
@@ -635,7 +653,8 @@ public class ExternalNavigationHandler {
             } else {
                 mDelegate.startActivity(intent, false);
                 if (DEBUG) Log.i(TAG, "OVERRIDE_WITH_EXTERNAL_INTENT: Intent to Play Store");
-                return OverrideUrlLoadingResult.OVERRIDE_WITH_EXTERNAL_INTENT;
+                //return OverrideUrlLoadingResult.OVERRIDE_WITH_EXTERNAL_INTENT;
+                return OverrideUrlLoadingResult.NO_OVERRIDE;
             }
         } catch (ActivityNotFoundException ex) {
             // ignore the error on devices that does not have Play Store installed.

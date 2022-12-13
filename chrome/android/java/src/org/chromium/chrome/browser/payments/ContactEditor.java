@@ -235,6 +235,9 @@ public class ContactEditor extends EditorBase<AutofillContact> {
             callback.onResult(contact);
         });
 
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
         mEditorDialog.show(editor);
     }
 

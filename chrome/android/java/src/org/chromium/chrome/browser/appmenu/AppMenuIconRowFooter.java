@@ -5,6 +5,8 @@
 package org.chromium.chrome.browser.appmenu;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.v7.content.res.AppCompatResources;
 import android.util.AttributeSet;
 import android.view.View;
@@ -16,6 +18,7 @@ import org.chromium.chrome.browser.bookmarks.BookmarkBridge;
 import org.chromium.chrome.browser.download.DownloadUtils;
 import org.chromium.chrome.browser.tab.Tab;
 import org.chromium.chrome.browser.widget.TintedImageButton;
+import org.wwg.common.ThemeConfig;
 
 /**
  * A {@link LinearLayout} that displays a horizontal row of icons for page actions.
@@ -39,18 +42,23 @@ public class AppMenuIconRowFooter extends LinearLayout implements View.OnClickLi
         super.onFinishInflate();
 
         mForwardButton = (TintedImageButton) findViewById(R.id.forward_menu_id);
+        mForwardButton.setTint(ThemeConfig.getInstance().getMainVectorColorStateList());
         mForwardButton.setOnClickListener(this);
 
         mBookmarkButton = (TintedImageButton) findViewById(R.id.bookmark_this_page_id);
+        mBookmarkButton.setTint(ThemeConfig.getInstance().getMainVectorColorStateList());
         mBookmarkButton.setOnClickListener(this);
 
         mDownloadButton = (TintedImageButton) findViewById(R.id.offline_page_id);
+        mDownloadButton.setTint(ThemeConfig.getInstance().getMainVectorColorStateList());
         mDownloadButton.setOnClickListener(this);
 
         mPageInfoButton = (TintedImageButton) findViewById(R.id.info_menu_id);
+        mPageInfoButton.setTint(ThemeConfig.getInstance().getMainVectorColorStateList());
         mPageInfoButton.setOnClickListener(this);
 
         mReloadButton = (TintedImageButton) findViewById(R.id.reload_menu_id);
+        mReloadButton.setTint(ThemeConfig.getInstance().getMainVectorColorStateList());
         mReloadButton.setOnClickListener(this);
     }
 

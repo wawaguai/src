@@ -91,7 +91,12 @@ abstract class AutofillCreditCardEditor extends AutofillEditorBase {
 
         // TODO(rouslan): Use an [+ ADD ADDRESS] button instead of disabling the dropdown.
         // http://crbug.com/623629
-        if (profilesAdapter.getCount() == 1) mBillingAddress.setEnabled(false);
+        if (profilesAdapter.getCount() == 1) {
+            // mBillingAddress.setEnabled(false);
+            v.findViewById(R.id.autofill_billing_address_layout).setVisibility(View.GONE);
+        } else {
+            v.findViewById(R.id.autofill_billing_address_layout).setVisibility(View.VISIBLE);
+        }
 
         mCard = PersonalDataManager.getInstance().getCreditCard(mGUID);
         if (mCard != null) {

@@ -420,6 +420,9 @@ public class CardEditor extends EditorBase<AutofillPaymentInstrument>
             callback.onResult(instrument);
         });
 
+        if (mLoadingDialog != null) {
+            mLoadingDialog.dismiss();
+        }
         mEditorDialog.show(editor);
     }
 

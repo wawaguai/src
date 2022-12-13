@@ -50,6 +50,7 @@ import org.chromium.content_public.browser.DeviceUtils;
 import org.chromium.content_public.browser.SpeechRecognition;
 import org.chromium.net.NetworkChangeNotifier;
 import org.chromium.policy.CombinedPolicyProvider;
+import org.wwg.init.CqttechInitializer;
 
 import java.io.File;
 import java.util.Locale;
@@ -207,6 +208,7 @@ public class ChromeBrowserInitializer {
 
     private void preInflationStartup() {
         ThreadUtils.assertOnUiThread();
+        CqttechInitializer.getInstance().init();
         if (mPreInflationStartupComplete) return;
         PathUtils.setPrivateDataDirectorySuffix(PRIVATE_DATA_DIRECTORY_SUFFIX);
 

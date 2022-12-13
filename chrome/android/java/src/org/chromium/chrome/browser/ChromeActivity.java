@@ -40,6 +40,7 @@ import android.view.accessibility.AccessibilityManager.TouchExplorationStateChan
 import android.util.Log;
 
 import org.chromium.chrome.browser.appmenu.AppMenu;
+import org.chromium.chrome.browser.ntp.NativePageFactory;
 import org.chromium.chrome.browser.profiles.Profile;
 import org.chromium.base.ActivityState;
 import org.chromium.base.ApiCompatibilityUtils;
@@ -565,13 +566,13 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
         mAppMenuHandler.addObserver(new AppMenuObserver() {
             @Override
             public void onMenuVisibilityChanged(boolean isVisible) {
-                if (isVisible && !isInOverviewMode()) {
+                //if (isVisible && !isInOverviewMode()) {
                     // The app menu badge should be removed the first time the menu is opened.
-                    if (mToolbarManager.getToolbar().isShowingAppMenuUpdateBadge()) {
-                        mToolbarManager.getToolbar().removeAppMenuUpdateBadge(true);
-                        mCompositorViewHolder.requestRender();
-                    }
-                }
+                    // if (mToolbarManager.getToolbar().isShowingAppMenuUpdateBadge()) {
+                    //    mToolbarManager.getToolbar().removeAppMenuUpdateBadge(true);
+                    //    mCompositorViewHolder.requestRender();
+                    //}
+                //}
                 if (!isVisible) {
                     mAppMenuPropertiesDelegate.onMenuDismissed();
                     MenuItem updateMenuItem = mAppMenuHandler.getAppMenu().getMenu().findItem(
@@ -1970,6 +1971,35 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
             mReferencePool.drain();
             clearToolbarResourceCache();
         }
+
+        clearCachedNewTabPage();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        clearCachedNewTabPage();
+    }
+
+    protected void clearCachedNewTabPage() {
+        try {
+            TabModelSelector selector = getTabModelSelector();
+            TabModel model = selector.getModel(false);
+            if (model != null) {
+                int count = model.getCount();
+                for (int idx = 0; idx < count; idx++) {
+                    try {
+                        Tab tab = model.getTabAt(idx);
+                        NativePageFactory.clearNativePageCache(tab);
+                    } catch (Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                }
+            }
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     private SelectionPopupController getSelectionPopupController() {
@@ -2146,6 +2176,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
             currentTab.reload();
             RecordUserAction.record("MobileMenuSwitchAdblock");
         } else if (id == R.id.night_mode_switcher_id) {
+            //clearCachedNewTabPage();
             if (NightModePrefs.getInstance(this).getUserNightModeEnabled()) {
                 NightModePrefs.getInstance(this).setUserNightModeEnabled(false);
                 getWindow().setBackgroundDrawable(new ColorDrawable(
@@ -2166,7 +2197,7 @@ public abstract class ChromeActivity extends AsyncInitializationActivity
                 RecordUserAction.record("MobileMenuTurnOnNight");
                 Context context = ContextUtils.getApplicationContext();
 
-                Toast.makeText(context, "You can configure contrast in Settings -> Accessibility", Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, "You can configure contrast in Settings -> Accessibility", Toast.LENGTH_LONG).show();
             }
         } else if (id == R.id.translate_menu_id) {
             RecordUserAction.record("TranslateFromMainMenu");

@@ -323,7 +323,7 @@ public class BookmarkBridge {
 
     @CalledByNative
     public void bookmarksImported(String message) {
-        Context context = ContextUtils.getApplicationContext();
+        //Context context = ContextUtils.getApplicationContext();
 
         Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }

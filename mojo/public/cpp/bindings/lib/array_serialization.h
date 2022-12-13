@@ -357,13 +357,18 @@ struct ArraySerializer<MojomType,
       SerializeCaller<Element>::Run(next, buf, &data_writer,
                                     validate_params->element_validate_params,
                                     context);
+      ///if (!validate_params->element_is_nullable && data_writer.is_null()) {
+      ///    continue;
+      ///}
       writer->data()->at(i).Set(data_writer.is_null() ? nullptr
                                                       : data_writer.data());
+      ///*
       MOJO_INTERNAL_DLOG_SERIALIZATION_WARNING(
           !validate_params->element_is_nullable && data_writer.is_null(),
           VALIDATION_ERROR_UNEXPECTED_NULL_POINTER,
           MakeMessageWithArrayIndex("null in array expecting valid pointers",
                                     size, i));
+      ///*/
     }
   }
   static bool DeserializeElements(Data* input,

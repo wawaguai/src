@@ -168,7 +168,7 @@ public class AppMenuPropertiesDelegate {
 
             MenuItem recentTabsMenuItem = menu.findItem(R.id.recent_tabs_menu_id);
             recentTabsMenuItem.setVisible(!isIncognito);
-            recentTabsMenuItem.setTitle(R.string.menu_recent_tabs);
+            recentTabsMenuItem.setTitle(R.string.recently_closed);
 
             MenuItem allBookmarksMenuItem = menu.findItem(R.id.all_bookmarks_menu_id);
             allBookmarksMenuItem.setTitle(mActivity.getString(R.string.menu_bookmarks));
@@ -200,7 +200,7 @@ public class AppMenuPropertiesDelegate {
             prepareAddToHomescreenMenuItem(menu, currentTab, canShowHomeScreenMenuItem);
 
             updateRequestDesktopSiteMenuItem(menu, currentTab, true /* can show */);
-            updateAdblockMenuItem(menu, currentTab, true /* can show */);
+            updateAdblockMenuItem(menu, currentTab, false /* can show */);
             MenuItem night_mode_menu = menu.findItem(R.id.night_mode_switcher_id);
             if (night_mode_menu != null) {
                    if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false)) {
@@ -251,10 +251,11 @@ public class AppMenuPropertiesDelegate {
                        translate_menu.setTitle(R.string.main_menu_translate);
                    }
             }
-            MenuItem helpMenuItem = menu.findItem(R.id.help_id);
-            if (helpMenuItem != null) {
-                helpMenuItem.setVisible(false);
-            }
+            // cqttech need help visible
+            //MenuItem helpMenuItem = menu.findItem(R.id.help_id);
+            //if (helpMenuItem != null) {
+            //    helpMenuItem.setVisible(false);
+            //}
 
             // Only display reader mode settings menu option if the current page is in reader mode.
             menu.findItem(R.id.reader_mode_prefs_id)
@@ -287,6 +288,9 @@ public class AppMenuPropertiesDelegate {
         disableEnableMenuItem(menu, R.id.new_incognito_tab_menu_id, true,
                 PrefServiceBridge.getInstance().isIncognitoModeEnabled(),
                 PrefServiceBridge.getInstance().isIncognitoModeManaged());
+
+        MenuItem extensions_menu = menu.findItem(R.id.extensions_id);
+        extensions_menu.setVisible(!mActivity.getTabModelSelector().getCurrentModel().isIncognito());
         mActivity.prepareMenu(menu);
     }
 

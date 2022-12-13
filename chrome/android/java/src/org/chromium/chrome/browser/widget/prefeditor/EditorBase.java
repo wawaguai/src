@@ -4,9 +4,14 @@
 
 package org.chromium.chrome.browser.widget.prefeditor;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.view.View;
+import android.view.Window;
 
 import org.chromium.base.Callback;
+import org.wwg.support.widget.SimpleLoadingDialog;
 
 import javax.annotation.Nullable;
 
@@ -20,6 +25,9 @@ public abstract class EditorBase<T extends EditableOption> {
     protected EditorDialog mEditorDialog;
     @Nullable
     protected Context mContext;
+
+    @Nullable
+    protected Dialog mLoadingDialog;
 
     /**
      * Sets the user interface to be used for editing contact information.
@@ -44,5 +52,14 @@ public abstract class EditorBase<T extends EditableOption> {
         assert callback != null;
         assert mEditorDialog != null;
         assert mContext != null;
+
+        Dialog loadingDialog = mLoadingDialog;
+        if (loadingDialog == null) {
+            SimpleLoadingDialog dialog = new SimpleLoadingDialog(mContext, null);
+            mLoadingDialog = dialog.getDialog();
+            mLoadingDialog.setCanceledOnTouchOutside(false);
+        } else {
+            loadingDialog.show();
+        }
     }
 }

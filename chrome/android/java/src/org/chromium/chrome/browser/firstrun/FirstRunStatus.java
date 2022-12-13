@@ -50,11 +50,8 @@ public class FirstRunStatus {
      * includes ToS and Sign In pages if necessary.
      */
     public static boolean getFirstRunFlowComplete() {
-        boolean complete = ContextUtils.getAppSharedPreferences().getBoolean(FIRST_RUN_FLOW_COMPLETE, false);
-        if (!complete) {
-             setFirstRunFlowComplete(true);
-         }
-         return true;
+        return ContextUtils.getAppSharedPreferences()
+                .getBoolean(FIRST_RUN_FLOW_COMPLETE, false);
     }
 
     /**

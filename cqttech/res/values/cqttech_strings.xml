@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+<!--    <string name="app_name" tools:ignore="MissingTranslation">小K浏览器</string>-->
+    <string name="cqttech_launcher_hint" tools:ignore="MissingTranslation">Small and light\t\tSmart and bright</string>
+
+    <string name="theme_default" tools:ignore="MissingTranslation">Default</string>
+    <string name="theme_default_description" tools:ignore="MissingTranslation">White, and websites can change the toolbar color</string>
+    <string name="theme_black" tools:ignore="MissingTranslation">Diamond Black</string>
+    <string name="theme_black_description" tools:ignore="MissingTranslation">Always black</string>
+    <string name="theme_white" tools:ignore="MissingTranslation">Ultra White</string>
+    <string name="theme_white_description" tools:ignore="MissingTranslation">A white toolbar (except in night mode)</string>
+
+    <string name="cqttech_download_manager" tools:ignore="MissingTranslation">Download manager</string>
+
+    <string name="cqttech_dialog_auth_title" tools:ignore="MissingTranslation">Welcome to XKBrowser</string>
+    <string name="first_run_dialog_author_warning" tools:ignore="MissingTranslation">Please read carefully and fully understand the software license agreement and privacy policy. You can read &lt;LINK1&gt;《Software license agreement》&lt;/LINK1&gt; and &lt;LINK2&gt;《Privacy policy》&lt;/LINK2&gt; and&lt;LINK3&gt;《Third party SDK Directory》&lt;/LINK3&gt; learn more. You need to read and agree to all the terms of the above agreement before you start using the XKBrowser.</string>
+    <string name="first_run_dialog_auth_title_hint" tools:ignore="MissingTranslation">XKBrowser needs storage and device information permissions to provide file management services (bookmark / download services, etc.) and diagnose problems; Location permissions are required to provide local information. The mobile phone system will request permission. You can check it freely.</string>
+
+    <string name="force_update_description" tools:ignore="MissingTranslation">You must upgrade before continuing to use</string>
+    <string name="open_external_title" tools:ignore="MissingTranslation">Use external APP to access the site</string>
+    <string name="open_extension_title" tools:ignore="MissingTranslation">You cannot access the extension program in incognito</string>
+</resources>

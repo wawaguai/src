@@ -11,6 +11,7 @@ import org.chromium.chrome.R;
 import org.chromium.chrome.browser.AppHooks;
 import org.chromium.chrome.browser.ChromeActivity;
 import org.chromium.chrome.browser.datausage.DataUseTabUIManager;
+import org.chromium.chrome.browser.externalnav.CqttechOpenExternalSnackController;
 import org.chromium.chrome.browser.externalnav.ExternalNavigationDelegateImpl;
 import org.chromium.chrome.browser.externalnav.ExternalNavigationHandler;
 import org.chromium.chrome.browser.externalnav.ExternalNavigationHandler.OverrideUrlLoadingResult;
@@ -133,7 +134,10 @@ public class InterceptNavigationDelegateImpl implements InterceptNavigationDeleg
                 result.ordinal(), OverrideUrlLoadingResult.values().length);
         switch (result) {
             case OVERRIDE_WITH_EXTERNAL_INTENT:
-                assert mExternalNavHandler.canExternalAppHandleUrl(url);
+                if (!CqttechOpenExternalSnackController.isExtensionUrl(params.getUrl())) {
+                    assert mExternalNavHandler.canExternalAppHandleUrl(url);
+                }
+
                 if (navigationParams.isMainFrame) {
                     onOverrideUrlLoadingAndLaunchIntent();
                 }

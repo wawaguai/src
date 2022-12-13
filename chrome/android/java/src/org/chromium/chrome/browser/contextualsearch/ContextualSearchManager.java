@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalFocusChangeListener;
 
+import org.chromium.base.Log;
 import org.chromium.base.ObserverList;
 import org.chromium.base.SysUtils;
 import org.chromium.base.VisibleForTesting;
@@ -1648,6 +1649,7 @@ public class ContextualSearchManager
 
                 String selection = mSelectionController.getSelectedText();
                 assert !TextUtils.isEmpty(selection);
+                Log.i("jyh", "resolveSearchTerm " + selection);
                 mNetworkCommunicator.startSearchTermResolutionRequest(selection);
                 // If the we were unable to start the resolve, we've hidden the UI and set the
                 // context to null.

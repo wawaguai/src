@@ -44,6 +44,7 @@ import org.chromium.chrome.browser.vr_shell.VrIntentUtils;
 import org.chromium.chrome.browser.vr_shell.VrShellDelegate;
 
 import org.chromium.chrome.browser.BackgroundExtensions;
+import org.wwg.init.CqttechInitializer;
 
 /**
  * Basic application functionality that should be shared among all browser applications that use
@@ -106,6 +107,8 @@ public class ChromeApplication extends Application {
                     MemoryPressureMonitor.INSTANCE.disablePolling();
                 }
             });
+
+            CqttechInitializer.getInstance().preInit(this);
 
             // Not losing much to not cover the below conditional since it just has simple setters.
             TraceEvent.end("ChromeApplication.attachBaseContext");

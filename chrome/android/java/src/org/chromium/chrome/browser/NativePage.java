@@ -6,10 +6,12 @@ package org.chromium.chrome.browser;
 
 import android.view.View;
 
+import org.chromium.base.UserData;
+
 /**
  * An interface for pages that will be shown in a tab using Android views instead of html.
  */
-public interface NativePage {
+public interface NativePage extends UserData {
     /**
      * @return The View to display the page. This is always non-null.
      */
@@ -50,8 +52,8 @@ public interface NativePage {
      */
     void updateForUrl(String url);
 
-    /**
-     * Called after a page has been removed from the view hierarchy and will no longer be used.
-     */
-    void destroy();
+    ///**
+    // * Called after a page has been removed from the view hierarchy and will no longer be used.
+    // */
+    //void destroy();
 }

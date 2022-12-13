@@ -6,6 +6,7 @@ package org.chromium.chrome.browser.preferences;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
@@ -54,6 +55,8 @@ import java.util.concurrent.TimeUnit;
 
 import android.view.View;
 import org.chromium.base.ContextUtils;
+import org.wwg.common.ThemeConfig;
+
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.widget.ListView;
@@ -372,6 +375,16 @@ public class SearchEngineAdapter extends BaseAdapter
         // which causes the first radiobox to always appear selected, even if it is not. It is being
         // addressed, but in the meantime we should use the native RadioButton instead.
         RadioButton radioButton = (RadioButton) view.findViewById(R.id.radiobutton);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Resources resources = view.getResources();
+            ColorStateList colorState =
+                    ApiCompatibilityUtils.getColorStateList(resources, R.color.dark_radio_tint);
+            if (ThemeConfig.getInstance().isDark()) {
+                colorState = ApiCompatibilityUtils.getColorStateList(resources, R.color.light_radio_tint);
+            }
+            radioButton.setButtonTintList(colorState);
+        }
+
         // On Lollipop this removes the redundant animation ring on selection but on older versions
         // it would cause the radio button to disappear.
         // TODO(finnur): Remove the encompassing if statement once we go back to using the AppCompat
@@ -385,11 +398,7 @@ public class SearchEngineAdapter extends BaseAdapter
         TextView description = (TextView) view.findViewById(R.id.name);
         Resources resources = mContext.getResources();
 
-        if (description != null) {
-             if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black")) {
-                 description.setTextColor(Color.WHITE);
-             }
-        }
+        description.setTextColor(ThemeConfig.getInstance().getMainTextColor());
 
         TemplateUrl templateUrl = (TemplateUrl) getItem(position);
         description.setText(templateUrl.getShortName());

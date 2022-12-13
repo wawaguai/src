@@ -124,6 +124,7 @@ by a child template that "extends" this file.
          Java heap limit (32Mb on Nexus S, 48Mb on Xoom). -->
     <application android:name="{% block application_name %}org.chromium.chrome.browser.ChromeApplication{% endblock %}"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:largeHeap="false"
         android:manageSpaceActivity="@string/manage_space_activity"
@@ -189,6 +190,8 @@ by a child template that "extends" this file.
         <meta-data android:name="com.google.ar.core.min_apk_version"
             android:value="180226000"/>
         {% endif %}
+        <meta-data android:name="UMENG_APPKEY"
+            android:value="6329822288ccdf4b7e339c5a"/>
 
         <!-- Note: All activities directly or indirectly derived from ChromeActivity
              must specify android:hardwareAccelerated="false".
@@ -565,6 +568,14 @@ by a child template that "extends" this file.
             android:windowSoftInputMode="stateHidden|adjustPan"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|mcc|mnc|screenLayout|smallestScreenSize"
             {% endblock %}>
+        </activity>
+        <activity android:name="org.chromium.chrome.browser.omaha.CqttechForceUpdateActivity"
+            android:theme="@style/FirstRunTheme"
+            {{ self.first_run_activity_common() }}>
+        </activity>
+        <activity android:name="org.chromium.chrome.browser.firstrun.CqttechFirstRunActivity"
+            android:theme="@style/FirstRunTheme"
+            {{ self.first_run_activity_common() }}>
         </activity>
         <activity android:name="org.chromium.chrome.browser.firstrun.TabbedModeFirstRunActivity"
             android:theme="@style/TabbedModeFirstRunTheme"
@@ -1046,10 +1057,8 @@ by a child template that "extends" this file.
         <service android:name="org.chromium.chrome.browser.crash.MinidumpUploadService"
             android:exported="false"/>
 
-<!--
         <service android:name="org.chromium.chrome.browser.omaha.OmahaClient"
             android:exported="false"/>
--->
         <service android:name="org.chromium.chrome.browser.incognito.IncognitoNotificationService"
             android:exported="false"/>
         <service android:name="org.chromium.chrome.browser.webapps.WebApkDisclosureNotificationService"

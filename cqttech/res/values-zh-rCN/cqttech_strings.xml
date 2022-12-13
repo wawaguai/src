@@ -1,0 +1,68 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+<!--    <string name="app_name">小K浏览器</string>-->
+    <string name="cqttech_launcher_hint">小巧轻快\t\t智慧灵动</string>
+
+    <string name="theme_default">默认</string>
+    <string name="theme_default_description">白色，并且工具栏的颜色跟随网站主题色的变化</string>
+    <string name="theme_black">钻石黑</string>
+    <string name="theme_black_description">黑色主题</string>
+    <string name="theme_white">经典白</string>
+    <string name="theme_white_description">一直保持白色的工具栏（除了夜间模式）</string>
+
+    <string name="cqttech_download_manager">下载器</string>
+
+    <string name="cqttech_dialog_auth_title">欢迎使用 小K浏览器</string>
+    <string name="first_run_dialog_author_warning">请您务必审慎阅读、充分理解软件许可协议和隐私政策，您可阅读 &lt;LINK1&gt;《软件许可协议》&lt;/LINK1&gt; 及 &lt;LINK2&gt;《隐私政策》&lt;/LINK2&gt; 和&lt;LINK3&gt;《第三方SDK目录》&lt;/LINK3&gt; 了解详细信息。您需要阅读并同意以上协议的全部条款后，再开始使用小K浏览器。</string>
+    <string name="first_run_dialog_auth_title_hint">小K浏览器需要存储、设备信息权限，以提供文件管理服务（书签/下载服务等）和诊断问题；需要位置权限，以提供本地资讯。手机系统将会请求权限，您可自由勾选。</string>
+
+    <string name="reader_for_accessibility_title"
+        tools:ignore="ExtraTranslation">使用简化版视图查看网页</string>
+    <string name="accessibility_tab_switcher_title"
+        tools:ignore="ExtraTranslation">使用简化版视图查看打开的标签页</string>
+    <string name="accessibility_tab_switcher_summary"
+        tools:ignore="ExtraTranslation">"建议在开启 TalkBack 或“开关控制”时使用"</string>
+
+    <string name="website_settings_desktop_mode">首选桌面模式</string>
+    <string name="website_settings_desktop_mode_enabled">首选桌面版网站</string>
+    <string name="website_settings_desktop_mode_disabled">首选移动优化版网站</string>
+
+    <string name="accessibility_keep_toolbar_visible_title">保持工具栏</string>
+    <string name="accessibility_keep_toolbar_visible_summary">滑动页面时始终保持工具栏显示</string>
+
+    <string name="prefs_about_chrome" tools:ignore="ExtraTranslation">关于小K浏览器</string>
+
+    <string name="storage_management_all_storage_description"
+        tools:ignore="ExtraTranslation">小K浏览器使用的数据总量，包括账号、书签和已保存的设置</string>
+    <string name="storage_management_site_data_size_label"
+        tools:ignore="ExtraTranslation">网站存储数据</string>
+    <string name="storage_management_unimportant_site_data_description"
+        tools:ignore="ExtraTranslation">小K浏览器认为不重要的网站（例如未保存任何设置的网站或您不常访问的网站）存储的数据</string>
+
+    <string name="storage_management_reset_app_dialog_text"
+        tools:ignore="ExtraTranslation">小K浏览器的所有应用数据都将被永久删除，其中包括所有文件、设置、账号、数据库等</string>
+
+    <string name="storage_management_clear_unimportant_dialog_text"
+        tools:ignore="ExtraTranslation">这会清除小K浏览器认为不重要的网站的 cookies, 缓存和其他数据。</string>
+
+    <string name="new_tab_otr_not_saved" tools:ignore="ExtraTranslation">"小K浏览器 &lt;em&gt;不会保存&lt;/em&gt; 以下信息:
+        &lt;ul&gt;
+          &lt;li&gt;您的浏览记录
+          &lt;li&gt;Cookie 和网站数据
+          &lt;li&gt;在表单中填写的信息
+        &lt;/ul&gt;"</string>
+
+    <string name="main_menu_mobile_site">移动优化版网站</string>
+
+    <string name="terms_of_service_title" tools:ignore="ExtraTranslation">"小K浏览器 服务条款"</string>
+    <string name="privacy_notice_title" tools:ignore="ExtraTranslation">"小K浏览器 隐私权声明"</string>
+
+    <string name="android_permission_off_plural"
+        tools:ignore="ExtraTranslation">在 &lt;link&gt;Android 设置&lt;/link&gt;中为 小K浏览器 启用这些权限。</string>
+    <string name="android_permission_off"
+        tools:ignore="ExtraTranslation">在 &lt;link&gt;Android 设置&lt;/link&gt;中为 小K浏览器 启用这项权限。</string>
+
+    <string name="menu_update" tools:ignore="ExtraTranslation">升级小K浏览器</string>
+    <string name="force_update_description" tools:ignore="ExtraTranslation">您必须升级后才能继续使用</string>
+    <string name="open_external_title" tools:ignore="ExtraTranslation">使用外部应用访问该站点</string>
+    <string name="open_extension_title" tools:ignore="MissingTranslation">您无法在无痕模式下访问扩展程序</string>
+</resources>

@@ -19,6 +19,7 @@ import android.os.Build;
 import android.os.StrictMode;
 import android.provider.Browser;
 import android.provider.Telephony;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.WindowManager.BadTokenException;
@@ -27,6 +28,7 @@ import android.webkit.MimeTypeMap;
 import org.chromium.base.ApplicationState;
 import org.chromium.base.ApplicationStatus;
 import org.chromium.base.ContextUtils;
+import org.chromium.base.Log;
 import org.chromium.base.PathUtils;
 import org.chromium.base.ThreadUtils;
 import org.chromium.base.VisibleForTesting;
@@ -38,6 +40,10 @@ import org.chromium.chrome.browser.ChromeTabbedActivity2;
 import org.chromium.chrome.browser.IntentHandler;
 import org.chromium.chrome.browser.LaunchIntentDispatcher;
 import org.chromium.chrome.browser.UrlConstants;
+import org.chromium.chrome.browser.compositor.CompositorViewHolder;
+import org.chromium.chrome.browser.compositor.layouts.Layout;
+import org.chromium.chrome.browser.compositor.layouts.LayoutManager;
+import org.chromium.chrome.browser.compositor.layouts.SceneChangeObserver;
 import org.chromium.chrome.browser.document.ChromeLauncherActivity;
 import org.chromium.chrome.browser.externalnav.ExternalNavigationHandler.OverrideUrlLoadingResult;
 import org.chromium.chrome.browser.instantapps.AuthenticatedProxyActivity;
@@ -65,6 +71,7 @@ import java.util.List;
  * The main implementation of the {@link ExternalNavigationDelegate}.
  */
 public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegate {
+    private static final String TAG = "ExternalNavigationDelegate";
     private static final String PDF_VIEWER = "com.google.android.apps.docs";
     private static final String PDF_MIME = "application/pdf";
     private static final String PDF_SUFFIX = ".pdf";
@@ -75,6 +82,10 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
     private final TabObserver mTabObserver;
     private boolean mIsTabDestroyed;
 
+    private final CqttechOpenExternalSnackController mSnackController;
+    @Nullable
+    private SceneChangeObserver mSceneChangeObserver;
+
     public ExternalNavigationDelegateImpl(Tab tab) {
         mTab = tab;
         mApplicationContext = ContextUtils.getApplicationContext();
@@ -82,9 +93,28 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
             @Override
             public void onDestroyed(Tab tab) {
                 mIsTabDestroyed = true;
+                ChromeActivity activity = tab.getActivity();
+                if (activity != null) {
+                    CompositorViewHolder holder = activity.getCompositorViewHolder();
+                    if (holder != null) {
+                        LayoutManager manager = holder.getLayoutManager();
+                        if (mSceneChangeObserver != null) {
+                            manager.removeSceneChangeObserver(mSceneChangeObserver);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onUrlUpdated(Tab tab) {
+                mSnackController.dismissIfNeeded(tab, false);
             }
         };
         mTab.addObserver(mTabObserver);
+
+        mSnackController = new CqttechOpenExternalSnackController();
+
+        //addSceneChangedObserver();
     }
 
     /**
@@ -343,7 +373,8 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
             } else {
                 Context context = getAvailableContext();
                 if (!(context instanceof Activity)) intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(intent);
+                //context.startActivity(intent);
+                startActivityInterceptor(intent);
             }
             recordExternalNavigationDispatched(intent);
         } catch (RuntimeException e) {
@@ -364,7 +395,9 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
             } else {
                 Context context = getAvailableContext();
                 if (context instanceof Activity) {
-                    activityWasLaunched = ((Activity) context).startActivityIfNeeded(intent, -1);
+                    //activityWasLaunched = ((Activity) context).startActivityIfNeeded(intent, -1);
+                    activityWasLaunched = false;
+                    startActivityInterceptor(intent);
                 } else {
                     activityWasLaunched = false;
                 }
@@ -647,6 +680,52 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
         return mTab.getWebContents().getLastCommittedUrl();
     }
 
+    @Override
+    public boolean interceptChromeExtension(String url) {
+        if (hasValidTab()) {
+            addSceneChangedObserver();
+            return mSnackController.interceptIgnoreExtension(mTab, url);
+        }
+
+        return false;
+    }
+
+    private void startActivityInterceptor(Intent intent) {
+        if (hasValidTab()) {
+            addSceneChangedObserver();
+            mSnackController.askUserForOpenExternal(mTab, intent);
+        } else {
+            Log.e(TAG, "no valid tab, do nothing");
+        }
+    }
+
+    private void addSceneChangedObserver() {
+        if (mSceneChangeObserver != null) {
+            return;
+        }
+
+        ChromeActivity activity = mTab.getActivity();
+        if (activity != null) {
+            CompositorViewHolder holder = activity.getCompositorViewHolder();
+            if (holder != null) {
+                LayoutManager manager = holder.getLayoutManager();
+                if (manager != null) {
+                    mSceneChangeObserver = new SceneChangeObserver() {
+                        @Override
+                        public void onTabSelectionHinted(int tabId) {
+                        }
+
+                        @Override
+                        public void onSceneChange(Layout layout) {
+                            mSnackController.dismissIfNeeded(mTab, true);
+                        }
+                    };
+                    manager.addSceneChangeObserver(mSceneChangeObserver);
+                }
+            }
+        }
+    }
+
     /**
      * Dispatches the intent through a proxy activity, so that startActivityForResult can be used
      * and the intent recipient can verify the caller.
@@ -657,7 +736,8 @@ public class ExternalNavigationDelegateImpl implements ExternalNavigationDelegat
         proxyIntent.setClass(getAvailableContext(), AuthenticatedProxyActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         proxyIntent.putExtra(AuthenticatedProxyActivity.AUTHENTICATED_INTENT_EXTRA, intent);
-        getAvailableContext().startActivity(proxyIntent);
+        //getAvailableContext().startActivity(proxyIntent);
+        startActivityInterceptor(proxyIntent);
     }
 
     /**

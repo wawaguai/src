@@ -1,0 +1,17 @@
+<resources>
+    <color name="main_primary_color">#FF157EE6</color>
+    <color name="main_text_light_color">#FF333333</color>
+    <color name="main_text_dark_color">#FFCECECE</color>
+
+<!--    <color name="french_text_light_color">#FF666666</color>-->
+<!--    <color name="french_text_dark_color">#FF999999</color>-->
+
+    <color name="main_background_light_color">#FFFFFFFF</color>
+    <color name="main_background_dark_color">#FF2B2C30</color>
+
+    <color name="main_vector_light_color">#FF4E5161</color>
+    <color name="main_vector_dark_color">#FFCECECE</color>
+
+    <color name="main_vector_light_disable_color">#4D4E5161</color>
+    <color name="main_vector_dark_disable_color">#4DCECECE</color>
+</resources>

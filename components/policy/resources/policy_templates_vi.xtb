@@ -828,7 +828,7 @@ Khi chính sách này được đặt thành false hoặc không được địn
 
       Nếu chính sách được đặt thành sai, máy khách DNS tích hợp sẽ không bao giờ được sử dụng.
 
-      Nếu chính sách không được đặt, người dùng sẽ có thể thay đổi để máy khách DNS tích hợp được sử dụng hay không bằng cách chỉnh sửa Kiwi://flags hoặc chỉ định một cờ dòng lệnh.</translation>
+      Nếu chính sách không được đặt, người dùng sẽ có thể thay đổi để máy khách DNS tích hợp được sử dụng hay không bằng cách chỉnh sửa xk://flags hoặc chỉ định một cờ dòng lệnh.</translation>
 <translation id="3214164532079860003">Chính sách này nếu được bật sẽ buộc trang chủ phải được nhập từ trình duyệt mặc định hiện tại.
 
       Nếu tắt chính sách này, trang chủ sẽ không được nhập.

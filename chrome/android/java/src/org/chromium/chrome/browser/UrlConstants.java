@@ -40,7 +40,8 @@ public class UrlConstants {
     public static final String NTP_URL = "chrome-native://newtab/";
     public static final String NTP_NON_NATIVE_URL = "chrome://newtab";
 
-    public static final String LOCAL_NTP_URL = "chrome-search://local-ntp/local-ntp.html";
+    // public static final String LOCAL_NTP_URL = "chrome-search://local-ntp/local-ntp.html";
+    public static final String LOCAL_NTP_URL = NTP_URL;
 
     public static final String BOOKMARKS_HOST = "bookmarks";
     public static final String BOOKMARKS_URL = "chrome-native://bookmarks/";
@@ -79,4 +80,12 @@ public class UrlConstants {
     public static final String CHROME_MEMEX_DEV_URL = "https://chrome-memex-dev.appspot.com/";
 
     public static final String CONTENT_SUGGESTIONS_SUFFIX = "#suggestions";
+
+    public static final String CQTTECH_HISTORY_ACTION = "cqttech://cqttech.home.nav.history";
+    public static final String CQTTECH_BOOKMARK_ACTION = "cqttech://cqttech.home.nav.bookmark";
+    public static final String CQTTECH_PRIVACY = "http://wap.xkbrowser.com/privacy.html";
+    public static final String CQTTECH_LICENSE = "http://wap.xkbrowser.com/license.html";
+    public static final String CQTTECH_SDK = "http://wap.xkbrowser.com/sdk.html";
+
+    public static final String XK_EXTENSION_STORE = "extbm.xkbrowser.com";
 }

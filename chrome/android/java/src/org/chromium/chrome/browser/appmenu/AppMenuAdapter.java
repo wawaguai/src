@@ -28,6 +28,7 @@ import org.chromium.chrome.browser.widget.TintedImageButton;
 import org.chromium.chrome.browser.widget.ViewHighlighter;
 import org.chromium.ui.base.LocalizationUtils;
 import org.chromium.ui.interpolators.BakedBezierInterpolator;
+import org.wwg.common.ThemeConfig;
 
 import java.util.List;
 
@@ -156,6 +157,7 @@ class AppMenuAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        int mainTextColor = ThemeConfig.getInstance().getMainTextColor();
         final MenuItem item = getItem(position);
         switch (getItemViewType(position)) {
             case STANDARD_MENU_ITEM: {
@@ -165,10 +167,9 @@ class AppMenuAdapter extends BaseAdapter {
                     holder = new StandardMenuItemViewHolder();
                     convertView = mInflater.inflate(R.layout.menu_item, parent, false);
                     holder.text = (TextView) convertView.findViewById(R.id.menu_item_text);
-                    if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black")) {
-                        holder.text.setTextColor(Color.GRAY);
-                    }
+                    holder.text.setTextColor(mainTextColor);
                     holder.image = (AppMenuItemIcon) convertView.findViewById(R.id.menu_item_icon);
+                    holder.image.setTint(ThemeConfig.getInstance().getMainVectorColorStateList());
                     convertView.setTag(holder);
                     convertView.setTag(R.id.menu_item_enter_anim_id,
                             buildStandardItemEnterAnimator(convertView, position));
@@ -188,9 +189,7 @@ class AppMenuAdapter extends BaseAdapter {
                     holder = new CustomMenuItemViewHolder();
                     convertView = mInflater.inflate(R.layout.update_menu_item, parent, false);
                     holder.text = (TextView) convertView.findViewById(R.id.menu_item_text);
-                    if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black")) {
-                        holder.text.setTextColor(Color.GRAY);
-                    }
+                    holder.text.setTextColor(mainTextColor);
                     holder.image = (AppMenuItemIcon) convertView.findViewById(R.id.menu_item_icon);
                     holder.summary = (TextView) convertView.findViewById(R.id.menu_item_summary);
                     convertView.setTag(holder);
@@ -252,9 +251,7 @@ class AppMenuAdapter extends BaseAdapter {
                 }
 
                 holder.title.setText(titleItem.getTitle());
-                if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black")) {
-                    holder.title.setTextColor(Color.GRAY);
-                }
+                holder.title.setTextColor(mainTextColor);
                 holder.title.setEnabled(titleItem.isEnabled());
                 holder.title.setFocusable(titleItem.isEnabled());
                 holder.title.setOnClickListener(v -> mAppMenu.onItemClick(titleItem));
@@ -347,11 +344,10 @@ class AppMenuAdapter extends BaseAdapter {
         // Set up the icon.
         Drawable icon = item.getIcon();
         holder.image.setImageDrawable(icon);
+        holder.image.setTint(ThemeConfig.getInstance().getMainVectorColorStateList());
         holder.image.setVisibility(icon == null ? View.GONE : View.VISIBLE);
         holder.image.setChecked(item.isChecked());
-        if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black")) {
-            holder.text.setTextColor(Color.GRAY);
-        }
+        holder.text.setTextColor(ThemeConfig.getInstance().getMainTextColor());
         holder.text.setText(item.getTitle());
         holder.text.setContentDescription(item.getTitleCondensed());
 
@@ -452,6 +448,7 @@ class AppMenuAdapter extends BaseAdapter {
             for (int i = 0; i < numItems; i++) {
                 TintedImageButton view =
                         (TintedImageButton) convertView.findViewById(BUTTON_IDS[i]);
+                view.setTint(ThemeConfig.getInstance().getMainVectorColorStateList());
                 holder.buttons[i] = view;
                 holder.buttons[i].setTag(
                         R.id.menu_item_original_background, holder.buttons[i].getBackground());

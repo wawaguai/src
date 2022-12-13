@@ -3,9 +3,11 @@
      Use of this source code is governed by a BSD-style license that can be
      found in the LICENSE file. -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <!-- The application name displayed to the user. -->
-    <string name="app_name" translatable="false">Kiwi Browser (classic)</string>
-    <string name="bookmark_widget_title" translatable="false">Kiwi bookmarks</string>
-    <string name="search_widget_title" translatable="false">Kiwi search</string>
+<!--    <string name="app_name" translatable="false">Kitty Browser</string>-->
+
+    <string name="app_name" tools:ignore="MissingTranslation">小K浏览器</string>
+    <string name="bookmark_widget_title" translatable="false">XKBrowser bookmarks</string>
+    <string name="search_widget_title" translatable="false">XKBrowser search</string>
 </resources>

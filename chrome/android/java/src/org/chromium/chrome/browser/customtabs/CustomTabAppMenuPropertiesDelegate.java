@@ -13,12 +13,16 @@ import static org.chromium.chrome.browser.customtabs.CustomTabIntentDataProvider
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import org.chromium.base.ContextUtils;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.ChromeActivity;
 import org.chromium.chrome.browser.DefaultBrowserInfo;
 import org.chromium.chrome.browser.UrlConstants;
+import org.chromium.chrome.browser.appmenu.AppMenu;
+import org.chromium.chrome.browser.appmenu.AppMenuIconRowFooter;
 import org.chromium.chrome.browser.appmenu.AppMenuPropertiesDelegate;
 import org.chromium.chrome.browser.customtabs.CustomTabIntentDataProvider.CustomTabsUiType;
 import org.chromium.chrome.browser.download.DownloadUtils;
@@ -64,12 +68,18 @@ public class CustomTabAppMenuPropertiesDelegate extends AppMenuPropertiesDelegat
     public void prepareMenu(Menu menu) {
         Tab currentTab = mActivity.getActivityTab();
         if (currentTab != null) {
-            MenuItem forwardMenuItem = menu.findItem(R.id.forward_menu_id);
-            forwardMenuItem.setEnabled(currentTab.canGoForward());
+            boolean bottomToolbarEnabled = ContextUtils.getAppSharedPreferences().getBoolean("enable_bottom_toolbar", false);
+            // Update the icon row items (shown in narrow form factors).
+            boolean shouldShowIconRow = !bottomToolbarEnabled;
+            menu.findItem(R.id.icon_row_menu_id).setVisible(shouldShowIconRow);
+            if (shouldShowIconRow) {
+                MenuItem forwardMenuItem = menu.findItem(R.id.forward_menu_id);
+                forwardMenuItem.setEnabled(currentTab.canGoForward());
 
-            mReloadMenuItem = menu.findItem(R.id.reload_menu_id);
-            mReloadMenuItem.setIcon(R.drawable.btn_reload_stop);
-            loadingStateChanged(currentTab.isLoading());
+                mReloadMenuItem = menu.findItem(R.id.reload_menu_id);
+                mReloadMenuItem.setIcon(R.drawable.btn_reload_stop);
+                loadingStateChanged(currentTab.isLoading());
+            }
 
             MenuItem shareItem = menu.findItem(R.id.share_row_menu_id);
             shareItem.setVisible(mShowShare);
@@ -193,7 +203,25 @@ public class CustomTabAppMenuPropertiesDelegate extends AppMenuPropertiesDelegat
                 || mUiType == CUSTOM_TABS_UI_TYPE_OFFLINE_PAGE) {
             return 0;
         }
+
+        if (ContextUtils.getAppSharedPreferences().getBoolean("enable_bottom_toolbar", false)) {
+            return R.layout.icon_row_menu_footer;
+        }
+
         return R.layout.powered_by_chrome_footer;
+    }
+
+    @Override
+    public boolean shouldShowFooter(int maxMenuHeight) {
+        return ContextUtils.getAppSharedPreferences().getBoolean("enable_bottom_toolbar", false);
+    }
+
+    @Override
+    public void onFooterViewInflated(AppMenu appMenu, View view) {
+        if (view instanceof AppMenuIconRowFooter) {
+            ((AppMenuIconRowFooter) view)
+                    .initialize(mActivity, appMenu, mBookmarkBridge);
+        }
     }
 
     /**

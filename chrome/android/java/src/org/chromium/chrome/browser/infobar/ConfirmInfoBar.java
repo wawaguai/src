@@ -5,9 +5,12 @@
 package org.chromium.chrome.browser.infobar;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
+import org.chromium.base.ContextUtils;
 import org.chromium.base.annotations.CalledByNative;
 import org.chromium.chrome.browser.ResourceId;
+import org.chromium.chrome.R;
 
 /**
  * An infobar that presents the user with several buttons.
@@ -75,6 +78,11 @@ public class ConfirmInfoBar extends InfoBar {
             String linkText, String buttonOk, String buttonCancel) {
         int drawableId = ResourceId.mapToDrawableId(enumeratedIconId);
 
+        if (!TextUtils.isEmpty(message)) {
+            String name = ContextUtils.getApplicationContext().getString(R.string.app_name);
+            message = message.replace("Kiwi", name);
+            message = message.replace("kiwi", name);
+        }
         ConfirmInfoBar infoBar = new ConfirmInfoBar(drawableId, iconBitmap, message, linkText,
                 buttonOk, buttonCancel);
 

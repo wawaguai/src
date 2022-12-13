@@ -48,6 +48,7 @@ import org.chromium.chrome.browser.notifications.NotificationConstants;
 import org.chromium.chrome.browser.notifications.NotificationUmaTracker;
 import org.chromium.chrome.browser.notifications.channels.ChannelDefinitions;
 import org.chromium.content_public.common.MediaMetadata;
+import org.wwg.common.DeviceFeature;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -824,7 +825,8 @@ public class MediaNotificationManager {
 
     @VisibleForTesting
     void showNotification(MediaNotificationInfo mediaNotificationInfo) {
-        if (shouldIgnoreMediaNotificationInfo(mMediaNotificationInfo, mediaNotificationInfo)) {
+        if (shouldIgnoreMediaNotificationInfo(mMediaNotificationInfo, mediaNotificationInfo)
+                || shouldIgnoreNotification()) {
             return;
         }
 
@@ -1254,5 +1256,14 @@ public class MediaNotificationManager {
 
     private static Context getContext() {
         return ContextUtils.getApplicationContext();
+    }
+
+    private static boolean shouldIgnoreNotification() {
+        String flavor = DeviceFeature.getBuildFlavor();
+        if (!TextUtils.isEmpty(flavor)) {
+            return "huawei".equalsIgnoreCase(flavor);
+        }
+
+        return false;
     }
 }

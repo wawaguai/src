@@ -90,9 +90,8 @@ public class AccessibilityPreferences extends PreferenceFragment
     private NightModePrefsObserver mNightModePrefsObserver = new NightModePrefsObserver() {
         @Override
         public void onNightScaleFactorChanged(float nightScaleFactor, float userNightScaleFactor) {
-            Context context = ContextUtils.getApplicationContext();
-
-            Toast.makeText(context, "Night Mode contrast set to " + (userNightScaleFactor * 100), Toast.LENGTH_SHORT).show();
+            //Context context = ContextUtils.getApplicationContext();
+            //Toast.makeText(context, "Night Mode contrast set to " + (userNightScaleFactor * 100), Toast.LENGTH_SHORT).show();
 
             updateNightScaleSummary(userNightScaleFactor);
         }
@@ -293,10 +292,36 @@ public class AccessibilityPreferences extends PreferenceFragment
             sharedPreferencesEditor.putBoolean(PREF_OPEN_IN_EXTERNAL_APP, (boolean)newValue);
             sharedPreferencesEditor.apply();
         } else if (PREF_ENABLE_BOTTOM_TOOLBAR.equals(preference.getKey())) {
-            SharedPreferences.Editor sharedPreferencesEditor = ContextUtils.getAppSharedPreferences().edit();
-            sharedPreferencesEditor.putBoolean(PREF_ENABLE_BOTTOM_TOOLBAR, (boolean)newValue);
-            sharedPreferencesEditor.apply();
-            AskForRelaunch();
+            boolean origin = ContextUtils.getAppSharedPreferences().getBoolean(PREF_ENABLE_BOTTOM_TOOLBAR, false);
+            if (origin == (boolean) newValue) {
+                return true;
+            }
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this.getActivity());
+            alertDialogBuilder
+                    .setMessage(R.string.preferences_restart_is_needed)
+                    .setCancelable(true)
+                    .setPositiveButton(R.string.preferences_restart_now, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,int id) {
+                            SharedPreferences.Editor sharedPreferencesEditor = ContextUtils.getAppSharedPreferences().edit();
+                            sharedPreferencesEditor.putBoolean(PREF_ENABLE_BOTTOM_TOOLBAR, (boolean)newValue);
+                            sharedPreferencesEditor.apply();
+
+                            RestartWorker restartWorker = new RestartWorker();
+                            restartWorker.Restart();
+                            dialog.cancel();
+                        }
+                    })
+                    .setNegativeButton(R.string.preferences_restart_later,new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog,int id) {
+                            ((ChromeBaseCheckBoxPreference) findPreference(PREF_ENABLE_BOTTOM_TOOLBAR)).setChecked(!(boolean)newValue);
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alertDialog = alertDialogBuilder.create();
+            alertDialog.show();
         }
         return true;
     }

@@ -304,6 +304,8 @@ public class LocationBarVoiceRecognitionHandler {
      * @return Whether or not voice search is enabled.
      */
     public boolean isVoiceSearchEnabled() {
+        return false;
+        /*
         ToolbarDataProvider toolbarDataProvider = mDelegate.getToolbarDataProvider();
         if (toolbarDataProvider == null) return false;
 
@@ -318,6 +320,7 @@ public class LocationBarVoiceRecognitionHandler {
 
         Activity activity = windowAndroid.getActivity().get();
         return activity != null && isRecognitionIntentPresent(activity, true);
+         */
     }
 
     /**

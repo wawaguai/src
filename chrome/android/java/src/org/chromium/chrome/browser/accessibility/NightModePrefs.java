@@ -37,7 +37,7 @@ public class NightModePrefs {
     private final ObserverList<NightModePrefsObserver> mObserverList;
 
     static final String PREF_USER_NIGHT_MODE_FACTOR = "user_night_mode_factor";
-    static final String PREF_USER_NIGHT_MODE_ENABLED = "user_night_mode_enabled";
+    public static final String PREF_USER_NIGHT_MODE_ENABLED = "user_night_mode_enabled";
     static final String PREF_USER_NIGHT_MODE_GRAYSCALE_ENABLED = "user_night_mode_grayscale_enabled";
 
     /**

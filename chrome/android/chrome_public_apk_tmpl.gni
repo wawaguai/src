@@ -17,7 +17,7 @@ declare_args() {
   enable_proguard_obfuscation = true
 
   # Enable multidex in release builds.
-  multidex_in_release = false
+  multidex_in_release = true
 }
 
 default_chrome_public_jinja_variables = [
@@ -89,6 +89,7 @@ template("chrome_public_apk_tmpl") {
         "//chrome/android/java/proguard.flags",
         "//base/android/proguard/chromium_apk.flags",
         "//base/android/proguard/chromium_code.flags",
+        "//cqttech/java/proguard.flags",
       ]
       if (enable_proguard_obfuscation) {
         proguard_configs +=

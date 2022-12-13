@@ -757,9 +757,9 @@ public class SelectionPopupControllerImpl extends ActionModeCallbackHelper
                     windowContext, menu, mClassificationResult.textClassification);
         }
 
-        if (!hasSelection() || isSelectionPassword()) return;
+        // if (!hasSelection() || isSelectionPassword()) return;
 
-        initializeTextProcessingMenu(menu);
+        // initializeTextProcessingMenu(menu);
     }
 
     private void removeActionMenuItemsIfNecessary(Menu menu) {

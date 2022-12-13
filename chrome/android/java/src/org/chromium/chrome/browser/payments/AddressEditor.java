@@ -389,7 +389,11 @@ public class AddressEditor
             setAddressFieldValuesFromCache();
             addAddressFieldsToEditor(
                     mCountryField.getValue().toString(), mProfile.getLanguageCode());
+
             mEditorDialog.show(mEditor);
+            if (mLoadingDialog != null) {
+                mLoadingDialog.dismiss();
+            }
         }
     }
 

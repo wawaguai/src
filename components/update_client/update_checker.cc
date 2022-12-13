@@ -38,6 +38,7 @@ namespace update_client {
 namespace {
 
 // Returns true if at least one item requires network encryption.
+/*
 bool IsEncryptionRequired(const IdToComponentPtrMap& components) {
   for (const auto& item : components) {
     const auto& component = item.second;
@@ -47,7 +48,7 @@ bool IsEncryptionRequired(const IdToComponentPtrMap& components) {
   }
   return false;
 }
-
+*/
 
 class UpdateCheckerImpl : public UpdateChecker {
  public:
@@ -141,6 +142,7 @@ void UpdateCheckerImpl::CheckForUpdatesHelper(
     const IdToComponentPtrMap& components,
     const std::string& additional_attributes,
     bool enabled_component_updates) {
+  /*
   DCHECK(thread_checker_.CalledOnValidThread());
 
   auto urls(config_->UpdateUrl());
@@ -169,6 +171,7 @@ void UpdateCheckerImpl::CheckForUpdatesHelper(
       config_->EnabledCupSigning(),
       base::BindOnce(&UpdateCheckerImpl::OnRequestSenderComplete,
                      base::Unretained(this), base::ConstRef(components)));
+  */
 }
 
 void UpdateCheckerImpl::OnRequestSenderComplete(

@@ -172,7 +172,7 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
         LoadUrlParams loadUrlParams = new LoadUrlParams(url);
         loadUrlParams.setReferrer(referrer);
         Tab newTab = mTab.getTabModelSelector().openNewTab(
-                loadUrlParams, TabLaunchType.FROM_LONGPRESS_BACKGROUND, mTab, isIncognito());
+                loadUrlParams, TabLaunchType.FROM_LONGPRESS_FOREGROUND, mTab, isIncognito());
 
         // {@code newTab} is null in document mode. Do not record metrics for document mode.
         if (mTab.getTabUma() != null && newTab != null) {
@@ -221,7 +221,7 @@ public class TabContextMenuItemDelegate implements ContextMenuItemDelegate {
                         : null);
         loadUrlParams.setReferrer(referrer);
         mTab.getActivity().getTabModelSelector().openNewTab(loadUrlParams,
-                TabLaunchType.FROM_LONGPRESS_BACKGROUND, mTab, isIncognito());
+                TabLaunchType.FROM_LONGPRESS_FOREGROUND, mTab, isIncognito());
     }
 
     @Override

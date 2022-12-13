@@ -1080,7 +1080,7 @@ public class PrefServiceBridge {
      *                was clicked.
      */
     public void setLatestVersionWhenClickedUpdateMenuItem(String version) {
-        nativeSetLatestVersionWhenClickedUpdateMenuItem(version);
+        // nativeSetLatestVersionWhenClickedUpdateMenuItem(version);
     }
 
     /**

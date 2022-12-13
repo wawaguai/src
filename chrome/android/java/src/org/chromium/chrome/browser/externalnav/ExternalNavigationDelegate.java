@@ -153,4 +153,8 @@ interface ExternalNavigationDelegate {
      * @return The previously committed URL from the WebContents.
      */
     String getPreviousUrl();
+
+    default boolean interceptChromeExtension(String url) {
+        return false;
+    }
 }
