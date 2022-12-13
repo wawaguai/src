@@ -22,10 +22,10 @@ import org.chromium.chrome.browser.toolbar.BottomToolbarModel.PropertyKey;
  */
 class BottomToolbarMediator implements FullscreenListener {
     /** The model for the bottom toolbar that holds all of its state. */
-    private BottomToolbarModel mModel;
+    private final BottomToolbarModel mModel;
 
     /** The fullscreen manager to observe browser controls events. */
-    private ChromeFullscreenManager mFullscreenManager;
+    private final ChromeFullscreenManager mFullscreenManager;
 
     /**
      * Build a new mediator that handles events from outside the bottom toolbar.

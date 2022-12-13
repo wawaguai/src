@@ -15,6 +15,7 @@ import org.chromium.chrome.R;
 import org.chromium.chrome.browser.compositor.scene_layer.ScrollingBottomViewSceneLayer;
 import org.chromium.chrome.browser.modelutil.PropertyModelChangeProcessor;
 import org.chromium.chrome.browser.toolbar.BottomToolbarModel.PropertyKey;
+import org.wwg.common.ThemeConfig;
 
 /**
  * This class is responsible for pushing updates to both the Android view and the compositor
@@ -75,28 +76,31 @@ public class BottomToolbarViewBinder
             if (view != null && view.toolbarRoot != null) {
               view.toolbarRoot.findViewById(R.id.search_button)
                       .setOnClickListener(model.getSearchAcceleratorListener());
-              if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black"))
-                  ((TintedImageButton)view.toolbarRoot.findViewById(R.id.search_button)).setTint(mLightModeTint);
-              else
+              if (ThemeConfig.getInstance().isDark()) {
                   ((TintedImageButton)view.toolbarRoot.findViewById(R.id.search_button)).setTint(mDarkModeTint);
+              } else {
+                  ((TintedImageButton)view.toolbarRoot.findViewById(R.id.search_button)).setTint(mLightModeTint);
+              }
             }
         } else if (PropertyKey.HOME_BUTTON_LISTENER == propertyKey) {
             if (view != null && view.toolbarRoot != null) {
               view.toolbarRoot.findViewById(R.id.home_button)
                       .setOnClickListener(model.getHomeButtonListener());
-              if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black"))
-                  ((TintedImageButton)view.toolbarRoot.findViewById(R.id.home_button)).setTint(mLightModeTint);
-              else
-                  ((TintedImageButton)view.toolbarRoot.findViewById(R.id.home_button)).setTint(mDarkModeTint);
+                if (ThemeConfig.getInstance().isDark()) {
+                    ((TintedImageButton)view.toolbarRoot.findViewById(R.id.home_button)).setTint(mDarkModeTint);
+                } else {
+                    ((TintedImageButton)view.toolbarRoot.findViewById(R.id.home_button)).setTint(mLightModeTint);
+                }
             }
         } else if (PropertyKey.MENU_BUTTON_LISTENER == propertyKey) {
             if (view != null && view.toolbarRoot != null) {
               view.toolbarRoot.findViewById(R.id.menu_button)
                       .setOnTouchListener(model.getMenuButtonListener());
-              if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black"))
-                  ((TintedImageButton)view.toolbarRoot.findViewById(R.id.menu_button)).setTint(mLightModeTint);
-              else
-                  ((TintedImageButton)view.toolbarRoot.findViewById(R.id.menu_button)).setTint(mDarkModeTint);
+                if (ThemeConfig.getInstance().isDark()) {
+                    ((TintedImageButton)view.toolbarRoot.findViewById(R.id.menu_button)).setTint(mDarkModeTint);
+                } else {
+                    ((TintedImageButton)view.toolbarRoot.findViewById(R.id.menu_button)).setTint(mLightModeTint);
+                }
             }
         } else if (PropertyKey.TOOLBAR_SWIPE_HANDLER == propertyKey) {
             if (view != null && view.toolbarRoot != null)

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import org.chromium.base.ApiCompatibilityUtils;
 import org.chromium.base.Callback;
+import org.chromium.base.Log;
 import org.chromium.base.ThreadUtils;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.metrics.RecordHistogram;
@@ -94,6 +95,7 @@ import android.app.Activity;
 import org.chromium.chrome.browser.accessibility.NightModePrefs;
 import android.graphics.Color;
 import org.chromium.base.ApiCompatibilityUtils;
+import org.wwg.common.ThemeConfig;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -116,6 +118,8 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
          */
         public void updateReloadButtonState(boolean isLoading);
     }
+
+    private static final String TAG = "ToolbarManager";
 
     /**
      * The number of ms to wait before reporting to UMA omnibox interaction metrics.
@@ -314,6 +318,7 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
                 assert tab == mToolbarModel.getTab();
                 mLocationBar.updateSecurityIcon();
                 mLocationBar.setUrlToPageUrl();
+                forceShowBrowserControls(tab);
             }
 
             @Override
@@ -352,6 +357,7 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
 
             @Override
             public void onPageLoadFinished(Tab tab) {
+                forceShowBrowserControls(tab);
                 mToolbarModel.setIgnoreSecurityLevelForSearchTerms(false);
                 if (tab.isShowingErrorPage()) {
                     handleIPHForErrorPageShown(tab);
@@ -554,6 +560,15 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
                 Tracker tracker = TrackerFactory.getTrackerForProfile(tab.getProfile());
                 tracker.notifyEvent(EventConstants.USER_HAS_SEEN_DINO);
             }
+
+            private void forceShowBrowserControls(Tab tab) {
+                boolean canShow = tab.canShowBrowserControls();
+                boolean canAutoHide = tab.canAutoHideBrowserControls();
+                Log.i(TAG, "show -> " + canShow + " auto hide -> " + canAutoHide);
+                //if (!canAutoHide) {
+                    mControlContainer.setVisibility(View.VISIBLE);
+                //}
+            }
         };
 
         mBookmarksObserver = new BookmarkBridge.BookmarkModelObserver() {
@@ -707,7 +722,7 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
                 }, ViewHighlighter.IPH_MIN_DELAY_BETWEEN_TWO_HIGHLIGHTS);
             }
         });
-        activity.getAppMenuHandler().setMenuHighlight(R.id.adblock_row_menu_id);
+        //activity.getAppMenuHandler().setMenuHighlight(R.id.adblock_row_menu_id);
         mTextBubble.show();
         mHandler.postDelayed(new Runnable() {
              @Override
@@ -1382,15 +1397,15 @@ public class ToolbarManager implements ToolbarTabController, UrlFocusChangeListe
                     : ApiCompatibilityUtils.getColor(mToolbar.getResources(),
                             R.color.default_primary_color);
             int primaryColor = tab != null ? tab.getThemeColor() : defaultPrimaryColor;
-            if (ContextUtils.getAppSharedPreferences().getBoolean("user_night_mode_enabled", false) || ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Diamond Black")) {
+            if (ThemeConfig.getInstance().isDark()) {
                 defaultPrimaryColor = ApiCompatibilityUtils.getColor(mToolbar.getResources(),
                             R.color.incognito_primary_color);
                 primaryColor = defaultPrimaryColor;
             }
-            if (ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Ultra White") && !isIncognito) {
-                defaultPrimaryColor = Color.WHITE;
-                primaryColor = defaultPrimaryColor;
-            }
+            //if (ContextUtils.getAppSharedPreferences().getString("active_theme", "").equals("Ultra White") && !isIncognito) {
+            //    defaultPrimaryColor = Color.WHITE;
+            //    primaryColor = defaultPrimaryColor;
+            //}
             updatePrimaryColor(primaryColor, false);
 
             mToolbar.onTabOrModelChanged();
