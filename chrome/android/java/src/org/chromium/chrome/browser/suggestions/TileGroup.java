@@ -95,7 +95,7 @@ public class TileGroup implements MostVisitedSites.Observer {
     }
 
     /**
-     * A delegate to allow {@link TileRenderer} to setup behaviours for the newly created views
+     * A delegate to allow {@link CqttechTileRenderer} to setup behaviours for the newly created views
      * associated to a Tile.
      */
     public interface TileSetupDelegate {
@@ -143,7 +143,7 @@ public class TileGroup implements MostVisitedSites.Observer {
     private final ContextMenuManager mContextMenuManager;
     private final Delegate mTileGroupDelegate;
     private final Observer mObserver;
-    private final TileRenderer mTileRenderer;
+    private final CqttechTileRenderer mTileRenderer;
 
     /**
      * Tracks the tasks currently in flight.
@@ -212,7 +212,7 @@ public class TileGroup implements MostVisitedSites.Observer {
      * @param observer Will be notified of changes to the tile data.
      * @param offlinePageBridge Used to update the offline badge of the tiles.
      */
-    public TileGroup(TileRenderer tileRenderer, SuggestionsUiDelegate uiDelegate,
+    public TileGroup(CqttechTileRenderer tileRenderer, SuggestionsUiDelegate uiDelegate,
             ContextMenuManager contextMenuManager, Delegate tileGroupDelegate, Observer observer,
             OfflinePageBridge offlinePageBridge) {
         mUiDelegate = uiDelegate;

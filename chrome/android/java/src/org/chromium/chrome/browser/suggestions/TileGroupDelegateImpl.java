@@ -5,11 +5,15 @@
 package org.chromium.chrome.browser.suggestions;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import org.chromium.base.Callback;
 import org.chromium.base.metrics.RecordUserAction;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.ChromeActivity;
+import org.chromium.chrome.browser.UrlConstants;
+import org.chromium.chrome.browser.bookmarks.BookmarkUtils;
+import org.chromium.chrome.browser.history.HistoryManagerUtils;
 import org.chromium.chrome.browser.ntp.NewTabPageUma;
 import org.chromium.chrome.browser.profiles.Profile;
 import org.chromium.chrome.browser.snackbar.Snackbar;
@@ -59,6 +63,17 @@ public class TileGroupDelegateImpl implements TileGroup.Delegate {
         // TODO(treib): Should we call recordOpenedMostVisitedItem here?
         if (windowDisposition != WindowOpenDisposition.NEW_WINDOW) {
             recordOpenedTile(item);
+        }
+
+        if (mContext instanceof ChromeActivity) {
+            ChromeActivity activity = (ChromeActivity) mContext;
+            if (TextUtils.equals(UrlConstants.CQTTECH_HISTORY_ACTION, url)) {
+                HistoryManagerUtils.showHistoryManager(activity, activity.getActivityTab());
+                return;
+            } else if (TextUtils.equals(UrlConstants.CQTTECH_BOOKMARK_ACTION, url)) {
+                BookmarkUtils.showBookmarkManager(activity);
+                return;
+            }
         }
 
         mNavigationDelegate.navigateToSuggestionUrl(windowDisposition, url);

@@ -29,7 +29,7 @@ public class SiteSection extends OptionalLeaf implements TileGroup.Observer {
     private static final int MAX_TILE_COLUMNS = 4;
 
     private final TileGroup mTileGroup;
-    private final TileRenderer mTileRenderer;
+    private final CqttechTileRenderer mTileRenderer;
 
     public static ViewGroup inflateSiteSection(ViewGroup parent) {
         return (ViewGroup) LayoutInflater.from(parent.getContext())
@@ -43,8 +43,9 @@ public class SiteSection extends OptionalLeaf implements TileGroup.Observer {
     public SiteSection(SuggestionsUiDelegate uiDelegate, ContextMenuManager contextMenuManager,
             TileGroup.Delegate tileGroupDelegate, OfflinePageBridge offlinePageBridge,
             UiConfig uiConfig) {
-        mTileRenderer = new TileRenderer(ContextUtils.getApplicationContext(),
-                SuggestionsConfig.getTileStyle(uiConfig), getTileTitleLines(),
+        mTileRenderer = new CqttechTileRenderer(
+                ContextUtils.getApplicationContext(),
+                getTileTitleLines(),
                 uiDelegate.getImageFetcher());
         mTileGroup = new TileGroup(mTileRenderer, uiDelegate, contextMenuManager, tileGroupDelegate,
                 /* observer = */ this, offlinePageBridge);
@@ -97,7 +98,7 @@ public class SiteSection extends OptionalLeaf implements TileGroup.Observer {
         return mTileGroup;
     }
 
-    private static int getMaxTileRows() {
+    public static int getMaxTileRows() {
         return 2;
     }
 
@@ -107,9 +108,13 @@ public class SiteSection extends OptionalLeaf implements TileGroup.Observer {
 
     @LayoutRes
     private static int getLayout() {
+        /*
         if (SuggestionsConfig.useModernLayout()) {
             return R.layout.suggestions_site_tile_grid_modern;
         }
         return R.layout.suggestions_site_tile_grid;
+        */
+
+        return R.layout.cqttech_suggestions_site_tile_grid;
     }
 }

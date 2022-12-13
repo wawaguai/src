@@ -9,7 +9,7 @@ import org.chromium.base.ThreadUtils;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.chrome.browser.favicon.FaviconHelper;
 import org.chromium.chrome.browser.favicon.LargeIconBridge;
-import org.chromium.chrome.browser.ntp.snippets.SnippetsBridge;
+import org.chromium.chrome.browser.ntp.snippets.CqttechSnippetsBridge;
 import org.chromium.chrome.browser.ntp.snippets.SuggestionsSource;
 import org.chromium.chrome.browser.offlinepages.OfflinePageBridge;
 import org.chromium.chrome.browser.profiles.Profile;
@@ -40,7 +40,8 @@ public class SuggestionsDependencyFactory {
     }
 
     public SuggestionsSource createSuggestionSource(Profile profile) {
-        return new SnippetsBridge(profile);
+        // return new SnippetsBridge(profile);
+        return new CqttechSnippetsBridge(profile);
     }
 
     public SuggestionsEventReporter createEventReporter() {

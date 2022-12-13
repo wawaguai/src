@@ -331,6 +331,9 @@ public abstract class CardViewHolder
             case ItemViewType.STATUS:
             case ItemViewType.ACTION:
             case ItemViewType.PROMO:
+            case ItemViewType.BIG_IMAGE_SNIPPET:
+            case ItemViewType.SMALL_IMAGE_SNIPPET:
+            case ItemViewType.NO_IMAGE_SNIPPET:
                 return true;
             case ItemViewType.ABOVE_THE_FOLD:
             case ItemViewType.SITE_SECTION:

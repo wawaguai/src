@@ -427,6 +427,7 @@ void PopularSitesImpl::RegisterProfilePrefs(
 }
 
 void PopularSitesImpl::FetchPopularSites() {
+  /*
   net::NetworkTrafficAnnotationTag traffic_annotation =
       net::DefineNetworkTrafficAnnotation("popular_sites_fetch", R"(
         semantics {
@@ -456,6 +457,7 @@ void PopularSitesImpl::FetchPopularSites() {
                          net::LOAD_DO_NOT_SAVE_COOKIES);
   fetcher_->SetAutomaticallyRetryOnNetworkChanges(1);
   fetcher_->Start();
+  */
 }
 
 void PopularSitesImpl::OnURLFetchComplete(const net::URLFetcher* source) {

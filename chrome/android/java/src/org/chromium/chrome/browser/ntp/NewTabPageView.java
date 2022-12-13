@@ -31,6 +31,7 @@ import org.chromium.base.ApiCompatibilityUtils;
 import org.chromium.base.ContextUtils;
 import org.chromium.base.TraceEvent;
 import org.chromium.base.VisibleForTesting;
+import org.chromium.chrome.browser.ntp.cards.CqttechNewTabPageAdapter;
 import org.chromium.chrome.browser.widget.TextViewWithCompoundDrawables;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.ChromeFeatureList;
@@ -51,7 +52,7 @@ import org.chromium.chrome.browser.suggestions.SuggestionsDependencyFactory;
 import org.chromium.chrome.browser.suggestions.SuggestionsUiDelegate;
 import org.chromium.chrome.browser.suggestions.Tile;
 import org.chromium.chrome.browser.suggestions.TileGroup;
-import org.chromium.chrome.browser.suggestions.TileRenderer;
+import org.chromium.chrome.browser.suggestions.CqttechTileRenderer;
 import org.chromium.chrome.browser.suggestions.TileView;
 import org.chromium.chrome.browser.tab.Tab;
 import org.chromium.chrome.browser.util.FeatureUtilities;
@@ -262,9 +263,10 @@ public class NewTabPageView
         Profile profile = Profile.getLastUsedProfile();
         OfflinePageBridge offlinePageBridge =
                 SuggestionsDependencyFactory.getInstance().getOfflinePageBridge(profile);
-        TileRenderer tileRenderer =
-                new TileRenderer(mTab.getActivity(), SuggestionsConfig.getTileStyle(mUiConfig),
-                        getTileTitleLines(), mManager.getImageFetcher());
+        CqttechTileRenderer tileRenderer = new CqttechTileRenderer(
+                mTab.getActivity(),
+                getTileTitleLines(),
+                mManager.getImageFetcher());
         mTileGroup = new TileGroup(tileRenderer, mManager, mContextMenuManager, tileGroupDelegate,
                 /* observer = */ this, offlinePageBridge);
 
@@ -305,7 +307,7 @@ public class NewTabPageView
 
         // Set up snippets
         NewTabPageAdapter newTabPageAdapter =
-                new NewTabPageAdapter(mManager, mNewTabPageLayout, /* logoView = */ null, mUiConfig,
+                new CqttechNewTabPageAdapter(mManager, mNewTabPageLayout, /* logoView = */ null, mUiConfig,
                         offlinePageBridge, mContextMenuManager, /* tileGroupDelegate = */ null);
         newTabPageAdapter.refreshSuggestions();
 
@@ -949,7 +951,7 @@ public class NewTabPageView
     }
 
     private static int getMaxTileRows(boolean searchProviderHasLogo) {
-        return 2;
+        return SiteSection.getMaxTileRows();
     }
 
     /**

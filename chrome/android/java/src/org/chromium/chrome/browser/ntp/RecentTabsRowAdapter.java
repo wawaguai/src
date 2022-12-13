@@ -557,7 +557,7 @@ public class RecentTabsRowAdapter extends BaseExpandableListAdapter {
                         break;
                     case ID_OPEN_IN_NEW_TAB:
                         mRecentTabsManager.openRecentlyClosedTab(
-                                recentlyClosedTab, WindowOpenDisposition.NEW_BACKGROUND_TAB);
+                                recentlyClosedTab, WindowOpenDisposition.NEW_FOREGROUND_TAB);
                         break;
                     default:
                         assert false;

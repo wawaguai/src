@@ -15,11 +15,15 @@ import java.lang.annotation.RetentionPolicy;
  *
  * @see Adapter#getItemViewType(int)
  */
-@IntDef({ItemViewType.ABOVE_THE_FOLD, ItemViewType.LOGO, ItemViewType.SITE_SECTION,
+@IntDef({ItemViewType.UNKNOWN,
+        ItemViewType.ABOVE_THE_FOLD, ItemViewType.LOGO, ItemViewType.SITE_SECTION,
         ItemViewType.HEADER, ItemViewType.SNIPPET, ItemViewType.STATUS, ItemViewType.PROGRESS,
-        ItemViewType.ACTION, ItemViewType.FOOTER, ItemViewType.PROMO, ItemViewType.ALL_DISMISSED})
+        ItemViewType.ACTION, ItemViewType.FOOTER, ItemViewType.PROMO, ItemViewType.ALL_DISMISSED,
+        ItemViewType.BIG_IMAGE_SNIPPET, ItemViewType.SMALL_IMAGE_SNIPPET,
+        ItemViewType.NO_IMAGE_SNIPPET})
 @Retention(RetentionPolicy.SOURCE)
 public @interface ItemViewType {
+    int UNKNOWN = -1;
     /**
      * View type for the above the fold item
      *
@@ -44,12 +48,6 @@ public @interface ItemViewType {
      * @see Adapter#getItemViewType(int)
      */
     int HEADER = 4;
-    /**
-     * View type for snippet cards
-     *
-     * @see Adapter#getItemViewType(int)
-     */
-    int SNIPPET = 5;
     /**
      * View type for a {@link StatusItem}, the card displaying status information
      *
@@ -86,4 +84,23 @@ public @interface ItemViewType {
      * @see Adapter#getItemViewType(int)
      */
     int ALL_DISMISSED = 11;
+    /**
+     * View type for snippet cards
+     *
+     * @see Adapter#getItemViewType(int)
+     */
+    int SNIPPET = 12;
+
+    /**
+     * big image type
+     */
+    int BIG_IMAGE_SNIPPET = SNIPPET + 1;
+    /**
+     * big image type
+     */
+    int SMALL_IMAGE_SNIPPET = BIG_IMAGE_SNIPPET + 1;
+    /**
+     * big image type
+     */
+    int NO_IMAGE_SNIPPET = SMALL_IMAGE_SNIPPET + 1;
 }

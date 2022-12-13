@@ -44,7 +44,7 @@ import org.chromium.chrome.browser.widget.TintedImageView;
  * This class is directly connected to suggestions view holders. It takes over the responsibility
  * of the view holder to update information on the views on the suggestion card.
  */
-public class SuggestionsBinder {
+public class SuggestionsBinder implements ISuggestionsBinder {
     private static final String ARTICLE_AGE_FORMAT_STRING = " - %s";
     private static final int FADE_IN_ANIMATION_TIME_MS = 300;
     private static final int MAX_HEADER_LINES = 3;
@@ -114,6 +114,7 @@ public class SuggestionsBinder {
                 R.dimen.snippets_thumbnail_small_corner_radius);
     }
 
+    @Override
     public void updateViewInformation(SnippetArticle suggestion) {
         assert suggestion.isContextual() == mIsContextual;
 
@@ -131,6 +132,7 @@ public class SuggestionsBinder {
         }
     }
 
+    @Override
     public void updateFieldsVisibility(boolean showHeadline, boolean showThumbnail,
             boolean showThumbnailVideoBadge, boolean showSnippet) {
         mHeadlineTextView.setVisibility(showHeadline ? View.VISIBLE : View.GONE);
@@ -163,6 +165,7 @@ public class SuggestionsBinder {
         }
     }
 
+    @Override
     public void updateOfflineBadgeVisibility(boolean visible) {
         mHasOfflineBadge = visible;
         updateVisibilityForBadges();
@@ -448,6 +451,7 @@ public class SuggestionsBinder {
      * Called when the containing view holder is recycled, to release unused resources.
      * @see NewTabPageViewHolder#recycle()
      */
+    @Override
     public void recycle() {
         // Clear the thumbnail and favicon drawables to allow the bitmap memory to be reclaimed.
         mThumbnailView.setImageDrawable(null);

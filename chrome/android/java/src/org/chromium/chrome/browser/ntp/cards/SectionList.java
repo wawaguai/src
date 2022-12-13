@@ -9,6 +9,8 @@ import org.chromium.base.VisibleForTesting;
 import org.chromium.chrome.browser.ChromeFeatureList;
 import org.chromium.chrome.browser.ntp.snippets.CategoryInt;
 import org.chromium.chrome.browser.ntp.snippets.CategoryStatus;
+import org.chromium.chrome.browser.ntp.snippets.CqttechSnippetArticle;
+import org.chromium.chrome.browser.ntp.snippets.CqttechSnippetArticleUtils;
 import org.chromium.chrome.browser.ntp.snippets.KnownCategories;
 import org.chromium.chrome.browser.ntp.snippets.SnippetArticle;
 import org.chromium.chrome.browser.ntp.snippets.SnippetsBridge;
@@ -106,18 +108,23 @@ public class SectionList
     private void resetSection(@CategoryInt int category, @CategoryStatus int categoryStatus,
             boolean alwaysAllowEmptySections, boolean reportPrefetchedSuggestionsCount) {
         SuggestionsSource suggestionsSource = mUiDelegate.getSuggestionsSource();
-        List<SnippetArticle> suggestions = suggestionsSource.getSuggestionsForCategory(category);
+        List<SnippetArticle> categorySuggestions = suggestionsSource.getSuggestionsForCategory(category);
         SuggestionsCategoryInfo info = suggestionsSource.getCategoryInfo(category);
 
         SuggestionsSection section = mSections.get(category);
 
         // Do not show an empty section if not allowed.
-        if (suggestions.isEmpty() && !info.showIfEmpty() && !alwaysAllowEmptySections) {
+        if (categorySuggestions.isEmpty() && !info.showIfEmpty() && !alwaysAllowEmptySections) {
             mBlacklistedCategories.add(category);
             if (section != null) removeSection(section);
             return;
         } else {
             mBlacklistedCategories.remove(category);
+        }
+
+        List<CqttechSnippetArticle> suggestions = CqttechSnippetArticleUtils.mapToCqttechArticles(categorySuggestions);
+        if (suggestions.isEmpty()) {
+            return;
         }
 
         // Create the section if needed.

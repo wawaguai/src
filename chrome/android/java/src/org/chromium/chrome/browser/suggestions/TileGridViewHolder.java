@@ -15,16 +15,16 @@ import java.util.List;
 /**
  * A {@link SiteSectionViewHolder} specialised in displaying sites as a simple grid of tiles,
  * through
- * {@link TileGridLayout}.
+ * {@link CqttechTileGridLayout}.
  */
 public class TileGridViewHolder extends SiteSectionViewHolder {
-    private final TileGridLayout mSectionView;
+    private final CqttechTileGridLayout mSectionView;
     private final MarginResizer mMarginResizer;
 
     public TileGridViewHolder(ViewGroup view, int maxRows, int maxColumns, UiConfig uiConfig) {
         super(view);
 
-        mSectionView = (TileGridLayout) itemView;
+        mSectionView = (CqttechTileGridLayout) itemView;
         mSectionView.setMaxRows(maxRows);
         mSectionView.setMaxColumns(maxColumns);
 
@@ -52,12 +52,12 @@ public class TileGridViewHolder extends SiteSectionViewHolder {
     }
 
     @Override
-    protected TileView findTileView(SiteSuggestion data) {
+    protected CqttechTileView findTileView(SiteSuggestion data) {
         return mSectionView.getTileView(data);
     }
 
     @Override
-    public void bindDataSource(TileGroup tileGroup, TileRenderer tileRenderer) {
+    public void bindDataSource(TileGroup tileGroup, CqttechTileRenderer tileRenderer) {
         super.bindDataSource(tileGroup, tileRenderer);
         if (mMarginResizer != null) mMarginResizer.attach();
     }

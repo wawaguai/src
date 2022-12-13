@@ -18,6 +18,7 @@ import org.chromium.chrome.browser.ntp.cards.NewTabPageViewHolder;
 import org.chromium.chrome.browser.ntp.cards.SectionList;
 import org.chromium.chrome.browser.ntp.cards.SuggestionsCategoryInfo;
 import org.chromium.chrome.browser.offlinepages.OfflinePageBridge;
+import org.chromium.chrome.browser.suggestions.ISuggestionsBinder;
 import org.chromium.chrome.browser.suggestions.SuggestionsBinder;
 import org.chromium.chrome.browser.suggestions.SuggestionsConfig;
 import org.chromium.chrome.browser.suggestions.SuggestionsMetrics;
@@ -33,7 +34,7 @@ import org.chromium.ui.mojom.WindowOpenDisposition;
  */
 public class SnippetArticleViewHolder extends CardViewHolder {
     private final SuggestionsUiDelegate mUiDelegate;
-    private final SuggestionsBinder mSuggestionsBinder;
+    private final ISuggestionsBinder mSuggestionsBinder;
     private final OfflinePageBridge mOfflinePageBridge;
     private SuggestionsCategoryInfo mCategoryInfo;
     private SnippetArticle mArticle;
@@ -152,7 +153,7 @@ public class SnippetArticleViewHolder extends CardViewHolder {
         ((SnippetArticleViewHolder) holder).refreshOfflineBadgeVisibility();
     }
 
-    protected SuggestionsBinder createBinder(SuggestionsUiDelegate uiDelegate) {
+    protected ISuggestionsBinder createBinder(SuggestionsUiDelegate uiDelegate) {
         return new SuggestionsBinder(itemView, uiDelegate, false);
     }
 

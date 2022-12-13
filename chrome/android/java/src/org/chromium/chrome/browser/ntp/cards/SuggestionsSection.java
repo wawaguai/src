@@ -15,6 +15,8 @@ import org.chromium.chrome.browser.ChromeFeatureList;
 import org.chromium.chrome.browser.ntp.NewTabPageUma;
 import org.chromium.chrome.browser.ntp.snippets.CategoryInt;
 import org.chromium.chrome.browser.ntp.snippets.CategoryStatus;
+import org.chromium.chrome.browser.ntp.snippets.CqttechSnippetArticle;
+import org.chromium.chrome.browser.ntp.snippets.CqttechSnippetArticleUtils;
 import org.chromium.chrome.browser.ntp.snippets.KnownCategories;
 import org.chromium.chrome.browser.ntp.snippets.SectionHeader;
 import org.chromium.chrome.browser.ntp.snippets.SnippetArticle;
@@ -145,6 +147,15 @@ public class SuggestionsSection extends InnerNode {
         @ItemViewType
         public int getItemViewType(int position) {
             checkIndex(position);
+            SnippetArticle article = getSuggestionAt(position);
+            if (article instanceof CqttechSnippetArticle) {
+                int articleType = ((CqttechSnippetArticle) article).articleType;
+                int viewType = CqttechSnippetArticleUtils.getViewType(articleType);
+                if (viewType != ItemViewType.UNKNOWN) {
+                    return viewType;
+                }
+            }
+
             return ItemViewType.SNIPPET;
         }
 
@@ -179,7 +190,7 @@ public class SuggestionsSection extends InnerNode {
             }
         }
 
-        public void addAll(List<SnippetArticle> suggestions) {
+        public void addAll(List<? extends SnippetArticle> suggestions) {
             if (suggestions.isEmpty()) return;
 
             int insertionPointIndex = mSuggestions.size();
@@ -416,14 +427,19 @@ public class SuggestionsSection extends InnerNode {
             return;
         }
 
-        List<SnippetArticle> suggestions =
+        List<SnippetArticle> categorySuggestions =
                 mSuggestionsSource.getSuggestionsForCategory(getCategory());
         Log.d(TAG, "Received %d new suggestions for category %d, had %d previously.",
-                suggestions.size(), getCategory(), mSuggestionsList.getItemCount());
+                categorySuggestions.size(), getCategory(), mSuggestionsList.getItemCount());
 
         // Nothing to append, we can just exit now.
         // TODO(dgn): Distinguish the init case where we have to wait? (https://crbug.com/711457)
-        if (suggestions.isEmpty()) return;
+        if (categorySuggestions.isEmpty()) return;
+
+        List<CqttechSnippetArticle> suggestions = CqttechSnippetArticleUtils.mapToCqttechArticles(categorySuggestions);
+        if (suggestions.isEmpty()) {
+            return;
+        }
 
         if (numberOfSuggestionsExposed > 0) {
             mIsDataStale = true;
@@ -444,8 +460,9 @@ public class SuggestionsSection extends InnerNode {
      * @param reportPrefetchedSuggestionsCount Whether to report the number of prefetched article
      *         suggestions.
      */
-    public void appendSuggestions(List<SnippetArticle> suggestions, boolean keepSectionSize,
-            boolean reportPrefetchedSuggestionsCount) {
+    public void appendSuggestions(
+            List<CqttechSnippetArticle> suggestions,
+            boolean keepSectionSize, boolean reportPrefetchedSuggestionsCount) {
         if (!shouldShowSuggestions()) return;
 
         int numberOfSuggestionsExposed = getNumberOfSuggestionsExposed();
@@ -478,7 +495,7 @@ public class SuggestionsSection extends InnerNode {
      * the excess of incoming items to make sure that the merged list has at most as many items as
      * the incoming list.
      */
-    private void trimIncomingSuggestions(List<SnippetArticle> suggestions, int targetSize) {
+    private void trimIncomingSuggestions(List<? extends SnippetArticle> suggestions, int targetSize) {
         for (SnippetArticle suggestion : mSuggestionsList) {
             suggestions.remove(suggestion);
         }
@@ -534,8 +551,12 @@ public class SuggestionsSection extends InnerNode {
         mMoreButton.updateState(ActionItem.State.LOADING);
         mSuggestionsSource.fetchSuggestions(mCategoryInfo.getCategory(),
                 getDisplayedSuggestionIds(),
-                suggestions -> {  /* successCallback */
+                categorySuggestions -> {  /* successCallback */
                     if (!isAttached()) return; // The section has been dismissed.
+                    List<CqttechSnippetArticle> suggestions = CqttechSnippetArticleUtils.mapToCqttechArticles(categorySuggestions);
+                    if (suggestions.isEmpty()) {
+                        return;
+                    }
 
                     mMoreButton.updateState(ActionItem.State.BUTTON);
 

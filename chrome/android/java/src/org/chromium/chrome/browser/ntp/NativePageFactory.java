@@ -6,6 +6,7 @@ package org.chromium.chrome.browser.ntp;
 
 import android.net.Uri;
 
+import org.chromium.base.UserDataHost;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.chrome.browser.ChromeActivity;
 import org.chromium.chrome.browser.ChromeFeatureList;
@@ -132,7 +133,14 @@ public class NativePageFactory {
                 page = candidatePage;
                 break;
             case NTP:
-                page = sNativePageBuilder.buildNewTabPage(activity, tab, tabModelSelector);
+                UserDataHost userDataHost = tab.getUserDataHost();
+                NativePage userData = userDataHost.getUserData(NativePage.class);
+                if (userData != null) {
+                    page = userData;
+                } else {
+                    page = sNativePageBuilder.buildNewTabPage(activity, tab, tabModelSelector);
+                    cacheNativePage(tab, page);
+                }
                 break;
             case BOOKMARKS:
                 page = sNativePageBuilder.buildBookmarksPage(activity, tab);
@@ -152,6 +160,19 @@ public class NativePageFactory {
         }
         if (page != null) page.updateForUrl(url);
         return page;
+    }
+
+    private static void cacheNativePage(Tab tab, NativePage page) {
+        tab.getUserDataHost().setUserData(NativePage.class, page);
+    }
+
+    public static void clearNativePageCache(Tab tab) {
+        try {
+            NativePage page = tab.getUserDataHost().removeUserData(NativePage.class);
+            page.destroy();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     /**

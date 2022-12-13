@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
  */
 public abstract class SiteSectionViewHolder extends NewTabPageViewHolder {
     protected TileGroup mTileGroup;
-    protected TileRenderer mTileRenderer;
+    protected CqttechTileRenderer mTileRenderer;
 
     /**
      * Constructs a {@link SiteSectionViewHolder} used to display tiles in both NTP and Chrome Home.
@@ -30,7 +30,7 @@ public abstract class SiteSectionViewHolder extends NewTabPageViewHolder {
 
     /** Initialise the view, letting it know the data it will have to display. */
     @CallSuper
-    public void bindDataSource(TileGroup tileGroup, TileRenderer tileRenderer) {
+    public void bindDataSource(TileGroup tileGroup, CqttechTileRenderer tileRenderer) {
         mTileGroup = tileGroup;
         mTileRenderer = tileRenderer;
     }
@@ -40,7 +40,7 @@ public abstract class SiteSectionViewHolder extends NewTabPageViewHolder {
      * @param tile The tile that holds the data to populate the tile view.
      */
     public void updateIconView(Tile tile) {
-        TileView tileView = findTileView(tile.getData());
+        CqttechTileView tileView = findTileView(tile.getData());
         if (tileView != null) tileView.renderIcon(tile);
     }
 
@@ -49,7 +49,7 @@ public abstract class SiteSectionViewHolder extends NewTabPageViewHolder {
      * @param tile The tile that holds the data to populate the tile view.
      */
     public void updateOfflineBadge(Tile tile) {
-        TileView tileView = findTileView(tile.getData());
+        CqttechTileView tileView = findTileView(tile.getData());
         if (tileView != null) tileView.renderOfflineBadge(tile);
     }
 
@@ -57,5 +57,5 @@ public abstract class SiteSectionViewHolder extends NewTabPageViewHolder {
     public abstract void refreshData();
 
     @Nullable
-    protected abstract TileView findTileView(SiteSuggestion data);
+    protected abstract CqttechTileView findTileView(SiteSuggestion data);
 }
