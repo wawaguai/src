@@ -18,6 +18,7 @@ import subprocess
 import sys
 import zipfile
 
+logging.getLogger().setLevel(logging.INFO)
 _BUILD_ANDROID = os.path.join(os.path.dirname(__file__), os.pardir)
 sys.path.append(_BUILD_ANDROID)
 import devil_chromium
@@ -41,6 +42,9 @@ _JNI_LIBS_SUBDIR = 'symlinked-libs'
 _ARMEABI_SUBDIR = 'armeabi'
 _RES_SUBDIR = 'extracted-res'
 _GRADLE_BUILD_FILE = 'build.gradle'
+_ANDROID_MANIFEST_FILE_PATH = os.path.join(
+    'src', 'main', 'AndroidManifest.xml')
+_OUT_FILES_PATH = 'out'
 _CMAKE_FILE = 'CMakeLists.txt'
 # This needs to come first alphabetically among all modules.
 _MODULE_ALL = '_all'
@@ -48,19 +52,19 @@ _SRC_INTERNAL = os.path.join(
     os.path.dirname(host_paths.DIR_SOURCE_ROOT), 'src-internal')
 
 _DEFAULT_TARGETS = [
-    '//android_webview/test/embedded_test_server:aw_net_test_support_apk',
-    '//android_webview/test:webview_instrumentation_apk',
-    '//android_webview/test:webview_instrumentation_test_apk',
-    '//base:base_junit_tests',
-    '//chrome/android:chrome_junit_tests',
+#     '//android_webview/test/embedded_test_server:aw_net_test_support_apk',
+#     '//android_webview/test:webview_instrumentation_apk',
+#     '//android_webview/test:webview_instrumentation_test_apk',
+#     '//base:base_junit_tests',
+#     '//chrome/android:chrome_junit_tests',
     '//chrome/android:chrome_public_apk',
-    '//chrome/android:chrome_public_test_apk',
-    '//chrome/android:chrome_sync_shell_apk',
-    '//chrome/android:chrome_sync_shell_test_apk',
-    '//content/public/android:content_junit_tests',
-    '//content/shell/android:content_shell_apk',
+#     '//chrome/android:chrome_public_test_apk',
+#     '//chrome/android:chrome_sync_shell_apk',
+#     '//chrome/android:chrome_sync_shell_test_apk',
+#     '//content/public/android:content_junit_tests',
+#     '//content/shell/android:content_shell_apk',
     # Needed even with --all since it's a library.
-    '//tools/android/errorprone_plugin:errorprone_plugin_java',
+#     '//tools/android/errorprone_plugin:errorprone_plugin_java',
 ]
 
 _EXCLUDED_PREBUILT_JARS = [
@@ -106,6 +110,32 @@ def _WriteFile(path, data):
     os.makedirs(dirname)
   with codecs.open(path, 'w', 'utf-8') as output_file:
     output_file.write(data)
+
+
+def _copyOutTargets(project_dir, target_dirs):
+  out_project_dir = os.path.join(project_dir, _OUT_FILES_PATH)
+  # target_dir_need_remove = set([])
+  # target_dir_need_add = set([])
+
+  for target_dir in target_dirs:
+    if not os.path.isabs(target_dir) and not target_dir.startswith('../'):
+      logging.error('jyh target_dir %s', target_dir)
+        
+      # target_dir_path, target_dir_name = os.path.split(target_dir)
+      # out_target_dir = os.path.join(out_project_dir, target_dir_path)
+      # if not os.path.exists(out_target_dir):
+        # os.makedirs(out_target_dir)
+
+      # shutil.copy(_RebasePath(target_dir), out_target_dir)
+      cmd = [
+        'cp', '-r', '--parents', _RebasePath(target_dir), out_project_dir
+      ]
+
+      logging.error('jyh exec sub command %r', cmd)
+      subprocess.check_call(cmd)
+
+      # target_dirs.add(out_target_dir)
+      # target_dirs.remove(target_dir)
 
 
 def _ReadPropertiesFile(path):
@@ -313,6 +343,10 @@ class _ProjectContextGenerator(object):
       java_files += entry.JavaFiles()
     java_dirs, excludes = _ComputeJavaSourceDirsAndExcludes(
         constants.GetOutDirectory(), java_files)
+
+#     for dir in java_dirs:
+#       logging.error('jyh dir %s', dir)
+
     return java_dirs, excludes
 
   def _GenCustomManifest(self, entry):
@@ -397,6 +431,9 @@ class _ProjectContextGenerator(object):
     java_dirs.append(
         os.path.join(self.EntryOutputDir(root_entry), _SRCJARS_SUBDIR))
     self.processed_java_dirs.update(java_dirs)
+
+    _copyOutTargets(self.project_dir, java_dirs)
+
     java_dirs.sort()
     variables['java_dirs'] = self._Relativize(root_entry, java_dirs)
     variables['java_excludes'] = excludes
@@ -413,12 +450,24 @@ class _ProjectContextGenerator(object):
     self.processed_res_dirs.update(res_dirs)
     res_dirs.add(
         os.path.join(self.EntryOutputDir(root_entry), _RES_SUBDIR))
+
+    _copyOutTargets(self.project_dir, res_dirs)
+
     variables['res_dirs'] = self._Relativize(root_entry, res_dirs)
     android_manifest = root_entry.DepsInfo().get('android_manifest')
     if not android_manifest:
       android_manifest = self._GenCustomManifest(root_entry)
-    variables['android_manifest'] = self._Relativize(
-        root_entry, android_manifest)
+
+    target_manifest = os.path.join(self.EntryOutputDir(root_entry), _ANDROID_MANIFEST_FILE_PATH)
+    target_manifest_path, target_manifest_name = os.path.split(target_manifest)
+    if not os.path.exists(target_manifest_path):
+      os.makedirs(target_manifest_path)
+
+#     logging.warning('jyh target %s >>>>>>><<<<<< source manifest %s', target_manifest, android_manifest)
+    shutil.copy(_RebasePath(android_manifest), target_manifest)
+
+    variables['android_manifest'] = _ANDROID_MANIFEST_FILE_PATH
+
     if self.split_projects:
       deps = [_ProjectEntry.FromBuildConfigPath(p)
               for p in root_entry.Gradle()['dependent_android_projects']]
@@ -549,13 +598,13 @@ def _GenerateBaseVars(generator, build_vars, source_properties):
       'sourceSetName': 'main',
       'depCompileName': 'compile',
   }
-  variables['build_tools_version'] = source_properties['Pkg.Revision']
-  variables['compile_sdk_version'] = (
-      'android-%s' % build_vars['android_sdk_version'])
-  target_sdk_version = build_vars['android_sdk_version']
-  if target_sdk_version.isalpha():
-    target_sdk_version = '"{}"'.format(target_sdk_version)
-  variables['target_sdk_version'] = target_sdk_version
+#   variables['build_tools_version'] = source_properties['Pkg.Revision']
+#   variables['compile_sdk_version'] = (
+#       'android-%s' % build_vars['android_sdk_version'])
+#   target_sdk_version = build_vars['android_sdk_version']
+#   if target_sdk_version.isalpha():
+#     target_sdk_version = '"{}"'.format(target_sdk_version)
+#   variables['target_sdk_version'] = target_sdk_version
   variables['use_gradle_process_resources'] = (
       generator.use_gradle_process_resources)
   variables['channel'] = generator.channel
@@ -591,10 +640,10 @@ def _GenerateGradleFile(entry, generator, build_vars, source_properties,
   variables['target_name'] = os.path.splitext(deps_info['name'])[0]
   variables['template_type'] = target_type
   variables['main'] = generator.Generate(entry)
-  bootclasspath = gradle.get('bootclasspath')
-  if bootclasspath:
+  #bootclasspath = gradle.get('bootclasspath')
+  #if bootclasspath:
     # Must use absolute path here.
-    variables['bootclasspath'] = _RebasePath(bootclasspath)
+  #  variables['bootclasspath'] = _RebasePath(bootclasspath)
   if entry.android_test_entries:
     variables['android_test'] = []
     for e in entry.android_test_entries:
@@ -647,6 +696,7 @@ def _GetNative(relative_func, target_names):
 def _GenerateModuleAll(
     gradle_output_dir, generator, build_vars, source_properties,
     jinja_processor, native_targets):
+  logging.warning('jyh generate all modules')
   """Returns the data for a pseudo build.gradle of all dirs.
 
   See //docs/android_studio.md for more details."""
@@ -856,7 +906,12 @@ def main():
   # slow), and when no --target has been explicitly set. "all targets" means all
   # java targets that are depended on by an apk or java_binary (leaf
   # java_library targets will not be included).
+
+  logging.warning('jyh before args.all %s', args.all)
+  logging.warning('jyh args.split_projects %s', args.split_projects)
+  logging.warning('jyh args.targets %s', args.targets)
   args.all = args.all or (not args.split_projects and not args.targets)
+  logging.warning('jyh after args.all %s', args.all)
 
   targets_from_args = set(args.targets or _DEFAULT_TARGETS)
   if args.extra_targets:
@@ -918,6 +973,13 @@ def main():
   project_entries = []
   # When only one entry will be generated we want it to have a valid
   # build.gradle file with its own AndroidManifest.
+
+
+  out_project_dir = os.path.join(generator.project_dir, _OUT_FILES_PATH)
+  if not os.path.exists(out_project_dir):
+    os.makedirs(out_project_dir)
+
+
   for entry in entries:
     data = _GenerateGradleFile(
         entry, generator, build_vars, source_properties, jinja_processor)
@@ -931,6 +993,7 @@ def main():
     _GenerateModuleAll(
         _gradle_output_dir, generator, build_vars, source_properties,
         jinja_processor, args.native_targets)
+
 
   _WriteFile(os.path.join(generator.project_dir, _GRADLE_BUILD_FILE),
              _GenerateRootGradle(jinja_processor, channel))
