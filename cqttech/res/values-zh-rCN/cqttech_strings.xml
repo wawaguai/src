@@ -33,8 +33,6 @@
 
     <string name="storage_management_all_storage_description"
         tools:ignore="ExtraTranslation">小K浏览器使用的数据总量，包括账号、书签和已保存的设置</string>
-    <string name="storage_management_site_data_size_label"
-        tools:ignore="ExtraTranslation">网站存储数据</string>
     <string name="storage_management_unimportant_site_data_description"
         tools:ignore="ExtraTranslation">小K浏览器认为不重要的网站（例如未保存任何设置的网站或您不常访问的网站）存储的数据</string>
 
@@ -55,11 +53,6 @@
 
     <string name="terms_of_service_title" tools:ignore="ExtraTranslation">"小K浏览器 服务条款"</string>
     <string name="privacy_notice_title" tools:ignore="ExtraTranslation">"小K浏览器 隐私权声明"</string>
-
-    <string name="android_permission_off_plural"
-        tools:ignore="ExtraTranslation">在 &lt;link&gt;Android 设置&lt;/link&gt;中为 小K浏览器 启用这些权限。</string>
-    <string name="android_permission_off"
-        tools:ignore="ExtraTranslation">在 &lt;link&gt;Android 设置&lt;/link&gt;中为 小K浏览器 启用这项权限。</string>
 
     <string name="menu_update" tools:ignore="ExtraTranslation">升级小K浏览器</string>
     <string name="force_update_description" tools:ignore="ExtraTranslation">您必须升级后才能继续使用</string>

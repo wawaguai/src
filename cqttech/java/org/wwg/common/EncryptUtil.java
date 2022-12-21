@@ -3,7 +3,7 @@ package org.wwg.common;
 import android.text.TextUtils;
 import android.util.Log;
 
-import org.conscrypt.io.IoUtils;
+import org.wwg.common.IoUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

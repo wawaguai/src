@@ -1647,6 +1647,7 @@ chrome_java_sources += [
   "../../cqttech/java/org/wwg/common/ThemeConfig.java",
   "../../cqttech/java/org/wwg/common/DisplayUtils.java",
   "../../cqttech/java/org/wwg/common/CqttechConstants.java",
+  "../../cqttech/java/org/wwg/common/IoUtils.java",
   "../../cqttech/java/org/wwg/common/TSBrowser.java",
   "../../cqttech/java/org/wwg/common/MIUIUtils.java",
   "../../cqttech/java/org/wwg/umeng/UmengProxy.java",
