@@ -15,6 +15,6 @@
   limitations under the License.
 -->
 <resources>
-<!--  <color name="google_blue_500">#4285f4</color>-->
+  <color name="google_blue_500">#4285f4</color>
   <color name="button_compat_color">#fff</color>
 </resources>
