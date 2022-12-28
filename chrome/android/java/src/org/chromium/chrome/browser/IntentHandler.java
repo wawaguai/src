@@ -634,10 +634,14 @@ public class IntentHandler {
     }
 
     private static PendingIntent getAuthenticationToken() {
+        int pendingIntentFlags = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         Intent fakeIntent = new Intent();
         Context appContext = ContextUtils.getApplicationContext();
         fakeIntent.setComponent(getFakeComponentName(appContext.getPackageName()));
-        return PendingIntent.getActivity(appContext, 0, fakeIntent, 0);
+        return PendingIntent.getActivity(appContext, 0, fakeIntent, pendingIntentFlags);
     }
 
     /**

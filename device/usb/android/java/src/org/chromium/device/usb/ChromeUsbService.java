@@ -66,8 +66,12 @@ final class ChromeUsbService {
         if (mUsbManager.hasPermission(device)) {
             nativeDevicePermissionRequestComplete(mUsbServiceAndroid, device.getDeviceId(), true);
         } else {
+            int pendingIntentFlags = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             PendingIntent intent = PendingIntent.getBroadcast(
-                    ContextUtils.getApplicationContext(), 0, new Intent(ACTION_USB_PERMISSION), 0);
+                    ContextUtils.getApplicationContext(), 0, new Intent(ACTION_USB_PERMISSION), pendingIntentFlags);
             mUsbManager.requestPermission(wrapper.getDevice(), intent);
         }
     }

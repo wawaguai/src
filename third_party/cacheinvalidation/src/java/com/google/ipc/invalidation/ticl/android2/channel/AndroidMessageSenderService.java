@@ -156,8 +156,12 @@ public class AndroidMessageSenderService extends IntentService {
     tokenResponseIntent.putExtra(AuthTokenConstants.EXTRA_IS_RETRY, invalidAuthToken != null);
 
     // The pending intent allows the application to send us the tokenResponseIntent.
+    int pendingIntentFlags = PendingIntent.FLAG_ONE_SHOT;
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+      pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+    }
     PendingIntent pendingIntent = PendingIntent.getService(
-        this, Arrays.hashCode(message), tokenResponseIntent, PendingIntent.FLAG_ONE_SHOT);
+        this, Arrays.hashCode(message), tokenResponseIntent, pendingIntentFlags);
 
     // We send the pending intent as an extra in a normal intent to the application. The
     // invalidation listener service must handle AUTH_TOKEN_REQUEST intents.

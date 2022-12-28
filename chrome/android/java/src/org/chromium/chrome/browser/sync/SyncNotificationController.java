@@ -99,7 +99,11 @@ public class SyncNotificationController implements ProfileSyncService.SyncStateC
         String text = mApplicationContext.getString(R.string.sign_in_sync) + ": "
                 + mApplicationContext.getString(message);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(mApplicationContext, 0, intent, 0);
+        int pendingIntentFlags = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent contentIntent = PendingIntent.getActivity(mApplicationContext, 0, intent, pendingIntentFlags);
 
         // There is no need to provide a group summary notification because the NOTIFICATION_ID_SYNC
         // notification id ensures there's only one sync notification at a time.

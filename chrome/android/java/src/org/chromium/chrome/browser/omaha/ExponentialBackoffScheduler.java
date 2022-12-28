@@ -79,7 +79,11 @@ public class ExponentialBackoffScheduler {
      * @return the timestamp of the scheduled intent
      */
     public long createAlarm(Intent intent, long timestamp) {
-        PendingIntent retryPIntent = PendingIntent.getService(mContext, 0, intent, 0);
+        int pendingIntentFlags = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
+        PendingIntent retryPIntent = PendingIntent.getService(mContext, 0, intent, pendingIntentFlags);
         AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         setAlarm(am, timestamp, retryPIntent);
         return timestamp;
@@ -91,8 +95,13 @@ public class ExponentialBackoffScheduler {
      * @return whether or not an alarm was canceled.
      */
     public boolean cancelAlarm(Intent scheduledIntent) {
+        int flags = PendingIntent.FLAG_NO_CREATE;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            flags = flags | PendingIntent.FLAG_IMMUTABLE;
+        }
+
         PendingIntent pendingIntent = PendingIntent.getService(
-                mContext, 0, scheduledIntent, PendingIntent.FLAG_NO_CREATE);
+                mContext, 0, scheduledIntent, flags);
         if (pendingIntent != null) {
             AlarmManager am = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
             am.cancel(pendingIntent);

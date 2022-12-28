@@ -273,7 +273,11 @@ public class BrowserActionsIntent {
             mIntent.setData(mUri);
             mIntent.putExtra(EXTRA_TYPE, mType);
             mIntent.putParcelableArrayListExtra(EXTRA_MENU_ITEMS, mMenuItems);
-            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, new Intent(), 0);
+            int pendingIntentFlags = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
+            PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, new Intent(), pendingIntentFlags);
             mIntent.putExtra(EXTRA_APP_ID, pendingIntent);
             if (mOnItemSelectedPendingIntent != null) {
                 mIntent.putExtra(

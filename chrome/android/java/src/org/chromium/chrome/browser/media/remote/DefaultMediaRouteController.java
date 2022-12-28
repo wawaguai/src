@@ -124,15 +124,23 @@ public class DefaultMediaRouteController extends AbstractMediaRouteController {
         if (mSessionStatusUpdateIntent == null) {
             Intent sessionStatusUpdateIntent = new Intent(ACTION_RECEIVE_SESSION_STATUS_UPDATE);
             sessionStatusUpdateIntent.addCategory(mIntentCategory);
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             mSessionStatusUpdateIntent = PendingIntent.getBroadcast(getContext(), 0,
-                    sessionStatusUpdateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    sessionStatusUpdateIntent, pendingIntentFlags);
         }
 
         if (mMediaStatusUpdateIntent == null) {
             Intent mediaStatusUpdateIntent = new Intent(ACTION_RECEIVE_MEDIA_STATUS_UPDATE);
             mediaStatusUpdateIntent.addCategory(mIntentCategory);
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             mMediaStatusUpdateIntent = PendingIntent.getBroadcast(getContext(), 0,
-                    mediaStatusUpdateIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mediaStatusUpdateIntent, pendingIntentFlags);
         }
 
         return true;

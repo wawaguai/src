@@ -98,14 +98,22 @@ class BrowserActionsFallbackMenuUi implements AdapterView.OnItemClickListener {
 
     private PendingIntent buildOpenInBrowserAction() {
         Intent intent = new Intent(Intent.ACTION_VIEW, mUri);
-        return PendingIntent.getActivity(mContext, 0, intent, 0);
+        int pendingIntentFlags = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
+        return PendingIntent.getActivity(mContext, 0, intent, pendingIntentFlags);
     }
 
     private PendingIntent buildShareAction() {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_TEXT, mUri.toString());
         intent.setType("text/plain");
-        return PendingIntent.getActivity(mContext, 0, intent, 0);
+        int pendingIntentFlags = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
+        return PendingIntent.getActivity(mContext, 0, intent, pendingIntentFlags);
     }
 
     private Runnable buildCopyAction() {

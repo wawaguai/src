@@ -302,6 +302,9 @@ public abstract class FirstRunFlowSequencer  {
             Context caller, Intent firstRunIntent, Intent fromIntent, boolean requiresBroadcast) {
         PendingIntent pendingIntent = null;
         int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         if (requiresBroadcast) {
             pendingIntent = PendingIntent.getBroadcast(
                     caller, FIRST_RUN_EXPERIENCE_REQUEST_CODE, fromIntent, pendingIntentFlags);

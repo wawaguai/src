@@ -154,8 +154,12 @@ class AndroidListenerIntents {
     Intent intent = createScheduledTaskintent(context);
 
     // Create a pending intent that will cause the AlarmManager to fire the above intent.
+    int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+      pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+    }
     PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent,
-        PendingIntent.FLAG_UPDATE_CURRENT);
+            pendingIntentFlags);
 
     // Schedule the pending intent after the appropriate delay.
     AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);

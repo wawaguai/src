@@ -161,18 +161,22 @@ public class ContentSuggestionsNotifier {
 
         int nextId = nextNotificationId();
         Uri uri = Uri.parse(url);
+        int pendingIntentFlags = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         PendingIntent contentIntent = PendingIntent.getBroadcast(context, 0,
                 new Intent(context, OpenUrlReceiver.class)
                         .setData(uri)
                         .putExtra(NOTIFICATION_CATEGORY_EXTRA, category)
                         .putExtra(NOTIFICATION_ID_WITHIN_CATEGORY_EXTRA, idWithinCategory),
-                0);
+                pendingIntentFlags);
         PendingIntent deleteIntent = PendingIntent.getBroadcast(context, 0,
                 new Intent(context, DeleteReceiver.class)
                         .setData(uri)
                         .putExtra(NOTIFICATION_CATEGORY_EXTRA, category)
                         .putExtra(NOTIFICATION_ID_WITHIN_CATEGORY_EXTRA, idWithinCategory),
-                0);
+                pendingIntentFlags);
         ChromeNotificationBuilder builder =
                 NotificationBuilderFactory
                         .createChromeNotificationBuilder(true /* preferCompat */,
@@ -189,7 +193,7 @@ public class ContentSuggestionsNotifier {
             PendingIntent settingsIntent = PendingIntent.getActivity(context, 0,
                     PreferencesLauncher.createIntentForSettingsPage(
                             context, NotificationsPreferences.class.getName()),
-                    0);
+                    pendingIntentFlags);
             builder.addAction(R.drawable.settings_cog, context.getString(R.string.preferences),
                     settingsIntent);
         }
@@ -212,9 +216,13 @@ public class ContentSuggestionsNotifier {
                             .putExtra(NOTIFICATION_ID_EXTRA, nextId)
                             .putExtra(NOTIFICATION_CATEGORY_EXTRA, category)
                             .putExtra(NOTIFICATION_ID_WITHIN_CATEGORY_EXTRA, idWithinCategory);
+            int pendingFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingFlags = pendingFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             alarmManager.set(AlarmManager.RTC, timeoutAtMillis,
                     PendingIntent.getBroadcast(
-                            context, 0, timeoutIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                            context, 0, timeoutIntent, pendingFlags));
         }
         return true;
     }

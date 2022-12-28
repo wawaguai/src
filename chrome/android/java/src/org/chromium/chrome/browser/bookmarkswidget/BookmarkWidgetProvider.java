@@ -122,10 +122,13 @@ public class BookmarkWidgetProvider extends AppWidgetProvider {
             views.setRemoteAdapter(R.id.bookmarks_list, updateIntent);
 
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.bookmarks_list);
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             Intent ic = new Intent(context, BookmarkWidgetProxy.class);
             views.setPendingIntentTemplate(R.id.bookmarks_list,
-                    PendingIntent.getBroadcast(context, 0, ic,
-                    PendingIntent.FLAG_UPDATE_CURRENT));
+                    PendingIntent.getBroadcast(context, 0, ic, pendingIntentFlags));
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
     }

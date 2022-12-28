@@ -553,8 +553,12 @@ public class MediaNotificationManager {
     }
 
     private PendingIntent createPendingIntent(String action) {
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         Intent intent = createIntent().setAction(action);
-        return PendingIntent.getService(getContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        return PendingIntent.getService(getContext(), 0, intent, pendingIntentFlags);
     }
 
     private Class<?> getButtonReceiverClass() {
@@ -969,9 +973,13 @@ public class MediaNotificationManager {
         // The intent will currently only be null when using a custom tab.
         // TODO(avayvod) work out what we should do in this case. See https://crbug.com/585395.
         if (mMediaNotificationInfo.contentIntent != null) {
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             mNotificationBuilder.setContentIntent(PendingIntent.getActivity(getContext(),
                     mMediaNotificationInfo.tabId, mMediaNotificationInfo.contentIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT));
+                    pendingIntentFlags));
             // Set FLAG_UPDATE_CURRENT so that the intent extras is updated, otherwise the
             // intent extras will stay the same for the same tab.
         }

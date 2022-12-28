@@ -343,9 +343,13 @@ public class DownloadNotificationService extends Service {
         // TODO(dtrainor): Only do this if we have no transient downloads.
         Intent downloadHomeIntent =
                 buildActionIntent(context, ACTION_NOTIFICATION_CLICKED, null, false);
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         builder.setContentIntent(PendingIntent.getBroadcast(context,
                 NotificationConstants.NOTIFICATION_ID_DOWNLOAD_SUMMARY, downloadHomeIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT));
+                pendingIntentFlags));
 
         return builder.build();
     }
@@ -806,8 +810,12 @@ public class DownloadNotificationService extends Service {
             // Clicking on an in-progress download sends the user to see all their downloads.
             Intent downloadHomeIntent =
                     buildActionIntent(mContext, ACTION_NOTIFICATION_CLICKED, null, isOffTheRecord);
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             builder.setContentIntent(PendingIntent.getBroadcast(mContext, notificationId,
-                    downloadHomeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    downloadHomeIntent, pendingIntentFlags));
         }
         builder.setAutoCancel(false);
         if (icon != null) builder.setLargeIcon(icon);
@@ -909,8 +917,12 @@ public class DownloadNotificationService extends Service {
             // Clicking on an in-progress download sends the user to see all their downloads.
             Intent downloadHomeIntent =
                     buildActionIntent(mContext, ACTION_NOTIFICATION_CLICKED, null, false);
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             builder.setContentIntent(PendingIntent.getBroadcast(mContext, notificationId,
-                    downloadHomeIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    downloadHomeIntent, pendingIntentFlags));
         }
         builder.setAutoCancel(false);
         if (icon != null) builder.setLargeIcon(icon);
@@ -979,8 +991,12 @@ public class DownloadNotificationService extends Service {
             }
 
             intent.setComponent(component);
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             builder.setContentIntent(PendingIntent.getBroadcast(
-                    mContext, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT));
+                    mContext, notificationId, intent, pendingIntentFlags));
         }
         if (icon == null && mDownloadSuccessLargeIcon == null) {
             Bitmap bitmap =
@@ -1027,8 +1043,12 @@ public class DownloadNotificationService extends Service {
      * @param notificationId ID of the notification.
      */
     private PendingIntent buildPendingIntent(Intent intent, int notificationId) {
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         return PendingIntent.getBroadcast(
-                mContext, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                mContext, notificationId, intent, pendingIntentFlags);
     }
 
     private PendingIntent buildSummaryIconIntent(int notificationId) {

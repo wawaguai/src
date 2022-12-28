@@ -69,8 +69,12 @@ public class CctOfflinePageModelObserver {
 
         // Create a pending intent and cancel it, as this is only expected to verify
         // that chrome created the OFFLINE_PAGES_UPDATED broadcast, not for actual use.
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         PendingIntent originVerification = PendingIntent.getBroadcast(
-                context, 0, new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+                context, 0, new Intent(), pendingIntentFlags);
         originVerification.cancel();
 
         intent.putExtra(ORIGIN_VERIFICATION_KEY, originVerification);

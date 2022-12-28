@@ -218,8 +218,12 @@ public class ShareHelper {
             intent.setPackage(activity.getPackageName());
             intent.putExtra(EXTRA_RECEIVER_TOKEN, sLastRegisteredReceiver.hashCode());
             intent.putExtra(EXTRA_SOURCE_PACKAGE_NAME, sourcePackageName);
+            int pendingIntentFlags = PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             final PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0, intent,
-                    PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+                    pendingIntentFlags);
             Intent chooserIntent = Intent.createChooser(sharingIntent,
                     activity.getString(R.string.share_link_chooser_title),
                     pendingIntent.getIntentSender());

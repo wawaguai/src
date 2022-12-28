@@ -187,8 +187,12 @@ public class GoogleCloudMessagingV2 implements GoogleCloudMessagingSubscriber {
                 Intent target = new Intent();
                 // Fill in the package, to prevent the intent from being used.
                 target.setPackage("com.google.example.invalidpackage");
+                int pendingIntentFlags = 0;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+                }
                 mAppPendingIntent = PendingIntent.getBroadcast(
-                        ContextUtils.getApplicationContext(), 0, target, 0);
+                        ContextUtils.getApplicationContext(), 0, target, pendingIntentFlags);
             }
         }
         intent.putExtra(INTENT_PARAM_APP, mAppPendingIntent);

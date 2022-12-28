@@ -145,8 +145,12 @@ public class PrefetchedPagesNotifier {
     }
 
     private static PendingIntent getPendingBroadcastFor(Context context, Class clazz) {
+        int pendingIntentFlags = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         return PendingIntent.getBroadcast(
-                context, 0 /* requestCode */, new Intent(context, clazz), 0 /* flags */);
+                context, 0 /* requestCode */, new Intent(context, clazz), pendingIntentFlags /* flags */);
     }
 
     /**

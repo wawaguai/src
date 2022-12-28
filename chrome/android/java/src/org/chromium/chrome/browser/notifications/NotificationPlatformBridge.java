@@ -350,8 +350,12 @@ public class NotificationPlatformBridge {
             intent.addFlags(Intent.FLAG_RECEIVER_FOREGROUND);
         }
 
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         return PendingIntent.getBroadcast(
-                context, PENDING_INTENT_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                context, PENDING_INTENT_REQUEST_CODE, intent, pendingIntentFlags);
     }
 
     /**
@@ -609,8 +613,12 @@ public class NotificationPlatformBridge {
             settingsIntent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT_ARGUMENTS,
                     SingleWebsitePreferences.createFragmentArgsForSite(origin));
 
+            int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+            }
             PendingIntent pendingSettingsIntent = PendingIntent.getActivity(context,
-                    PENDING_INTENT_REQUEST_CODE, settingsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    PENDING_INTENT_REQUEST_CODE, settingsIntent, pendingIntentFlags);
 
             // If action buttons are displayed, there isn't room for the full Site Settings button
             // label and icon, so abbreviate it. This has the unfortunate side-effect of

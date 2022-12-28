@@ -66,15 +66,23 @@ public class MediaViewerUtils {
             chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             String openWithStr = context.getString(R.string.download_manager_open_with);
             try (StrictModeContext unused = StrictModeContext.allowAllVmPolicies()) {
+                int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+                }
                 PendingIntent pendingViewIntent = PendingIntent.getActivity(
-                        context, 0, chooserIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                        context, 0, chooserIntent, pendingIntentFlags);
                 builder.addMenuItem(openWithStr, pendingViewIntent);
             }
         }
 
         // Create a PendingIntent that shares the file with external apps.
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         PendingIntent pendingShareIntent = PendingIntent.getActivity(context, 0,
-                createShareIntent(contentUri, mimeType), PendingIntent.FLAG_CANCEL_CURRENT);
+                createShareIntent(contentUri, mimeType), pendingIntentFlags);
         builder.setActionButton(
                 shareIcon, context.getString(R.string.share), pendingShareIntent, true);
 

@@ -266,16 +266,20 @@ public class SearchWidgetProvider extends AppWidgetProvider {
         // Clicking on the widget fires an Intent back at this BroadcastReceiver, allowing control
         // over how the Activity is animated when it starts up.
         Intent textIntent = createStartQueryIntent(context, ACTION_START_TEXT_QUERY, id);
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         views.setOnClickPendingIntent(R.id.text_container,
                 PendingIntent.getBroadcast(
-                        context, 0, textIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                        context, 0, textIntent, pendingIntentFlags));
 
         // If voice search is available, clicking on the microphone triggers a voice query.
         if (isVoiceSearchAvailable) {
             Intent voiceIntent = createStartQueryIntent(context, ACTION_START_VOICE_QUERY, id);
             views.setOnClickPendingIntent(R.id.microphone_icon,
                     PendingIntent.getBroadcast(
-                            context, 0, voiceIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                            context, 0, voiceIntent, pendingIntentFlags));
             views.setViewVisibility(R.id.microphone_icon, View.VISIBLE);
         } else {
             views.setViewVisibility(R.id.microphone_icon, View.GONE);

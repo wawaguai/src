@@ -79,7 +79,11 @@ public final class DisplayLeakActivity extends Activity {
     Intent intent = new Intent(context, DisplayLeakActivity.class);
     intent.putExtra(SHOW_LEAK_EXTRA, referenceKey);
     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-    return PendingIntent.getActivity(context, 1, intent, FLAG_UPDATE_CURRENT);
+    int pendingIntentFlags = FLAG_UPDATE_CURRENT;
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+      pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+    }
+    return PendingIntent.getActivity(context, 1, intent, pendingIntentFlags);
   }
 
   public static void setLeakDirectoryProvider(LeakDirectoryProvider leakDirectoryProvider) {

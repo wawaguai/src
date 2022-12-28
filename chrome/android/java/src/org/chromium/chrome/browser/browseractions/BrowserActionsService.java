@@ -246,8 +246,12 @@ public class BrowserActionsService extends Service {
         sTitleResId = getNotificationTitleId(isUpdate);
         builder.setContentTitle(this.getString(sTitleResId));
         sNotificationIntent = buildNotificationIntent(isUpdate, tabId);
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
         PendingIntent notifyPendingIntent = PendingIntent.getActivity(
-                this, 0, sNotificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                this, 0, sNotificationIntent, pendingIntentFlags);
         builder.setContentIntent(notifyPendingIntent);
         return builder;
     }

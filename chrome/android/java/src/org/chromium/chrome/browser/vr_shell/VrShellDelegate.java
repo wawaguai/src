@@ -315,8 +315,12 @@ public class VrShellDelegate
                     launchIntent = getVrClassesWrapper().setupVrIntent(launchIntent);
                     sInstance.mInternalIntentUsedToStartVr = true;
                     sInstance.setExpectingIntent(true);
+                    int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                        pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+                    }
                     getVrDaydreamApi().launchInVr(PendingIntent.getActivity(
-                            activity, 0, launchIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                            activity, 0, launchIntent, pendingIntentFlags));
                 } else {
                     // We start the Activity with a custom animation that keeps it hidden while
                     // starting up to avoid Android showing stale 2D screenshots when the user is in
@@ -849,7 +853,11 @@ public class VrShellDelegate
         sVrBroadcastReceiver = receiver;
         Intent vrIntent = new Intent(VR_ENTRY_RESULT_ACTION);
         vrIntent.setPackage(activity.getPackageName());
-        return PendingIntent.getBroadcast(activity, 0, vrIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int pendingIntentFlags = PendingIntent.FLAG_UPDATE_CURRENT;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            pendingIntentFlags = pendingIntentFlags | PendingIntent.FLAG_IMMUTABLE;
+        }
+        return PendingIntent.getBroadcast(activity, 0, vrIntent, pendingIntentFlags);
     }
 
     /**
