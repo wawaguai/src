@@ -286,6 +286,14 @@ void BookmarkBridge::ImportBookmarks(JNIEnv* env,
         NULL);
 }
 
+void BookmarkBridge::ImportPreviousUserBookmarks(
+        JNIEnv* env,
+        const JavaParamRef<jobject>& obj,
+        const JavaParamRef<jobject>& java_window,
+        const JavaParamRef<jstring>& j_userId) {
+
+}
+
 void OnDownloadLocationDetermined(
     const DownloadTargetDeterminerDelegate::ConfirmationCallback& callback,
     DownloadLocationDialogResult result,
@@ -311,6 +319,32 @@ void BookmarkBridge::ExportBookmarks(JNIEnv* env,
   bookmark_html_writer::WriteBookmarks(profile_, file_path, NULL);
 
   Java_BookmarkBridge_bookmarksExported(env, obj, ConvertUTF8ToJavaString(env, file_path.MaybeAsASCII()));
+}
+
+void BookmarkBridge::ExportCurrentUserBookmarks(
+        JNIEnv* env,
+        const JavaParamRef<jobject>& obj,
+        const JavaParamRef<jobject>& java_window,
+        const JavaParamRef<jstring>& j_userId) {
+  DCHECK(IsLoaded());
+
+  base::FilePath file_path;
+  if (!chrome::GetDefaultUserDataDirectory(&file_path)) {
+    LOG(ERROR) << "Bookmarks - Getting Default User Data Directory";
+    return;
+  }
+
+  const base::string16 userId = base::android::ConvertJavaStringToUTF16(env, j_userId);
+  file_path = file_path.Append(FILE_PATH_LITERAL("/cqttech/user_data"))
+          .Append(FILE_PATH_LITERAL(userId))
+          .Append(FILE_PATH_LITERAL("bookmarks.html"));
+
+  LOG(ERROR) << "Bookmarks - Output path is " << file_path;
+
+
+  bookmark_html_writer::WriteBookmarks(profile_, file_path, NULL);
+
+  Java_BookmarkBridge_currentUserBookmarksExported(env, obj, ConvertUTF8ToJavaString(env, file_path.MaybeAsASCII()));
 }
 
 void BookmarkBridge::Destroy(JNIEnv*, const JavaParamRef<jobject>&) {

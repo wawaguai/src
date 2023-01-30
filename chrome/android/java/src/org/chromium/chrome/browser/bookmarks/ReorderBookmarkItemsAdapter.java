@@ -142,6 +142,10 @@ class ReorderBookmarkItemsAdapter extends DragReorderableListAdapter<BookmarkIte
     @Override
     public @ViewType int getItemViewType(int position) {
         BookmarkItem item = getItemByPosition(position);
+        if (item == null) {
+            return ViewType.PERSONALIZED_SIGNIN_PROMO;
+        }
+
         if (item.isFolder()) {
             return ViewType.FOLDER;
         } else {

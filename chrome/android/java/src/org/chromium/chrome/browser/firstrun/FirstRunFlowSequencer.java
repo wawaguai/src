@@ -271,7 +271,7 @@ public abstract class FirstRunFlowSequencer  {
      */
     public static Intent createGenericFirstRunIntent(Context context, boolean fromChromeIcon) {
         Intent intent = new Intent();
-        intent.setClassName(context, CqttechFirstRunActivity.class.getName());
+        intent.setClassName(context, FirstRunActivity.class.getName());
         intent.putExtra(FirstRunActivity.EXTRA_COMING_FROM_CHROME_ICON, fromChromeIcon);
         return intent;
     }

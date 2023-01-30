@@ -318,7 +318,8 @@ public class BookmarkBridge {
     public void exportBookmarks(WindowAndroid window) {
         assert mIsNativeBookmarkModelLoaded;
 
-        nativeExportBookmarks(mNativeBookmarkBridge, window);
+        //nativeExportBookmarks(mNativeBookmarkBridge, window);
+        nativeExportCurrentUserBookmarks(mNativeBookmarkBridge, window, "Default");
     }
 
     @CalledByNative
@@ -339,6 +340,28 @@ public class BookmarkBridge {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         intent.putExtra(Browser.EXTRA_APPLICATION_ID,
                         context.getPackageName());
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(IntentHandler.EXTRA_PAGE_TRANSITION_TYPE, PageTransition.AUTO_BOOKMARK);
+
+        // If the bookmark manager is shown in a tab on a phone (rather than in a separate
+        // activity) the component name may be null. Send the intent through
+        // ChromeLauncherActivity instead to avoid crashing. See crbug.com/615012.
+        intent.setClass(context, ChromeLauncherActivity.class);
+
+        IntentHandler.startActivityForTrustedIntent(intent);
+    }
+
+    @CalledByNative
+    public void currentUserBookmarksExported(String bookmarksPath) {
+        String url = bookmarksPath;
+
+        Context context = ContextUtils.getApplicationContext();
+
+        url = "file://" + url;
+
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        intent.putExtra(Browser.EXTRA_APPLICATION_ID,
+                context.getPackageName());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(IntentHandler.EXTRA_PAGE_TRANSITION_TYPE, PageTransition.AUTO_BOOKMARK);
 
@@ -1007,4 +1030,13 @@ public class BookmarkBridge {
     private static native boolean nativeIsEditBookmarksEnabled(long nativeBookmarkBridge);
     private native void nativeReorderChildren(
             long nativeBookmarkBridge, BookmarkId parent, long[] orderedNodes);
+
+    // storage current user bookmarks
+    private native void nativeExportCurrentUserBookmarks(
+            long nativeBookmarkBridge, WindowAndroid window, String userId
+    );
+
+    private native void nativeImportPreviousUserBookmarks(
+            long nativeBookmarkBridge, WindowAndroid window, String userId
+    );
 }
