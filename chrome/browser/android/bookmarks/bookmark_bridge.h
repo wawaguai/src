@@ -135,9 +135,9 @@ class BookmarkBridge : public bookmarks::BaseBookmarkModelObserver,
 
   void ImportPreviousUserBookmarks(
           JNIEnv* env,
-          const JavaParamRef<jobject>& obj,
-          const JavaParamRef<jobject>& java_window,
-          const JavaParamRef<jstring>& j_userId);
+          const base::android::JavaParamRef<jobject>& obj,
+          const base::android::JavaParamRef<jobject>& java_window,
+          const base::android::JavaParamRef<jstring>& j_userId);
 
   void ExportBookmarks(JNIEnv* env,
                         const base::android::JavaParamRef<jobject>& obj,
@@ -145,9 +145,9 @@ class BookmarkBridge : public bookmarks::BaseBookmarkModelObserver,
 
   void ExportCurrentUserBookmarks(
           JNIEnv* env,
-          const JavaParamRef<jobject>& obj,
-          const JavaParamRef<jobject>& java_window,
-          const JavaParamRef<jstring>& j_userId);
+          const base::android::JavaParamRef<jobject>& obj,
+          const base::android::JavaParamRef<jobject>& java_window,
+          const base::android::JavaParamRef<jstring>& j_userId);
 
   void SetBookmarkTitle(JNIEnv* env,
                         const base::android::JavaParamRef<jobject>& obj,
