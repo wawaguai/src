@@ -345,8 +345,9 @@ public class BookmarkBridge {
     @CalledByNative
     public void previousUserBookmarksImported(String message) {
         Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_LONG).show();
-        URI uri = URI.create("content://com.android.externalstorage.documents/document/primary%3A1%2Fbookmarks_2022_5_24.html")
+        URI uri = URI.create("content://com.android.externalstorage.documents/document/primary%3A1%2Fbookmarks_2022_5_24.html");
         File file = new File(uri);
+        nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, file.getAbsolutePath());
     }
 
     @CalledByNative

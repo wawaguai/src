@@ -326,11 +326,6 @@ void BookmarkBridge::ImportPreviousUserBookmarks(
     writer->AddBookmarks(bookmarks, base::ASCIIToUTF16("Imported"));
   }
 
-  JNIEnv* env = AttachCurrentThread();
-  ScopedJavaLocalRef<jobject> obj = weak_java_ref_.get(env);
-  if (obj.is_null())
-    return;
-
   std::string message = "";
   if (bookmarks.size())
     message = "Imported " + std::to_string(bookmarks.size()) + " bookmarks";
