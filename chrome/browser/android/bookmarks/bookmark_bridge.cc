@@ -289,9 +289,54 @@ void BookmarkBridge::ImportBookmarks(JNIEnv* env,
 void BookmarkBridge::ImportPreviousUserBookmarks(
         JNIEnv* env,
         const JavaParamRef<jobject>& obj,
-        const JavaParamRef<jobject>& java_window,
-        const JavaParamRef<jstring>& j_userId) {
+        const JavaParamRef<jstring>& j_uri) {
+  DCHECK_CURRENTLY_ON(BrowserThread::UI);
+  DCHECK(IsLoaded());
 
+  bookmark_model_->RemoveAllUserBookmarks();
+
+  const std::string uri = base::android::ConvertJavaStringToUTF8(env, j_uri);
+  base::FilePath file_path = base::FilePath(uri);
+
+  LOG(ERROR) << "Bookmarks - Reading " << file_path;
+
+  //todo should copy before read
+  std::string content;
+  if (!base::ReadFileToString(file_path, &content)) {
+    LOG(ERROR) << "Bookmarks - File to import cannot be read";
+    return;
+  }
+
+  base::DeleteFile(file_path, false);
+
+  std::vector<ImportedBookmarkEntry> bookmarks;
+  std::vector<importer::SearchEngineInfo> search_engines;
+
+  bookmark_html_reader::ImportBookmarksFile(
+          base::Callback<bool(void)>(),
+          base::Bind(internal::CanImportURL),
+          content,
+          &bookmarks,
+          &search_engines,
+          nullptr);
+
+  auto *writer = new ProfileWriter(profile_);
+
+  if (!bookmarks.empty()) {
+    writer->AddBookmarks(bookmarks, base::ASCIIToUTF16("Imported"));
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  ScopedJavaLocalRef<jobject> obj = weak_java_ref_.get(env);
+  if (obj.is_null())
+    return;
+
+  std::string message = "";
+  if (bookmarks.size())
+    message = "Imported " + std::to_string(bookmarks.size()) + " bookmarks";
+  else
+    message = "No bookmarks have been imported";
+  Java_BookmarkBridge_previousUserBookmarksImported(env, obj, ConvertUTF8ToJavaString(env, message));
 }
 
 void OnDownloadLocationDetermined(
@@ -300,9 +345,10 @@ void OnDownloadLocationDetermined(
     const base::FilePath& path) {
 }
 
-void BookmarkBridge::ExportBookmarks(JNIEnv* env,
-                                       const JavaParamRef<jobject>& obj,
-                                       const JavaParamRef<jobject>& java_window) {
+void BookmarkBridge::ExportBookmarks(
+        JNIEnv* env,
+        const JavaParamRef<jobject>& obj,
+        const JavaParamRef<jobject>& java_window) {
   DCHECK(IsLoaded());
 
   base::FilePath file_path;
@@ -324,7 +370,6 @@ void BookmarkBridge::ExportBookmarks(JNIEnv* env,
 void BookmarkBridge::ExportCurrentUserBookmarks(
         JNIEnv* env,
         const JavaParamRef<jobject>& obj,
-        const JavaParamRef<jobject>& java_window,
         const JavaParamRef<jstring>& j_userId) {
   DCHECK(IsLoaded());
 
@@ -334,10 +379,18 @@ void BookmarkBridge::ExportCurrentUserBookmarks(
     return;
   }
 
-  const base::string16 userId = base::android::ConvertJavaStringToUTF16(env, j_userId);
-  file_path = file_path.Append(FILE_PATH_LITERAL("/cqttech/user_data"))
-          .Append(FILE_PATH_LITERAL(userId))
-          .Append(FILE_PATH_LITERAL("bookmarks.html"));
+  const std::string userId = base::android::ConvertJavaStringToUTF8(env, j_userId);
+  file_path = file_path.Append(FILE_PATH_LITERAL("cqttech/user_data"))
+          .Append(FILE_PATH_LITERAL(userId));
+
+  if (!base::PathExists(file_path) && !base::CreateDirectory(file_path)) {
+	LOG(ERROR) << "Bookmarks - output directory not exist and could not create it";
+    return;
+  }
+
+  file_path = file_path.Append(FILE_PATH_LITERAL("bookmarks.html"));
+
+  base::DeleteFile(file_path, false);
 
   LOG(ERROR) << "Bookmarks - Output path is " << file_path;
 

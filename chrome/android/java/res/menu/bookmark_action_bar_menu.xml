@@ -32,6 +32,14 @@
             android:contentDescription="@string/menu_export_bookmarks"
             app:showAsAction="never"/>
         <item
+            android:id="@+id/test_export"
+            android:title="测试导出"
+            app:showAsAction="never"/>
+        <item
+            android:id="@+id/test_import"
+            android:title="测试导入"
+            app:showAsAction="never"/>
+        <item
             android:id="@+id/close_menu_id"
             android:icon="@drawable/btn_close"
             android:title="@string/bookmark_action_bar_close"

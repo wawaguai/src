@@ -77,6 +77,9 @@ interface BookmarkDelegate {
     void importBookmarks();
     void exportBookmarks();
 
+    void testImportBookmarks(String url);
+    void testExportBookmarks();
+
     /**
      * Add an observer to bookmark UI changes.
      */

@@ -90,6 +90,14 @@ public class BookmarkActionBar extends SelectableListToolbar<BookmarkId>
             return true;
         }
 
+        else if (menuItem.getItemId() == R.id.test_export) {
+            mDelegate.testExportBookmarks();
+            return true;
+        } else if (menuItem.getItemId() == R.id.test_import) {
+            mDelegate.testImportBookmarks("");
+            return true;
+        }
+
         SelectionDelegate<BookmarkId> selectionDelegate = mDelegate.getSelectionDelegate();
         if (menuItem.getItemId() == R.id.selection_mode_edit_menu_id) {
             List<BookmarkId> list = selectionDelegate.getSelectedItems();

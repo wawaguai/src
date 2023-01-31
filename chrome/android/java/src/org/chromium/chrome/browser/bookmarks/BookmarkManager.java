@@ -511,6 +511,16 @@ public class BookmarkManager
     }
 
     @Override
+    public void testImportBookmarks(String url) {
+        mBookmarkModel.testImportBookmarks(url);
+    }
+
+    @Override
+    public void testExportBookmarks() {
+        mBookmarkModel.testExportBookmarks();
+    }
+
+    @Override
     public void addUIObserver(BookmarkUIObserver observer) {
         mUIObservers.addObserver(observer);
     }

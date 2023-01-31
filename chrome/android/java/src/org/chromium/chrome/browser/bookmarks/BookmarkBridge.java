@@ -36,6 +36,8 @@ import org.chromium.chrome.browser.tabmodel.TabCreatorManager.TabCreator;
 
 import org.chromium.ui.base.WindowAndroid;
 
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -318,8 +320,19 @@ public class BookmarkBridge {
     public void exportBookmarks(WindowAndroid window) {
         assert mIsNativeBookmarkModelLoaded;
 
-        //nativeExportBookmarks(mNativeBookmarkBridge, window);
-        nativeExportCurrentUserBookmarks(mNativeBookmarkBridge, window, "Default");
+        nativeExportBookmarks(mNativeBookmarkBridge, window);
+    }
+
+    public void testImportBookmarks(String url) {
+        assert mIsNativeBookmarkModelLoaded;
+
+        nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, url);
+    }
+
+    public void testExportBookmarks() {
+        assert mIsNativeBookmarkModelLoaded;
+
+        nativeExportCurrentUserBookmarks(mNativeBookmarkBridge, "Default");
     }
 
     @CalledByNative
@@ -327,6 +340,13 @@ public class BookmarkBridge {
         //Context context = ContextUtils.getApplicationContext();
 
         Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @CalledByNative
+    public void previousUserBookmarksImported(String message) {
+        Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+        URI uri = URI.create("content://com.android.externalstorage.documents/document/primary%3A1%2Fbookmarks_2022_5_24.html")
+        File file = new File(uri);
     }
 
     @CalledByNative
@@ -354,23 +374,9 @@ public class BookmarkBridge {
     @CalledByNative
     public void currentUserBookmarksExported(String bookmarksPath) {
         String url = bookmarksPath;
-
-        Context context = ContextUtils.getApplicationContext();
-
         url = "file://" + url;
 
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.putExtra(Browser.EXTRA_APPLICATION_ID,
-                context.getPackageName());
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(IntentHandler.EXTRA_PAGE_TRANSITION_TYPE, PageTransition.AUTO_BOOKMARK);
-
-        // If the bookmark manager is shown in a tab on a phone (rather than in a separate
-        // activity) the component name may be null. Send the intent through
-        // ChromeLauncherActivity instead to avoid crashing. See crbug.com/615012.
-        intent.setClass(context, ChromeLauncherActivity.class);
-
-        IntentHandler.startActivityForTrustedIntent(intent);
+        Toast.makeText(ContextUtils.getApplicationContext(), url, Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -1033,10 +1039,10 @@ public class BookmarkBridge {
 
     // storage current user bookmarks
     private native void nativeExportCurrentUserBookmarks(
-            long nativeBookmarkBridge, WindowAndroid window, String userId
+            long nativeBookmarkBridge, String userId
     );
 
     private native void nativeImportPreviousUserBookmarks(
-            long nativeBookmarkBridge, WindowAndroid window, String userId
+            long nativeBookmarkBridge, String url
     );
 }
