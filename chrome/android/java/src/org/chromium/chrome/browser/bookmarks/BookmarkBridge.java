@@ -12,32 +12,25 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import android.content.Context;
-import org.chromium.content_public.browser.LoadUrlParams;
-import org.chromium.chrome.browser.ChromeActivity;
+
 import android.provider.Browser;
 import org.chromium.chrome.browser.IntentHandler;
 import org.chromium.base.ContextUtils;
 import org.chromium.base.ObserverList;
 import org.chromium.base.VisibleForTesting;
 import org.chromium.base.annotations.CalledByNative;
-import org.chromium.chrome.browser.ChromeTabbedActivity;
 import org.chromium.chrome.browser.document.ChromeLauncherActivity;
 import org.chromium.base.metrics.RecordHistogram;
 import org.chromium.chrome.browser.partnerbookmarks.PartnerBookmarksShim;
 import org.chromium.chrome.browser.profiles.Profile;
 import org.chromium.components.bookmarks.BookmarkId;
 import org.chromium.components.bookmarks.BookmarkType;
-import org.chromium.chrome.browser.tabmodel.TabModel;
 import org.chromium.ui.base.PageTransition;
 import org.chromium.components.url_formatter.UrlFormatter;
 
-import org.chromium.chrome.browser.tab.Tab;
-import org.chromium.chrome.browser.tabmodel.TabCreatorManager.TabCreator;
 
 import org.chromium.ui.base.WindowAndroid;
 
-import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -326,7 +319,8 @@ public class BookmarkBridge {
     public void testImportBookmarks(String url) {
         assert mIsNativeBookmarkModelLoaded;
 
-        nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, url);
+        nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, "content://com.android.externalstorage.documents/document/primary%3A1%2Fbookmarks_2022_5_24.html");
+        //nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, url);
     }
 
     public void testExportBookmarks() {
@@ -345,9 +339,6 @@ public class BookmarkBridge {
     @CalledByNative
     public void previousUserBookmarksImported(String message) {
         Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_LONG).show();
-        URI uri = URI.create("content://com.android.externalstorage.documents/document/primary%3A1%2Fbookmarks_2022_5_24.html");
-        File file = new File(uri);
-        nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, file.getAbsolutePath());
     }
 
     @CalledByNative

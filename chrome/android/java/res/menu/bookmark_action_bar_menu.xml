@@ -33,11 +33,13 @@
             app:showAsAction="never"/>
         <item
             android:id="@+id/test_export"
-            android:title="测试导出"
+            android:title="@string/settings_passwords_export_description"
+            android:contentDescription="@string/settings_passwords_export_description"
             app:showAsAction="never"/>
         <item
             android:id="@+id/test_import"
-            android:title="测试导入"
+            android:title="@string/sync_import_existing_data"
+            android:contentDescription="@string/sync_import_existing_data"
             app:showAsAction="never"/>
         <item
             android:id="@+id/close_menu_id"

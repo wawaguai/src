@@ -300,14 +300,28 @@ void BookmarkBridge::ImportPreviousUserBookmarks(
 
   LOG(ERROR) << "Bookmarks - Reading " << file_path;
 
-  //todo should copy before read
+  base::FilePath file_path_tmp;
+  if (!chrome::GetDefaultUserDataDirectory(&file_path_tmp)) {
+    LOG(ERROR) << "Bookmarks - Getting Default User Data Directory for Import";
+    return;
+  }
+  file_path_tmp = file_path_tmp.Append(FILE_PATH_LITERAL("bookmarks.html.tmp"));
+
+  LOG(ERROR) << "Bookmarks - Copying from " << file_path << " to " << file_path_tmp;
+
+  base::CopyFile(file_path, file_path_tmp);
+
+  LOG(ERROR) << "Bookmarks - Reading " << file_path_tmp;
+
   std::string content;
-  if (!base::ReadFileToString(file_path, &content)) {
+  if (!base::ReadFileToString(file_path_tmp, &content)) {
     LOG(ERROR) << "Bookmarks - File to import cannot be read";
     return;
   }
 
-  base::DeleteFile(file_path, false);
+  base::DeleteFile(file_path_tmp, false);
+
+  //base::DeleteFile(file_path, false);
 
   std::vector<ImportedBookmarkEntry> bookmarks;
   std::vector<importer::SearchEngineInfo> search_engines;
