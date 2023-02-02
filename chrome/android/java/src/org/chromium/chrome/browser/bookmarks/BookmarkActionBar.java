@@ -94,7 +94,7 @@ public class BookmarkActionBar extends SelectableListToolbar<BookmarkId>
             mDelegate.testExportBookmarks();
             return true;
         } else if (menuItem.getItemId() == R.id.test_import) {
-            mDelegate.testImportBookmarks("");
+            mDelegate.testImportBookmarks("/storage/emulated/0/1/bookmarks_2022_5_24.html");
             return true;
         }
 

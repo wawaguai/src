@@ -316,11 +316,10 @@ public class BookmarkBridge {
         nativeExportBookmarks(mNativeBookmarkBridge, window);
     }
 
-    public void testImportBookmarks(String url) {
+    public void testImportBookmarks(String uri) {
         assert mIsNativeBookmarkModelLoaded;
 
-        nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, "content://com.android.externalstorage.documents/document/primary%3A1%2Fbookmarks_2022_5_24.html");
-        //nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, url);
+        nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, uri);
     }
 
     public void testExportBookmarks() {

@@ -511,8 +511,8 @@ public class BookmarkManager
     }
 
     @Override
-    public void testImportBookmarks(String url) {
-        mBookmarkModel.testImportBookmarks(url);
+    public void testImportBookmarks(String uri) {
+        mBookmarkModel.testImportBookmarks(uri);
     }
 
     @Override
