@@ -21,14 +21,12 @@ import org.chromium.base.VisibleForTesting;
 import org.chromium.base.metrics.RecordUserAction;
 import org.chromium.chrome.R;
 import org.chromium.chrome.browser.BasicNativePage;
-import org.chromium.chrome.browser.ChromeFeatureList;
 import org.chromium.chrome.browser.bookmarks.BookmarkBridge.BookmarkItem;
 import org.chromium.chrome.browser.bookmarks.BookmarkBridge.BookmarkModelObserver;
 import org.chromium.chrome.browser.favicon.LargeIconBridge;
 import org.chromium.chrome.browser.partnerbookmarks.PartnerBookmarksReader;
 import org.chromium.chrome.browser.profiles.Profile;
 import org.chromium.chrome.browser.snackbar.SnackbarManager;
-import org.chromium.chrome.browser.util.ConversionUtils;
 import org.chromium.chrome.browser.widget.dragreorder.DragStateDelegate;
 import org.chromium.chrome.browser.widget.selection.SelectableListLayout;
 import org.chromium.chrome.browser.widget.selection.SelectableListToolbar.SearchDelegate;
@@ -511,13 +509,13 @@ public class BookmarkManager
     }
 
     @Override
-    public void testImportBookmarks(String uri) {
-        mBookmarkModel.testImportBookmarks(uri);
+    public void fallbackDefaultBookmarks() {
+        mBookmarkModel.fallbackDefaultBookmarks();
     }
 
     @Override
-    public void testExportBookmarks() {
-        mBookmarkModel.testExportBookmarks();
+    public void importNewArrivalsBookmarks(String userId, String uri) {
+        mBookmarkModel.importNewArrivalsBookmarks(userId, uri);
     }
 
     @Override

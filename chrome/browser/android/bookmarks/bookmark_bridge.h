@@ -133,19 +133,18 @@ class BookmarkBridge : public bookmarks::BaseBookmarkModelObserver,
                         const base::android::JavaParamRef<jobject>& obj,
                         const base::android::JavaParamRef<jobject>& java_window);
 
-  void ImportPreviousUserBookmarks(
-          JNIEnv* env,
-          const base::android::JavaParamRef<jobject>& obj,
-          const base::android::JavaParamRef<jstring>& j_uri);
-
   void ExportBookmarks(JNIEnv* env,
                         const base::android::JavaParamRef<jobject>& obj,
                         const base::android::JavaParamRef<jobject>& java_window);
 
-  void ExportCurrentUserBookmarks(
+  void ImportNewArrivalsBookmarks(
           JNIEnv* env,
           const base::android::JavaParamRef<jobject>& obj,
-          const base::android::JavaParamRef<jstring>& j_userId);
+          const base::android::JavaParamRef<jstring>& j_uri);
+
+  void FallbackDefaultBookmarks(
+          JNIEnv* env,
+          const base::android::JavaParamRef<jobject>& obj);
 
   void SetBookmarkTitle(JNIEnv* env,
                         const base::android::JavaParamRef<jobject>& obj,

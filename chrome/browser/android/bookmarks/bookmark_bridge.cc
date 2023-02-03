@@ -157,6 +157,55 @@ std::unique_ptr<icu::Collator> GetICUCollator() {
   return collator_;
 }
 
+int doImportBookmarks(const base::FilePath& file_path) {
+  LOG(ERROR) << "Bookmarks - Bookmarks file to be imported is present in " << file_path;
+
+  base::FilePath file_path_tmp;
+  if (!chrome::GetDefaultUserDataDirectory(&file_path_tmp)) {
+    LOG(ERROR) << "Bookmarks - Getting Default User Data Directory for Import";
+    return -1;
+  }
+  file_path_tmp = file_path_tmp.Append(FILE_PATH_LITERAL("bookmarks.html.tmp"));
+
+  LOG(ERROR) << "Bookmarks - Copying from " << file_path << " to " << file_path_tmp;
+
+  base::CopyFile(file_path, file_path_tmp);
+
+  LOG(ERROR) << "Bookmarks - Reading " << file_path_tmp;
+
+  std::string content;
+  if (!base::ReadFileToString(file_path_tmp, &content)) {
+    LOG(ERROR) << "Bookmarks - File to import cannot be read";
+    return -1;
+  }
+
+  base::DeleteFile(file_path_tmp, false);
+
+  std::vector<ImportedBookmarkEntry> bookmarks;
+  std::vector<importer::SearchEngineInfo> search_engines;
+
+  bookmark_html_reader::ImportBookmarksFile(
+          base::Callback<bool(void)>(),
+          base::Bind(internal::CanImportURL),
+          content,
+          &bookmarks,
+          &search_engines,
+          nullptr);
+
+  auto *writer = new ProfileWriter(profile_);
+
+  if (!bookmarks.empty()) {
+    writer->AddBookmarks(bookmarks, base::ASCIIToUTF16("Imported"));
+  }
+
+  JNIEnv* env = AttachCurrentThread();
+  ScopedJavaLocalRef<jobject> obj = weak_java_ref_.get(env);
+  if (obj.is_null())
+    return -1;
+
+  return bookmarks.size();
+}
+
 }  // namespace
 
 BookmarkBridge::BookmarkBridge(JNIEnv* env,
@@ -203,54 +252,11 @@ BookmarkBridge::~BookmarkBridge() {
 
 void BookmarkBridge::FileSelected(const base::FilePath& file_path, int index,
                             void* params) {
-  LOG(ERROR) << "Bookmarks - Bookmarks file to be imported is present in " << file_path;
-
-  base::FilePath file_path_tmp;
-  if (!chrome::GetDefaultUserDataDirectory(&file_path_tmp)) {
-    LOG(ERROR) << "Bookmarks - Getting Default User Data Directory for Import";
-    return;
-  }
-  file_path_tmp = file_path_tmp.Append(FILE_PATH_LITERAL("bookmarks.html.tmp"));
-
-  LOG(ERROR) << "Bookmarks - Copying from " << file_path << " to " << file_path_tmp;
-
-  base::CopyFile(file_path, file_path_tmp);
-
-  LOG(ERROR) << "Bookmarks - Reading " << file_path_tmp;
-
-  std::string content;
-  if (!base::ReadFileToString(file_path_tmp, &content)) {
-     LOG(ERROR) << "Bookmarks - File to import cannot be read";
-     return;
-  }
-
-  base::DeleteFile(file_path_tmp, false);
-
-  std::vector<ImportedBookmarkEntry> bookmarks;
-  std::vector<importer::SearchEngineInfo> search_engines;
-
-  bookmark_html_reader::ImportBookmarksFile(
-      base::Callback<bool(void)>(),
-      base::Bind(internal::CanImportURL),
-      content,
-      &bookmarks,
-      &search_engines,
-      nullptr);
-
-  auto *writer = new ProfileWriter(profile_);
-
-  if (!bookmarks.empty()) {
-    writer->AddBookmarks(bookmarks, base::ASCIIToUTF16("Imported"));
-  }
-
-  JNIEnv* env = AttachCurrentThread();
-  ScopedJavaLocalRef<jobject> obj = weak_java_ref_.get(env);
-  if (obj.is_null())
-    return;
+  int size = doImportBookmarks(file_path);
 
   std::string message = "";
-  if (bookmarks.size())
-    message = "Imported " + std::to_string(bookmarks.size()) + " bookmarks";
+  if (size)
+    message = "Imported " + std::to_string(size) + " bookmarks";
   else
     message = "No bookmarks have been imported";
   Java_BookmarkBridge_bookmarksImported(env, obj, ConvertUTF8ToJavaString(env, message));
@@ -286,6 +292,82 @@ void BookmarkBridge::ImportBookmarks(JNIEnv* env,
         NULL);
 }
 
+void OnDownloadLocationDetermined(
+    const DownloadTargetDeterminerDelegate::ConfirmationCallback& callback,
+    DownloadLocationDialogResult result,
+    const base::FilePath& path) {
+}
+
+void BookmarkBridge::ExportBookmarks(
+        JNIEnv* env,
+        const JavaParamRef<jobject>& obj,
+        const JavaParamRef<jobject>& java_window) {
+  DCHECK(IsLoaded());
+
+  base::FilePath file_path;
+  if (!chrome::GetDefaultUserDataDirectory(&file_path)) {
+    LOG(ERROR) << "Bookmarks - Getting Default User Data Directory";
+    return;
+  }
+
+  file_path = file_path.Append(FILE_PATH_LITERAL("bookmarks.html"));
+
+  LOG(ERROR) << "Bookmarks - Output path is " << file_path;
+
+
+  bookmark_html_writer::WriteBookmarks(profile_, file_path, NULL);
+
+  Java_BookmarkBridge_bookmarksExported(env, obj, ConvertUTF8ToJavaString(env, file_path.MaybeAsASCII()));
+}
+
+jboolean BookmarkBridge::ImportNewArrivalsBookmarks(
+        JNIEnv* env,
+        const base::android::JavaParamRef<jobject>& obj,
+        const base::android::JavaParamRef<jstring>& j_uri) {
+  DCHECK_CURRENTLY_ON(BrowserThread::UI);
+  DCHECK(IsLoaded());
+
+  //step1: backup default user bookmarks
+  base::FilePath file_path;
+  if (!chrome::GetDefaultUserDataDirectory(&file_path)) {
+    LOG(ERROR) << "ImportNewArrivals - Getting Default User Data Directory";
+    return false;
+  }
+
+  file_path = file_path.Append(FILE_PATH_LITERAL("cqttech/user_data/default"));
+  if (!base::PathExists(file_path) && !base::CreateDirectory(file_path)) {
+    LOG(ERROR) << "ImportNewArrivals - output directory not exist and could not create it";
+    return false;
+  }
+
+  file_path = file_path.Append(FILE_PATH_LITERAL("bookmarks.html"));
+
+  base::DeleteFile(file_path, false);
+  LOG(ERROR) << "ImportNewArrivals - Output path is " << file_path;
+  bookmark_html_writer::WriteBookmarks(profile_, file_path, NULL);
+
+  bookmark_model_->RemoveAllUserBookmarks();
+
+  //step2: import new bookmarks from uri
+  const std::string uri = base::android::ConvertJavaStringToUTF8(env, j_uri);
+  base::FilePath file_path = base::FilePath(uri);
+  int size = doImportBookmarks(&file_path);
+
+  std::string message = "";
+  if (size)
+    message = "Imported " + std::to_string(size) + " bookmarks";
+  else
+    message = "No bookmarks have been imported";
+  Java_BookmarkBridge_newArrivalsBookmarksImported(env, obj, ConvertUTF8ToJavaString(env, message));
+
+  if (size < 0) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+/*
 void BookmarkBridge::ImportPreviousUserBookmarks(
         JNIEnv* env,
         const JavaParamRef<jobject>& obj,
@@ -347,35 +429,44 @@ void BookmarkBridge::ImportPreviousUserBookmarks(
     message = "No bookmarks have been imported";
   Java_BookmarkBridge_previousUserBookmarksImported(env, obj, ConvertUTF8ToJavaString(env, message));
 }
+ */
 
-void OnDownloadLocationDetermined(
-    const DownloadTargetDeterminerDelegate::ConfirmationCallback& callback,
-    DownloadLocationDialogResult result,
-    const base::FilePath& path) {
-}
-
-void BookmarkBridge::ExportBookmarks(
+void BookmarkBridge::FallbackDefaultBookmarks(
         JNIEnv* env,
-        const JavaParamRef<jobject>& obj,
-        const JavaParamRef<jobject>& java_window) {
+        const base::android::JavaParamRef<jobject>& obj) {
   DCHECK(IsLoaded());
 
+  std::string message = "";
+
+  //step1: clear module
+  bookmark_model_->RemoveAllUserBookmarks();
+
+  //step2: read default user bookmarks data
   base::FilePath file_path;
   if (!chrome::GetDefaultUserDataDirectory(&file_path)) {
-    LOG(ERROR) << "Bookmarks - Getting Default User Data Directory";
+    message = "FallbackDefault - Getting Default User Data Directory for Fallback";
+    Java_BookmarkBridge_defaultBookmarksAlreadyFallback(env, obj, ConvertUTF8ToJavaString(env, message));
     return;
   }
 
-  file_path = file_path.Append(FILE_PATH_LITERAL("bookmarks.html"));
+  file_path = file_path.Append(FILE_PATH_LITERAL("cqttech/user_data/default/bookmarks.html"));
+  if (!base::PathExists(file_path)) {
+    message = "FallbackDefault - no data!";
+    Java_BookmarkBridge_defaultBookmarksAlreadyFallback(env, obj, ConvertUTF8ToJavaString(env, message));
+    return;
+  }
 
-  LOG(ERROR) << "Bookmarks - Output path is " << file_path;
-
-
-  bookmark_html_writer::WriteBookmarks(profile_, file_path, NULL);
-
-  Java_BookmarkBridge_bookmarksExported(env, obj, ConvertUTF8ToJavaString(env, file_path.MaybeAsASCII()));
+  //step3: import
+  int size = doImportBookmarks(&file_path);
+  std::string message = "";
+  if (size)
+    message = "FallbackDefault " + std::to_string(size) + " bookmarks";
+  else
+    message = "No bookmarks have been imported";
+  Java_BookmarkBridge_defaultBookmarksAlreadyFallback(env, obj, ConvertUTF8ToJavaString(env, message));
 }
 
+/*
 void BookmarkBridge::ExportCurrentUserBookmarks(
         JNIEnv* env,
         const JavaParamRef<jobject>& obj,
@@ -408,6 +499,7 @@ void BookmarkBridge::ExportCurrentUserBookmarks(
 
   Java_BookmarkBridge_currentUserBookmarksExported(env, obj, ConvertUTF8ToJavaString(env, file_path.MaybeAsASCII()));
 }
+ */
 
 void BookmarkBridge::Destroy(JNIEnv*, const JavaParamRef<jobject>&) {
   delete this;

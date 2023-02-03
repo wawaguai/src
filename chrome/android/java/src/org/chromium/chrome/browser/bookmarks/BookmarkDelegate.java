@@ -77,8 +77,17 @@ interface BookmarkDelegate {
     void importBookmarks();
     void exportBookmarks();
 
-    void testImportBookmarks(String url);
-    void testExportBookmarks();
+    /**
+     * when user logout, fallback default bookmarks
+     */
+    void fallbackDefaultBookmarks();
+
+    /**
+     * import bookmarks for logged-in users
+     * @param userId the id of logged-in user
+     * @param uri bookmarks uri
+     */
+    void importNewArrivalsBookmarks(String userId, String uri);
 
     /**
      * Add an observer to bookmark UI changes.

@@ -4,6 +4,7 @@
 
 package org.chromium.chrome.browser.bookmarks;
 
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Pair;
@@ -40,6 +41,8 @@ import java.util.concurrent.TimeUnit;
  * bookmark model stored in native.
  */
 public class BookmarkBridge {
+    private static final String PREF_BOOKMARKS_USER = "current_bookmarks_user_id";
+
     private final Profile mProfile;
     private boolean mIsDoingExtensiveChanges;
     private long mNativeBookmarkBridge;
@@ -316,27 +319,41 @@ public class BookmarkBridge {
         nativeExportBookmarks(mNativeBookmarkBridge, window);
     }
 
-    public void testImportBookmarks(String uri) {
+    public void importNewArrivalsBookmarks(String userId, String uri) {
         assert mIsNativeBookmarkModelLoaded;
 
-        nativeImportPreviousUserBookmarks(mNativeBookmarkBridge, uri);
+        SharedPreferences.Editor editor = ContextUtils.getAppSharedPreferences().edit();
+        if (nativeImportNewArrivalsBookmarks(mNativeBookmarkBridge, uri)) {
+            editor.putString(PREF_BOOKMARKS_USER, userId).apply();
+        } else {
+            editor.remove(PREF_BOOKMARKS_USER).apply();
+        }
     }
 
-    public void testExportBookmarks() {
+    public void fallbackDefaultBookmarks() {
         assert mIsNativeBookmarkModelLoaded;
 
-        nativeExportCurrentUserBookmarks(mNativeBookmarkBridge, "Default");
+        ContextUtils.getAppSharedPreferences().edit().remove(PREF_BOOKMARKS_USER).apply();
+        nativeFallbackDefaultBookmarks(mNativeBookmarkBridge);
+    }
+
+    @CalledByNative
+    public void newArrivalsBookmarksImported(String message) {
+        Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    @CalledByNative
+    public void defaultBookmarksAlreadyFallback(String bookmarksPath) {
+        String url = bookmarksPath;
+        url = "file://" + url;
+
+        Toast.makeText(ContextUtils.getApplicationContext(), url, Toast.LENGTH_LONG).show();
     }
 
     @CalledByNative
     public void bookmarksImported(String message) {
         //Context context = ContextUtils.getApplicationContext();
 
-        Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_LONG).show();
-    }
-
-    @CalledByNative
-    public void previousUserBookmarksImported(String message) {
         Toast.makeText(ContextUtils.getApplicationContext(), message, Toast.LENGTH_LONG).show();
     }
 
@@ -360,14 +377,6 @@ public class BookmarkBridge {
         intent.setClass(context, ChromeLauncherActivity.class);
 
         IntentHandler.startActivityForTrustedIntent(intent);
-    }
-
-    @CalledByNative
-    public void currentUserBookmarksExported(String bookmarksPath) {
-        String url = bookmarksPath;
-        url = "file://" + url;
-
-        Toast.makeText(ContextUtils.getApplicationContext(), url, Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -1029,11 +1038,9 @@ public class BookmarkBridge {
             long nativeBookmarkBridge, BookmarkId parent, long[] orderedNodes);
 
     // storage current user bookmarks
-    private native void nativeExportCurrentUserBookmarks(
-            long nativeBookmarkBridge, String userId
-    );
+    private native void nativeFallbackDefaultBookmarks(long nativeBookmarkBridge);
 
-    private native void nativeImportPreviousUserBookmarks(
-            long nativeBookmarkBridge, String url
+    private native boolean nativeImportNewArrivalsBookmarks(
+            long nativeBookmarkBridge, String uri
     );
 }
